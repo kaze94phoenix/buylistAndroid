@@ -1,7 +1,10 @@
 package com.example.buylist.models;
 
-public class Purchase {
+import androidx.annotation.IdRes;
 
+public class Purchase {
+    @IdRes
+    long id;
     private ItemLocation itemLocation;
     private int quantity;
     private boolean purchased;

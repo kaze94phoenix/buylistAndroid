@@ -1,7 +1,10 @@
 package com.example.buylist.models;
 
-public class ItemLocation implements Comparable<ItemLocation> {
+import androidx.annotation.IdRes;
 
+public class ItemLocation implements Comparable<ItemLocation> {
+    @IdRes
+    long id;
     private Location location;
     private Item item;
     private double price;

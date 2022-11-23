@@ -1,10 +1,14 @@
 package com.example.buylist.models;
 
+import androidx.annotation.IdRes;
+
 import java.util.ArrayList;
 import java.util.Date;
 
 public class BuyList {
 
+    @IdRes
+    long id;
     private ArrayList<Purchase> purchases;
     private Date date;
     private String name;

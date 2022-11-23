@@ -3,6 +3,7 @@ package com.example.buylist.models;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.bumptech.glide.Registry;
 import com.bumptech.glide.load.model.ByteBufferEncoder;
 import com.example.buylist.models.ItemType;
 import com.example.buylist.models.Item;
@@ -13,6 +14,8 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+
+import io.paperdb.Paper;
 
 public class DataManager {
 
@@ -27,7 +30,8 @@ public class DataManager {
 
     private SharedPreferences sharedPreference;
     private SharedPreferences.Editor editor;
-    private Gson gson;
+    //private Gson gson;
+    private Paper paper;
 
 
     private ArrayList<ItemType> itemTypes;
@@ -38,6 +42,37 @@ public class DataManager {
     private ArrayList<Purchase> purchases;
 
     public DataManager(Context context) {
+
+        Paper.init(context);
+
+        itemTypes = Paper.book().read(ITEMS_TYPE);
+        if (itemTypes == null)
+            itemTypes = new ArrayList<ItemType>();
+
+        items = Paper.book().read(ITEMS);
+        if (items == null)
+            items = new ArrayList<Item>();
+
+        locations = Paper.book().read(LOCATIONS);
+        if (locations == null)
+            locations = new ArrayList<Location>();
+
+        itemLocations = Paper.book().read(ITEM_LOCATIONS);
+        if (itemLocations == null)
+            itemLocations = new ArrayList<ItemLocation>();
+
+        buyLists = Paper.book().read(BUYLISTS);
+        if (buyLists == null)
+            buyLists = new ArrayList<BuyList>();
+
+        purchases = Paper.book().read(PURCHASES);
+        if (purchases == null)
+            purchases = new ArrayList<Purchase>();
+
+
+
+
+        /*
         sharedPreference = context.getSharedPreferences("shopping_db", Context.MODE_PRIVATE);
         editor = sharedPreference.edit();
 
@@ -79,7 +114,7 @@ public class DataManager {
         purchases = gson.fromJson(sharedPreference.getString(PURCHASES, null), typePurchase);
         if (purchases == null)
             purchases = new ArrayList<Purchase>();
-
+*/
 
     }
 
@@ -91,15 +126,19 @@ public class DataManager {
 
     public void addItemType(ItemType itemType) {
         itemTypes.add(itemType);
-        editor.putString(ITEMS_TYPE, gson.toJson(itemTypes));
-        editor.commit();
+        Paper.book().write(ITEMS_TYPE,itemTypes);
+
+        //editor.putString(ITEMS_TYPE, gson.toJson(itemTypes));
+        //editor.commit();
     }
 
     public void deleteItemType(int position) {
         ItemType itemType = itemTypes.get(position);
         itemTypes.remove(position);
-        editor.putString(ITEMS_TYPE, gson.toJson(itemTypes));
-        editor.commit();
+        Paper.book().write(ITEMS_TYPE,itemTypes);
+
+        //editor.putString(ITEMS_TYPE, gson.toJson(itemTypes));
+        //editor.commit();
         for (int i = 0; i < items.size(); i++)
             if (items.get(i).getItemType().compareTo(itemType) > 0)
                 deleteItem(i);
@@ -110,8 +149,9 @@ public class DataManager {
     public void editItem(int position, Item item) {
         Item itemA = items.get(position);
         items.set(position, item);
-        editor.putString(ITEMS, gson.toJson(items));
-        editor.commit();
+        Paper.book().write(ITEMS,items);
+        //editor.putString(ITEMS, gson.toJson(items));
+        //editor.commit();
         for (int i = 0; i < itemLocations.size(); i++)
             if (itemLocations.get(i).getItem().compareTo(itemA) > 0) {
                 ItemLocation itemLocation = itemLocations.get(i);
@@ -127,15 +167,17 @@ public class DataManager {
 
     public void addItems(Item item) {
         items.add(item);
-        editor.putString(ITEMS, gson.toJson(items));
-        editor.commit();
+        Paper.book().write(ITEMS,items);
+        //editor.putString(ITEMS, gson.toJson(items));
+        //editor.commit();
     }
 
     public void deleteItem(int position) {
         Item item = items.get(position);
         items.remove(position);
-        editor.putString(ITEMS, gson.toJson(items));
-        editor.commit();
+        Paper.book().write(ITEMS,items);
+        //editor.putString(ITEMS, gson.toJson(items));
+        //editor.commit();
         for (int i = 0; i < itemLocations.size(); i++)
             if (item.compareTo(itemLocations.get(i).getItem()) > 0)
                 deleteItemLocation(i);
@@ -148,15 +190,17 @@ public class DataManager {
 
     public void addLocation(Location location) {
         locations.add(location);
-        editor.putString(LOCATIONS, gson.toJson(locations));
-        editor.commit();
+        Paper.book().write(LOCATIONS,locations);
+        //editor.putString(LOCATIONS, gson.toJson(locations));
+        //editor.commit();
     }
 
     public void editLocation(int position, Location location) {
         Location locationA = locations.get(position);
         locations.set(position, location);
-        editor.putString(LOCATIONS, gson.toJson(locations));
-        editor.commit();
+        Paper.book().write(LOCATIONS,locations);
+        //editor.putString(LOCATIONS, gson.toJson(locations));
+        //editor.commit();
         for (int i = 0; i < itemLocations.size(); i++)
             if (itemLocations.get(i).getLocation().compareTo(locationA) > 0) {
                 ItemLocation itemLocation = itemLocations.get(i);
@@ -169,8 +213,9 @@ public class DataManager {
     public void deleteLocation(int position) {
         Location location = locations.get(position);
         locations.remove(position);
-        editor.putString(LOCATIONS, gson.toJson(locations));
-        editor.commit();
+        Paper.book().write(LOCATIONS,locations);
+        //editor.putString(LOCATIONS, gson.toJson(locations));
+        //editor.commit();
         for (int i = 0; i < itemLocations.size(); i++)
             if (location.compareTo(itemLocations.get(i).getLocation()) > 0)
                 deleteItemLocation(i);
@@ -200,20 +245,23 @@ public class DataManager {
 
     public void addItemLocation(ItemLocation itemLocation) {
         itemLocations.add(itemLocation);
-        editor.putString(ITEM_LOCATIONS, gson.toJson(itemLocations));
-        editor.commit();
+        Paper.book().write(ITEM_LOCATIONS,itemLocations);
+        //editor.putString(ITEM_LOCATIONS, gson.toJson(itemLocations));
+        //editor.commit();
     }
 
     public void editItemLocation(int position, ItemLocation itemLocation) {
         itemLocations.set(position, itemLocation);
-        editor.putString(ITEM_LOCATIONS, gson.toJson(itemLocations));
-        editor.commit();
+        Paper.book().write(ITEM_LOCATIONS,itemLocations);
+        //editor.putString(ITEM_LOCATIONS, gson.toJson(itemLocations));
+        //editor.commit();
     }
 
     public void deleteItemLocation(int position) {
         itemLocations.remove(position);
-        editor.putString(ITEM_LOCATIONS, gson.toJson(itemLocations));
-        editor.commit();
+        Paper.book().write(ITEM_LOCATIONS,itemLocations);
+        //editor.putString(ITEM_LOCATIONS, gson.toJson(itemLocations));
+        //editor.commit();
     }
 
 
@@ -224,20 +272,23 @@ public class DataManager {
 
     public void addBuyList(BuyList buyList) {
         buyLists.add(buyList);
-        editor.putString(BUYLISTS, gson.toJson(buyLists));
-        editor.commit();
+        Paper.book().write(BUYLISTS,buyLists);
+        //editor.putString(BUYLISTS, gson.toJson(buyLists));
+        //editor.commit();
     }
 
     public void editBuyList(int position, BuyList buyList) {
         buyLists.set(position, buyList);
-        editor.putString(BUYLISTS, gson.toJson(buyLists));
-        editor.commit();
+        Paper.book().write(BUYLISTS,buyLists);
+        //editor.putString(BUYLISTS, gson.toJson(buyLists));
+        //editor.commit();
     }
 
     public void deleteBuyList(int position) {
         buyLists.remove(position);
-        editor.putString(BUYLISTS, gson.toJson(buyLists));
-        editor.commit();
+        Paper.book().write(BUYLISTS,buyLists);
+        //editor.putString(BUYLISTS, gson.toJson(buyLists));
+        //editor.commit();
     }
 
     public Double avgPrice(int position) {
@@ -250,8 +301,9 @@ public class DataManager {
 
     //Purchase or Active Buylist
     public void setPurchases(ArrayList<Purchase> purchases) {
-        editor.putString(PURCHASES, gson.toJson(purchases));
-        editor.commit();
+        Paper.book().write(PURCHASES,purchases);
+        //editor.putString(PURCHASES, gson.toJson(purchases));
+        //editor.commit();
     }
 
 

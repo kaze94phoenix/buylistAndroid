@@ -1,6 +1,10 @@
 package com.example.buylist.models;
 
+import androidx.annotation.IdRes;
+
 public class ItemType implements Comparable<ItemType> {
+    @IdRes
+    long id;
     private String name, description;
 
     public ItemType() {

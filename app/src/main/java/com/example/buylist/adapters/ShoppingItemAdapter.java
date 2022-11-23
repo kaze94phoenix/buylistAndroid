@@ -2,6 +2,7 @@ package com.example.buylist.adapters;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,9 +26,12 @@ import com.example.buylist.models.Item;
 import com.example.buylist.models.ItemType;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ShoppingItemAdapter extends RecyclerView.Adapter<ShoppingItemAdapter.ViewHolder> {
     private ArrayList<Item> items;
+    private ArrayList<Integer> selected;
+    private boolean selectMode;
     //ID of each item used to navigate to or manipulate each item
     public static final String EXTRA_ITEM_ID = "item_id";
     //Context of the RecyclerView activity
@@ -37,6 +41,8 @@ public class ShoppingItemAdapter extends RecyclerView.Adapter<ShoppingItemAdapte
     Intent intent;
 
     public ShoppingItemAdapter() {
+        selected = new ArrayList<>();
+
     }
 
     //Sets the list of items of the adapter
@@ -84,25 +90,54 @@ public class ShoppingItemAdapter extends RecyclerView.Adapter<ShoppingItemAdapte
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtItemName, txtItemAvgPrice;
         private Button editBtn, deleteBtn;
-        private RelativeLayout relativeLayout;
-      //  private ArrayList<Item> items;
+
+       //  private ArrayList<Item> items;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-       //     this.items=items;
-            relativeLayout = itemView.findViewById(R.id.simpleShoppingItem);
+       //     this.items=items
             txtItemName=itemView.findViewById(R.id.itemName);
             txtItemAvgPrice=itemView.findViewById(R.id.itemAvgPrice);
             editBtn = itemView.findViewById(R.id.btnEditItem);
             deleteBtn = itemView.findViewById(R.id.btnDeleteItem);
             DataManager dataManager = new DataManager(activity);
 
-            relativeLayout.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    intent = new Intent(activity, ItemDetailsActivity.class);
-                    intent.putExtra(EXTRA_ITEM_ID,getAdapterPosition());
-                    activity.startActivity(intent);
+                    if(selectMode && selected.contains(getAdapterPosition())) {
+                        itemView.setBackgroundColor(Color.TRANSPARENT);
+                        txtItemAvgPrice.setTextColor(Color.GRAY);
+                        txtItemName.setTextColor(Color.GRAY);
+                        selected.remove((Integer) getAdapterPosition());
+                    }
+                        else if(selectMode && !selected.contains(getAdapterPosition())){
+                        itemView.setBackgroundResource(R.color.purple_200);
+                        txtItemAvgPrice.setTextColor(Color.WHITE);
+                        txtItemName.setTextColor(Color.WHITE);
+                        selected.add(getAdapterPosition());
+                        }
+                    else {
+                        intent = new Intent(activity, ItemDetailsActivity.class);
+                        intent.putExtra(EXTRA_ITEM_ID, getAdapterPosition());
+                        activity.startActivity(intent);
+                    }
+
+                    if(selected.isEmpty())
+                        selectMode=false;
+                }
+            });
+
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    itemView.setBackgroundResource(R.color.purple_200);
+                    txtItemAvgPrice.setTextColor(Color.WHITE);
+                    txtItemName.setTextColor(Color.WHITE);
+                    selected.add(getAdapterPosition());
+                    selectMode = true;
+                    return true;
                 }
             });
 
