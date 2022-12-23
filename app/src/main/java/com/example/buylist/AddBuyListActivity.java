@@ -46,6 +46,7 @@ public class AddBuyListActivity extends AppCompatActivity {
 
     }
 
+
     public boolean onSupportNavigateUp() {
         //On pressing up the Activity closes
         finish();

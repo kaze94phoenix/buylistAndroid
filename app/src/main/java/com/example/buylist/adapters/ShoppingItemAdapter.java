@@ -4,18 +4,21 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.buylist.AddItemTypeActivity;
@@ -26,12 +29,12 @@ import com.example.buylist.models.Item;
 import com.example.buylist.models.ItemType;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ShoppingItemAdapter extends RecyclerView.Adapter<ShoppingItemAdapter.ViewHolder> {
     private ArrayList<Item> items;
     private ArrayList<Integer> selected;
     private boolean selectMode;
+    private ActionMode actionMode;
     //ID of each item used to navigate to or manipulate each item
     public static final String EXTRA_ITEM_ID = "item_id";
     //Context of the RecyclerView activity
@@ -39,6 +42,7 @@ public class ShoppingItemAdapter extends RecyclerView.Adapter<ShoppingItemAdapte
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
     Intent intent;
+    DataManager dataManager;
 
     public ShoppingItemAdapter() {
         selected = new ArrayList<>();
@@ -74,7 +78,7 @@ public class ShoppingItemAdapter extends RecyclerView.Adapter<ShoppingItemAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         //binds the attributes of the model to the viewHolder
         holder.txtItemName.setText(items.get(position).getName());
-        DataManager dataManager = new DataManager(activity);
+        dataManager = new DataManager(activity);
         holder.txtItemAvgPrice.setText(String.valueOf(dataManager.avgPrice(position)));
     }
 
@@ -85,11 +89,14 @@ public class ShoppingItemAdapter extends RecyclerView.Adapter<ShoppingItemAdapte
 
     }
 
+
+
     //Inner Class ViewHolder that takes the View Items to be used on the adapter
     //implements on click listener
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtItemName, txtItemAvgPrice;
         private Button editBtn, deleteBtn;
+        ActionMode.Callback callback;
 
        //  private ArrayList<Item> items;
 
@@ -100,7 +107,7 @@ public class ShoppingItemAdapter extends RecyclerView.Adapter<ShoppingItemAdapte
             txtItemAvgPrice=itemView.findViewById(R.id.itemAvgPrice);
             editBtn = itemView.findViewById(R.id.btnEditItem);
             deleteBtn = itemView.findViewById(R.id.btnDeleteItem);
-            DataManager dataManager = new DataManager(activity);
+            dataManager = new DataManager(activity);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -129,17 +136,67 @@ public class ShoppingItemAdapter extends RecyclerView.Adapter<ShoppingItemAdapte
             });
 
 
+
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
+                    if(actionMode!=null)
+                        return false;
+
+                    callback = new ActionMode.Callback() {
+                        @Override
+                        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                            mode.getMenuInflater().inflate(R.menu.action_mode_menu,menu);
+                            mode.setTitle("Select Items");
+                            return true;
+                        }
+
+                        @Override
+                        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                            switch (item.getItemId()){
+                                case R.id.delete:
+                                    deleteSelected();
+                                    mode.finish();
+                                    return true;
+                                case R.id.selectAll:
+                                    selectAll();
+                                    mode.finish();
+                                    return true;
+                                default:
+                                    return false;
+                            }
+                        }
+
+                        @Override
+                        public void onDestroyActionMode(ActionMode mode) {
+                            actionMode = null;
+                        }
+                    };
+
+
+
+                      actionMode =  ((AppCompatActivity) itemView.getContext()).startSupportActionMode(callback);
+
                     itemView.setBackgroundResource(R.color.purple_200);
                     txtItemAvgPrice.setTextColor(Color.WHITE);
                     txtItemName.setTextColor(Color.WHITE);
                     selected.add(getAdapterPosition());
                     selectMode = true;
                     return true;
+
+
                 }
+
             });
+
+
+
+
 
             //gets the button to use the onclicklistener
             editBtn.setOnClickListener(new View.OnClickListener() {
@@ -259,9 +316,37 @@ public class ShoppingItemAdapter extends RecyclerView.Adapter<ShoppingItemAdapte
         }
 
 
+        private void deleteSelected() {
+            for(int i=0; i<items.size(); i++)
+                if(selected.contains(i)) {
+                    dataManager.deleteItem(i);
+                    items.remove(i);
+                    notifyItemRemoved(i);
+
+                }
+            if(selected.size()>1)
+                Toast.makeText(activity, "Items Deleted", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(activity, "Item Deleted", Toast.LENGTH_SHORT).show();
+
+            selected.clear();
+        }
+
+        private void selectAll(){
+            for(int i=0; i<items.size(); i++)
+                if(!selected.contains(i))
+                    selected.add(i);
+                if(selected.contains(getAdapterPosition())){
+                    itemView.setBackgroundResource(R.color.purple_200);
+                    txtItemAvgPrice.setTextColor(Color.WHITE);
+                    txtItemName.setTextColor(Color.WHITE);
+                }
+        }
 
 
     }
+
+
 
 
 }
