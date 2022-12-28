@@ -34,29 +34,28 @@
         android:layout_height="480dp"
         android:layout_below="@id/itemSearch" />
 
-        <Button
-            android:id="@+id/addSelected"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="16dp"
-            android:layout_below="@id/itemsRecyclerView"
-            android:layout_alignParentStart="true"
-            android:text="Add"
-            android:layout_marginStart="50dp"
-            />
+    <Button
+        android:id="@+id/addSelected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/itemsRecyclerView"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="16dp"
+        android:text="Add" />
 
-        <Button
-            android:id="@+id/cancelPopout"
-            android:layout_below="@id/itemsRecyclerView"
-            android:layout_alignParentEnd="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="50dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginStart="78dp"
-            android:text="Cancel"/>
+    <Button
+        android:id="@+id/cancelPopout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/itemsRecyclerView"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="78dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="16dp"
+        android:text="Cancel" />
 
 
 
