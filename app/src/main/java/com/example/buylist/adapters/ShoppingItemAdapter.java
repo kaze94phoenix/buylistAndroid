@@ -134,7 +134,7 @@ public class ShoppingItemAdapter extends RecyclerView.Adapter<ShoppingItemAdapte
                         activity.startActivity(intent);
                     }
 
-                    if (selected.isEmpty()) {
+                    if (selectMode && selected.isEmpty()) {
                         selectMode = false;
                         actionMode.finish();
                     }

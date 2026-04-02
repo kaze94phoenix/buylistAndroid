@@ -12,7 +12,7 @@
         android:text="Item"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="25dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="25dp"
         />
 
@@ -24,7 +24,7 @@
         android:text="Price"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@id/itemBuylist"
-        android:layout_marginStart="50dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="25dp"
         />
 
@@ -32,48 +32,43 @@
         android:id="@+id/locationBuylist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_marginStart="25dp"
-        android:text="Location"
-        android:layout_alignParentStart="true"
         android:layout_below="@id/itemBuylist"
-        />
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="25dp"
+        android:text="Location" />
 
     <TextView
         android:id="@+id/qttyAddBuyListLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_toEndOf="@id/locationBuylist"
         android:layout_below="@id/priceBuylist"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="25dp"
         android:layout_marginBottom="25dp"
-        android:text="Quantity"/>
+        android:layout_toEndOf="@id/locationBuylist"
+        android:text="Quantity" />
 
     <EditText
         android:id="@+id/qttyAddBuylistText"
         android:layout_width="46dp"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="number"
-        android:layout_below="@id/priceBuylist"
-        android:layout_marginTop="1dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="25dp"
-        android:layout_toEndOf="@id/qttyAddBuyListLabel"
-        android:layout_marginStart="25dp"
-        />
+        android:layout_toStartOf="@id/checkBoxBuylist"
+        android:ems="10"
+        android:inputType="number" />
 
     <CheckBox
         android:id="@+id/checkBoxBuylist"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="20dp"
+        android:layout_height="28dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="25dp"
-        android:layout_marginTop="25dp"
-        />
-
-
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="16dp" />
 
 
 </RelativeLayout>

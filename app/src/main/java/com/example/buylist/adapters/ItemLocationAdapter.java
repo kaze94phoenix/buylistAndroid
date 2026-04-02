@@ -89,13 +89,10 @@ public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapte
 
         public ViewHolder(View itemView){
             super(itemView);
-            itemCheck = itemView.findViewById(R.id.itemCheck);
             priceLabel = itemView.findViewById(R.id.priceLocationLabel);
             locationLabel = itemView.findViewById(R.id.locationItemLabel);
             editItemLoc = itemView.findViewById(R.id.editItemLocBtn);
             deleteItemLoc = itemView.findViewById(R.id.deleteItemLocBtn);
-
-            itemCheck.setVisibility(View.GONE);
 
             editItemLoc.setOnClickListener(this);
             deleteItemLoc.setOnClickListener(this);

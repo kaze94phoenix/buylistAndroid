@@ -25,15 +25,14 @@
         android:id="@+id/nameTypeTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:layout_marginStart="100dp"
-        android:layout_marginEnd="100dp"
-        android:inputType="textPersonName"
+        android:layout_below="@id/nameTypeLabel"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_below="@id/nameTypeLabel"
-        />
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="100dp"
+        android:ems="10"
+        android:inputType="textPersonName" />
 
     <TextView
         android:id="@+id/descTypeLabel"
