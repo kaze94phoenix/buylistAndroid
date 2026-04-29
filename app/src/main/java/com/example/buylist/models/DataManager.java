@@ -16,6 +16,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import io.paperdb.Paper;
+import retrofit2.Retrofit;
 
 public class DataManager {
 
@@ -42,6 +43,12 @@ public class DataManager {
     private ArrayList<Purchase> purchases;
 
     public DataManager(Context context) {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://buylist.free.nf")
+                .build();
+
+        ApiService service = retrofit.create(ApiService.class);
 
         Paper.init(context);
 
