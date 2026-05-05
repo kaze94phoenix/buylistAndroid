@@ -49,7 +49,7 @@ public class DataManager {
 
             @Override
             public void onFailure(Call<ArrayList<ItemType>> call, Throwable t) {
-                System.out.println("Error: "+t.getMessage()+", Call:"+call.request().toString());
+                System.out.println("Error: "+t.getMessage());
             }
         });
 

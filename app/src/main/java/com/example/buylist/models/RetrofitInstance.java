@@ -7,7 +7,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitInstance {
-    private static final String BASE_URL = "https://buylist.free.nf";
+    private static final String BASE_URL = "http://:8000";
     private static Retrofit retrofit;
 
     private static Gson gson = new GsonBuilder()
