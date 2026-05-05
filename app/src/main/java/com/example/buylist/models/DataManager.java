@@ -3,20 +3,13 @@ package com.example.buylist.models;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.bumptech.glide.Registry;
-import com.bumptech.glide.load.model.ByteBufferEncoder;
-import com.example.buylist.models.ItemType;
-import com.example.buylist.models.Item;
-import com.example.buylist.models.Location;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import io.paperdb.Paper;
-import retrofit2.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DataManager {
 
@@ -44,13 +37,21 @@ public class DataManager {
 
     public DataManager(Context context) {
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://buylist.free.nf")
-                .build();
-
-        ApiService service = retrofit.create(ApiService.class);
+        ApiService api = RetrofitInstance.getApiInterface();
 
         Paper.init(context);
+
+        api.getProductTypes().enqueue(new Callback<ArrayList<ItemType>>() {
+            @Override
+            public void onResponse(Call<ArrayList<ItemType>> call, Response<ArrayList<ItemType>> response) {
+                System.out.println("Success");
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<ItemType>> call, Throwable t) {
+                System.out.println("Error: "+t.getMessage()+", Call:"+call.request().toString());
+            }
+        });
 
         itemTypes = Paper.book().read(ITEMS_TYPE);
         if (itemTypes == null)
