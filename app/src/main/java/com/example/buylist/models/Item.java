@@ -1,11 +1,18 @@
 package com.example.buylist.models;
 
-import androidx.annotation.IdRes;
+import com.google.gson.annotations.SerializedName;
 
 public class Item implements Comparable<Item>{
-    @IdRes
-    long id;
-    private String name,description;
+    @SerializedName("id")
+    private int id;
+
+    @SerializedName("name")
+    private String name;
+
+    @SerializedName("description")
+    private String description;
+
+    @SerializedName("item_type")
     private ItemType itemType;
 
     public Item() {

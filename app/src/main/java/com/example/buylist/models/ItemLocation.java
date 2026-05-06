@@ -1,12 +1,15 @@
 package com.example.buylist.models;
 
-import androidx.annotation.IdRes;
+import com.google.gson.annotations.SerializedName;
 
 public class ItemLocation implements Comparable<ItemLocation> {
-    @IdRes
-    long id;
+    @SerializedName("id")
+    private int id;
+    @SerializedName("location")
     private Location location;
+    @SerializedName("item")
     private Item item;
+    @SerializedName("price")
     private double price;
 
     public ItemLocation(Location location, Item item, double price) {

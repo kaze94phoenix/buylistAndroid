@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import io.paperdb.Paper;
 import retrofit2.Call;
@@ -41,33 +40,104 @@ public class DataManager {
 
         Paper.init(context);
 
+        //ITEM TYPE
         api.getProductTypes().enqueue(new Callback<ArrayList<ItemType>>() {
             @Override
             public void onResponse(Call<ArrayList<ItemType>> call, Response<ArrayList<ItemType>> response) {
-                System.out.println("Success");
+                ArrayList<ItemType> itemTypeApi = response.body();
+                ArrayList<ItemType> itemTypeHD = Paper.book().read(ITEMS_TYPE);
+                if(itemTypeApi==null || itemTypeApi.isEmpty())
+                    itemTypes = itemTypeHD;
+                else
+                    itemTypes = itemTypeApi;
+
+                if (itemTypes == null || itemTypes.isEmpty())
+                    itemTypes = new ArrayList<ItemType>();
+
+                Paper.book().write(ITEMS_TYPE,itemTypes);
             }
 
             @Override
             public void onFailure(Call<ArrayList<ItemType>> call, Throwable t) {
+
                 System.out.println("Error: "+t.getMessage());
             }
         });
-
         itemTypes = Paper.book().read(ITEMS_TYPE);
-        if (itemTypes == null)
-            itemTypes = new ArrayList<ItemType>();
 
+        //ITEM
+        api.getProducts().enqueue(new Callback<ArrayList<Item>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Item>> call, Response<ArrayList<Item>> response) {
+                ArrayList<Item> itemApi = response.body();
+                ArrayList<Item> itemHD = Paper.book().read(ITEMS);
+                if(itemApi==null || itemApi.isEmpty())
+                    items = itemHD;
+                else
+                    items = itemApi;
+
+                if (items == null || items.isEmpty())
+                    items = new ArrayList<Item>();
+
+                Paper.book().write(ITEMS,items);
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Item>> call, Throwable t) {
+                System.out.println("Error: "+t.getMessage());
+            }
+        });
         items = Paper.book().read(ITEMS);
-        if (items == null)
-            items = new ArrayList<Item>();
 
+
+        //LOCATION
+        api.getLocations().enqueue(new Callback<ArrayList<Location>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Location>> call, Response<ArrayList<Location>> response) {
+                ArrayList<Location> locationApi = response.body();
+                ArrayList<Location> locationHD = Paper.book().read(LOCATIONS);
+                if(locationApi==null || locationApi.isEmpty())
+                    locations = locationHD;
+                else
+                    locations = locationApi;
+
+                if (locations == null || locations.isEmpty())
+                    locations = new ArrayList<Location>();
+
+                Paper.book().write(LOCATIONS,locations);
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Location>> call, Throwable t) {
+                System.out.println("Error: "+t.getMessage());
+            }
+        });
         locations = Paper.book().read(LOCATIONS);
-        if (locations == null)
-            locations = new ArrayList<Location>();
 
+
+        //ITEM LOCATION
+        api.getItemLocations().enqueue(new Callback<ArrayList<ItemLocation>>() {
+            @Override
+            public void onResponse(Call<ArrayList<ItemLocation>> call, Response<ArrayList<ItemLocation>> response) {
+                ArrayList<ItemLocation> itemLocationApi = response.body();
+                ArrayList<ItemLocation> itemLocationHD = Paper.book().read(ITEM_LOCATIONS);
+                if(itemLocationApi==null || itemLocationApi.isEmpty())
+                    itemLocations = itemLocationHD;
+                else
+                    itemLocations = itemLocationApi;
+
+                if (itemLocations == null || itemLocations.isEmpty())
+                    itemLocations = new ArrayList<ItemLocation>();
+
+                Paper.book().write(ITEM_LOCATIONS,itemLocations);
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<ItemLocation>> call, Throwable t) {
+                System.out.println("Error: "+t.getMessage());
+            }
+        });
         itemLocations = Paper.book().read(ITEM_LOCATIONS);
-        if (itemLocations == null)
-            itemLocations = new ArrayList<ItemLocation>();
 
         buyLists = Paper.book().read(BUYLISTS);
         if (buyLists == null)
@@ -76,54 +146,6 @@ public class DataManager {
         purchases = Paper.book().read(PURCHASES);
         if (purchases == null)
             purchases = new ArrayList<Purchase>();
-
-
-
-
-        /*
-        sharedPreference = context.getSharedPreferences("shopping_db", Context.MODE_PRIVATE);
-        editor = sharedPreference.edit();
-
-        gson = new Gson();
-
-        Type typeTypeItem = new TypeToken<ArrayList<ItemType>>() {
-        }.getType();
-        itemTypes = gson.fromJson(sharedPreference.getString(ITEMS_TYPE, null), typeTypeItem);
-        if (itemTypes == null)
-            itemTypes = new ArrayList<ItemType>();
-
-        Type typeItem = new TypeToken<ArrayList<Item>>() {
-        }.getType();
-        items = gson.fromJson(sharedPreference.getString(ITEMS, null), typeItem);
-        if (items == null)
-            items = new ArrayList<Item>();
-
-
-        Type typeLocation = new TypeToken<ArrayList<Location>>() {
-        }.getType();
-        locations = gson.fromJson(sharedPreference.getString(LOCATIONS, null), typeLocation);
-        if (locations == null)
-            locations = new ArrayList<Location>();
-
-        Type typeItemLocation = new TypeToken<ArrayList<ItemLocation>>() {
-        }.getType();
-        itemLocations = gson.fromJson(sharedPreference.getString(ITEM_LOCATIONS, null), typeItemLocation);
-        if (itemLocations == null)
-            itemLocations = new ArrayList<ItemLocation>();
-
-        Type typeBuylist = new TypeToken<ArrayList<BuyList>>() {
-        }.getType();
-        buyLists = gson.fromJson(sharedPreference.getString(BUYLISTS, null), typeBuylist);
-        if (buyLists == null)
-            buyLists = new ArrayList<BuyList>();
-
-        Type typePurchase = new TypeToken<ArrayList<Purchase>>() {
-        }.getType();
-        purchases = gson.fromJson(sharedPreference.getString(PURCHASES, null), typePurchase);
-        if (purchases == null)
-            purchases = new ArrayList<Purchase>();
-*/
-
     }
 
     //Item Type
@@ -135,9 +157,6 @@ public class DataManager {
     public void addItemType(ItemType itemType) {
         itemTypes.add(itemType);
         Paper.book().write(ITEMS_TYPE,itemTypes);
-
-        //editor.putString(ITEMS_TYPE, gson.toJson(itemTypes));
-        //editor.commit();
     }
 
     public void deleteItemType(int position) {
