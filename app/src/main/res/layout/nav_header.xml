@@ -17,9 +17,10 @@
         />
 
     <TextView
+        android:id="@+id/userLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Teste"
+        android:text="Guest"
         android:paddingBottom="24dp"
         android:layout_marginStart="@dimen/fab_margin"
         />

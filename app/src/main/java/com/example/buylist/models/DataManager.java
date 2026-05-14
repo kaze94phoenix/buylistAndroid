@@ -1,11 +1,22 @@
 package com.example.buylist.models;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.example.buylist.MainActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 import io.paperdb.Paper;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -21,7 +32,7 @@ public class DataManager {
     private static final String BUYLISTS = "buylists";
     private static final String PURCHASES = "purchases";
 
-    private SharedPreferences sharedPreference;
+    private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
     //private Gson gson;
     private Paper paper;
@@ -34,9 +45,14 @@ public class DataManager {
     private ArrayList<BuyList> buyLists;
     private ArrayList<Purchase> purchases;
 
+    private ApiService api;
+
     public DataManager(Context context) {
 
-        ApiService api = RetrofitInstance.getApiInterface();
+        preferences = context.getSharedPreferences("UserPreferences",MODE_PRIVATE);
+        editor = preferences.edit();
+
+        api = RetrofitInstance.getApiInterface();
 
         Paper.init(context);
 
@@ -148,7 +164,50 @@ public class DataManager {
             purchases = new ArrayList<Purchase>();
     }
 
-    //Item Type
+    public SharedPreferences getPreferences(){
+        return this.preferences;
+    }
+
+    public SharedPreferences.Editor getEditor(){
+        return editor;
+    }
+
+    //Authorization
+    public void login(User user, Activity activity){
+        api.login(user).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful() && response.body()!=null){
+                    try {
+                        String res = response.body().string();
+                        JSONObject jsonResponse = new JSONObject(res);
+                        JSONObject user = jsonResponse.getJSONObject("user");
+                        String username = user.getString("name");
+                        String token = jsonResponse.getString("token");
+                        editor.putString("username",username);
+                        editor.putString("token",token);
+                        editor.putString("loginStatus","true");
+                        editor.apply();
+                        activity.startActivity(new Intent(activity.getApplicationContext(), MainActivity.class));
+                        activity.finish();
+                    } catch (IOException | JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                }else{
+                    System.out.println("Something went wrong!");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println("Error: "+t.getMessage());
+            }
+        });
+    }
+
+
+    //Item Type Manipulation
     public ArrayList<ItemType> getItemTypes() {
         return itemTypes;
     }
@@ -164,15 +223,13 @@ public class DataManager {
         itemTypes.remove(position);
         Paper.book().write(ITEMS_TYPE,itemTypes);
 
-        //editor.putString(ITEMS_TYPE, gson.toJson(itemTypes));
-        //editor.commit();
         for (int i = 0; i < items.size(); i++)
             if (items.get(i).getItemType().compareTo(itemType) > 0)
                 deleteItem(i);
     }
 
 
-    //Item
+    //Item Manipulation
     public void editItem(int position, Item item) {
         Item itemA = items.get(position);
         items.set(position, item);
@@ -210,7 +267,7 @@ public class DataManager {
                 deleteItemLocation(i);
     }
 
-    //Location
+    //Location Manipulation
     public ArrayList<Location> getLocations() {
         return locations;
     }
@@ -249,7 +306,7 @@ public class DataManager {
     }
 
 
-    //Item Location
+    //Item Location Manipulation
     public ArrayList<ItemLocation> getItemLocations() {
         return itemLocations;
     }
@@ -292,7 +349,7 @@ public class DataManager {
     }
 
 
-    // BuyList
+    // BuyList Manipulation
     public ArrayList<BuyList> getBuyLists() {
         return buyLists;
     }
@@ -326,7 +383,7 @@ public class DataManager {
         return SUM / getItemLocations(position).size();
     }
 
-    //Purchase or Active Buylist
+    //Purchase or Active Buylist Manipulation
     public void setPurchases(ArrayList<Purchase> purchases) {
         Paper.book().write(PURCHASES,purchases);
         //editor.putString(PURCHASES, gson.toJson(purchases));
