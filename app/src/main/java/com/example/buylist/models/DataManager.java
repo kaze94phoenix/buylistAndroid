@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.example.buylist.LoginActivity;
 import com.example.buylist.MainActivity;
 
 import org.json.JSONException;
@@ -168,7 +169,7 @@ public class DataManager {
         return this.preferences;
     }
 
-    public SharedPreferences.Editor getEditor(){
+    public SharedPreferences.Editor getEditor() {
         return editor;
     }
 
@@ -204,6 +205,15 @@ public class DataManager {
                 System.out.println("Error: "+t.getMessage());
             }
         });
+    }
+
+    public void logout(Activity activity){
+        editor.putString("username","Guest");
+        editor.putString("token","");
+        editor.putString("loginStatus","false");
+        editor.apply();
+        activity.startActivity(new Intent(activity.getApplicationContext(), LoginActivity.class));
+        activity.finish();
     }
 
 

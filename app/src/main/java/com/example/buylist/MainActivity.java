@@ -7,10 +7,12 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.buylist.fragments.ListsNStatsFragment;
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     DrawerLayout drawerLayout;
     TextView username;
+    Button logoutBtn;
     View header;
     SharedPreferences preferences;
 
@@ -30,6 +33,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         DataManager manager = new DataManager(getApplicationContext());
         preferences = manager.getPreferences();
+
+        if(preferences.getString("loginStatus","false").equalsIgnoreCase("false")){
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            finish();
+        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -42,7 +50,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         header = navigationView.getHeaderView(0);
         username = header.findViewById(R.id.userLabel);
+        logoutBtn = header.findViewById(R.id.logoutBtn);
+
         username.setText(preferences.getString("username",""));
+        logoutBtn.setOnClickListener(view ->{
+            manager.logout(this);
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            finish();
+        });
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);

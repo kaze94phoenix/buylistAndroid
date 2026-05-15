@@ -32,6 +32,7 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
 EditText usernameTxt, passwordTxt;
 SharedPreferences preferences;
+
 Button loginBtn, guestBtn;
 
 DataManager manager;
@@ -53,6 +54,8 @@ DataManager manager;
         });
 
         guestBtn.setOnClickListener(view ->{
+            manager.getEditor().putString("loginStatus","guest");
+            manager.getEditor().apply();
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         });
