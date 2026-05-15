@@ -35,7 +35,6 @@ public class DataManager {
 
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
-    //private Gson gson;
     private Paper paper;
 
 

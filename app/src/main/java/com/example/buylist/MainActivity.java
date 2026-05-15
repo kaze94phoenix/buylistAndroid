@@ -55,8 +55,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         username.setText(preferences.getString("username",""));
         logoutBtn.setOnClickListener(view ->{
             manager.logout(this);
-            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-            finish();
         });
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
