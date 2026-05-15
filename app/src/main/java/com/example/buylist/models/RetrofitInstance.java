@@ -2,6 +2,7 @@ package com.example.buylist.models;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.Strictness;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -13,8 +14,8 @@ public class RetrofitInstance {
     private static final String BASE_URL = "http://127.0.0.1:8000";
     private static Retrofit retrofit;
 
-    private static Gson gson = new GsonBuilder()
-            .setLenient()
+    private final static Gson gson = new GsonBuilder()
+            .setStrictness(Strictness.LENIENT)
             .create();
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
