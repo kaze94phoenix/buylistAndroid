@@ -1,37 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    >
-    <EditText
-        android:id="@+id/editTextUsername"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Username"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
+        <EditText
+            android:id="@+id/editTextUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Username"
+            />
+
+        <EditText
+            android:hint="Password"
+            android:padding="10dp"
+            android:id="@+id/editTextPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPassword" />
+
+        <Button
+            android:id="@+id/loginBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Login" />
+        <Button
+            android:id="@+id/guestBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enter as Guest" />
+
+
+
+    </LinearLayout>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="match_parent"
+        android:visibility="invisible"
+        android:paddingStart="150dp"
+        android:paddingEnd="150dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
         />
-
-    <EditText
-        android:hint="Password"
-        android:padding="10dp"
-        android:id="@+id/editTextPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPassword" />
-
-    <Button
-        android:id="@+id/loginBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Login" />
-
-    <Button
-        android:id="@+id/guestBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Enter as Guest" />
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

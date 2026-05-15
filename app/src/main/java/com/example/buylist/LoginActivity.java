@@ -1,10 +1,13 @@
 package com.example.buylist;
 
+import static android.view.View.VISIBLE;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,7 +17,7 @@ import com.example.buylist.models.User;
 public class LoginActivity extends AppCompatActivity {
 EditText usernameTxt, passwordTxt;
 SharedPreferences preferences;
-
+ProgressBar progressBar;
 Button loginBtn, guestBtn;
 
 DataManager manager;
@@ -29,8 +32,10 @@ DataManager manager;
         passwordTxt = findViewById(R.id.editTextPassword);
         loginBtn = findViewById(R.id.loginBtn);
         guestBtn = findViewById(R.id.guestBtn);
+        progressBar = findViewById(R.id.progressBar);
 
         loginBtn.setOnClickListener(view ->{
+            progressBar.setVisibility(VISIBLE);
             User user = new User(usernameTxt.getText().toString(),passwordTxt.getText().toString());
                 manager.login(user,this);
         });
