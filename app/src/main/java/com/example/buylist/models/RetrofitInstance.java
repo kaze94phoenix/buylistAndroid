@@ -10,7 +10,7 @@ public class RetrofitInstance {
 
     //Sample
     //private static final String BASE_URL = "http://127.0.0.1:8000";
-    private static final String BASE_URL = "http://192.168.43.244:8000";
+    private static final String BASE_URL = "http://127.0.0.1:8000";
     private static Retrofit retrofit;
 
     private static Gson gson = new GsonBuilder()
