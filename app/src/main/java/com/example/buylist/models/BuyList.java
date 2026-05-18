@@ -2,15 +2,20 @@ package com.example.buylist.models;
 
 import androidx.annotation.IdRes;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.Date;
 
 public class BuyList {
 
-    @IdRes
-    long id;
+    @SerializedName("id")
+    private long id;
+    @SerializedName("purchases")
     private ArrayList<Purchase> purchases;
+    @SerializedName("date")
     private Date date;
+    @SerializedName("name")
     private String name;
 
     public BuyList(){

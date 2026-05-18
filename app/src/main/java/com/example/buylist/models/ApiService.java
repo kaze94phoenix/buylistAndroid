@@ -9,6 +9,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 
 public interface ApiService {
@@ -24,6 +25,11 @@ public interface ApiService {
     @GET("api/products-stores")
     Call<ArrayList<ItemLocation>> getItemLocations();
 
+    @GET("api/listas/{id}")
+    Call<ArrayList<BuyList>> getListas(@Path("id") String userId);
+
     @POST("api/login")
     Call<ResponseBody> login(@Body User user);
+
+
 }

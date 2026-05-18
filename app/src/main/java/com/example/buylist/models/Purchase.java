@@ -2,11 +2,16 @@ package com.example.buylist.models;
 
 import androidx.annotation.IdRes;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Purchase {
-    @IdRes
-    long id;
+    @SerializedName("id")
+    private long id;
+    @SerializedName("item_location")
     private ItemLocation itemLocation;
+    @SerializedName("quantity")
     private int quantity;
+    @SerializedName("purchased")
     private boolean purchased;
 
     public Purchase(ItemLocation itemLocation, int quantity) {
