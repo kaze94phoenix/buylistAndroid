@@ -28,6 +28,9 @@ public interface ApiService {
     @GET("api/listas/{id}")
     Call<ArrayList<BuyList>> getListas(@Path("id") String userId);
 
+    @GET("api/my-stores/{id}")
+    Call<ArrayList<Location>> myLocations(@Path("id") String userId);
+
     @POST("api/login")
     Call<ResponseBody> login(@Body User user);
 

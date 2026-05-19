@@ -24,10 +24,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link LocationsFragment#newInstance} factory method to
+ * Use the {@link MyLocationsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LocationsFragment extends Fragment implements View.OnClickListener {
+public class MyLocationsFragment extends Fragment implements View.OnClickListener {
+
+
 
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -36,24 +38,20 @@ public class LocationsFragment extends Fragment implements View.OnClickListener 
     DataManager dataManager;
     ShoppingLocationAdapter shoppingLocationAdapter;
     FloatingActionButton actionButton;
-    Intent intent;
 
-
-    public LocationsFragment() {
+    public MyLocationsFragment() {
         // Required empty public constructor
     }
 
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_locations, container, false);
+        View view = inflater.inflate(R.layout.fragment_my_locations, container, false);
 
         dataManager = new DataManager(getContext());
         shoppingLocationAdapter = new ShoppingLocationAdapter();
 
-        shoppingLocationAdapter.setLocations(dataManager.getLocations());
+        shoppingLocationAdapter.setLocations(dataManager.getMyLocations());
         shoppingLocationAdapter.setActivity(getActivity());
 
 
@@ -66,7 +64,7 @@ public class LocationsFragment extends Fragment implements View.OnClickListener 
         swipeRefreshLayout = view.findViewById(R.id.swipeRefresh);
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            shoppingLocationAdapter.setLocations(dataManager.getLocations());
+            shoppingLocationAdapter.setLocations(dataManager.getMyLocations());
             recyclerView.setAdapter(shoppingLocationAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             swipeRefreshLayout.setRefreshing(false);

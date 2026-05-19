@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.buylist.fragments.ListsNStatsFragment;
+import com.example.buylist.fragments.MyLocationsFragment;
 import com.example.buylist.fragments.ProductsNLocalsFragment;
 import com.example.buylist.models.DataManager;
 import com.google.android.material.navigation.NavigationView;
@@ -51,6 +52,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         header = navigationView.getHeaderView(0);
         username = header.findViewById(R.id.userLabel);
         logoutBtn = header.findViewById(R.id.logoutBtn);
+        MenuItem item = navigationView.getMenu().getItem(2);
+        if(preferences.getString("userType","").equalsIgnoreCase("CONS")){
+            item.setVisible(false);
+        }
 
         username.setText(preferences.getString("username",""));
         logoutBtn.setOnClickListener(view ->{
@@ -85,7 +90,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.locationsNProducts:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentsContainer, new ProductsNLocalsFragment()).commit();
                 break;
-
+            case R.id.myLocations:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentsContainer, new MyLocationsFragment()).commit();
+                break;
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;

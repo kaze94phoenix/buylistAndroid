@@ -13,6 +13,10 @@
         <item android:title="Products &amp; Locations"
             android:id="@+id/locationsNProducts"
             />
+        <item
+            android:title="My Locations"
+            android:id="@+id/myLocations"
+            />
 
    </group>
 </menu>

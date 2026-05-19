@@ -42,6 +42,10 @@ DataManager manager;
 
         guestBtn.setOnClickListener(view ->{
             manager.getEditor().putString("loginStatus","guest");
+            manager.getEditor().putString("userId","");
+            manager.getEditor().putString("userType","CONS");
+            manager.getEditor().putString("username","Guest");
+            manager.getEditor().putString("token","");
             manager.getEditor().apply();
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();

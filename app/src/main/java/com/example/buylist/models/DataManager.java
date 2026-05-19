@@ -29,6 +29,7 @@ public class DataManager {
     private static final String ITEMS_TYPE = "items type";
     private static final String ITEMS = "items";
     private static final String LOCATIONS = "locations";
+    private static final String MY_LOCATIONS = "my_locations";
     private static final String ITEM_LOCATIONS = "item_locations";
     private static final String BUYLISTS = "buylists";
     private static final String PURCHASES = "purchases";
@@ -41,6 +42,7 @@ public class DataManager {
     private ArrayList<ItemType> itemTypes;
     private ArrayList<Item> items;
     private ArrayList<Location> locations;
+    private ArrayList<Location> myLocations;
     private ArrayList<ItemLocation> itemLocations;
     private ArrayList<BuyList> buylists;
     private ArrayList<Purchase> purchases;
@@ -51,6 +53,7 @@ public class DataManager {
 
         preferences = context.getSharedPreferences("UserPreferences",MODE_PRIVATE);
         editor = preferences.edit();
+        String userId = preferences.getString("userId","");
 
         api = RetrofitInstance.getApiInterface();
 
@@ -130,6 +133,34 @@ public class DataManager {
         });
         locations = Paper.book().read(LOCATIONS);
 
+        //MY LOCATIONS
+        if(!userId.equalsIgnoreCase("")){
+            api.myLocations(userId).enqueue(new Callback<ArrayList<Location>>() {
+                @Override
+                public void onResponse(Call<ArrayList<Location>> call, Response<ArrayList<Location>> response) {
+                    ArrayList<Location> myLocationApi = response.body();
+                    ArrayList<Location> myLocationHD = Paper.book().read(LOCATIONS);
+                    if(myLocationApi==null || myLocationApi.isEmpty())
+                        myLocations = myLocationHD;
+                    else
+                        myLocations = myLocationApi;
+
+                    if (myLocations == null || myLocations.isEmpty())
+                        myLocations = new ArrayList<Location>();
+
+                    Paper.book().write(MY_LOCATIONS,myLocations);
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<Location>> call, Throwable t) {
+                    System.out.println("Error: "+t.getMessage());
+                }
+            });
+        }else{
+            Paper.book().write(MY_LOCATIONS,new ArrayList<Location>());
+        }
+        myLocations = Paper.book().read(MY_LOCATIONS);
+
 
         //ITEM LOCATION
         api.getItemLocations().enqueue(new Callback<ArrayList<ItemLocation>>() {
@@ -157,7 +188,6 @@ public class DataManager {
 
 
         //BUYLIST
-        String userId = preferences.getString("userId","");
         if(!userId.equalsIgnoreCase("")) {
             api.getListas(userId).enqueue(new Callback<ArrayList<BuyList>>() {
                 @Override
@@ -212,9 +242,11 @@ public class DataManager {
                         JSONObject user = jsonResponse.getJSONObject("user");
                         String username = user.getString("name");
                         String userId = user.getString("id");
+                        String userType = jsonResponse.getString("user_type");
                         String token = jsonResponse.getString("token");
                         editor.putString("username",username);
                         editor.putString("userId",userId);
+                        editor.putString("userType",userType);
                         editor.putString("token",token);
                         editor.putString("loginStatus","true");
                         editor.apply();
@@ -239,6 +271,7 @@ public class DataManager {
     public void logout(Activity activity){
         editor.putString("username","Guest");
         editor.putString("userId","");
+        editor.putString("userType","CONS");
         editor.putString("token","");
         editor.putString("loginStatus","false");
         editor.apply();
@@ -307,6 +340,11 @@ public class DataManager {
     public ArrayList<Location> getLocations() {
         return locations;
     }
+
+    public ArrayList<Location> getMyLocations() {
+        return myLocations;
+    }
+
 
     public void addLocation(Location location) {
         locations.add(location);
