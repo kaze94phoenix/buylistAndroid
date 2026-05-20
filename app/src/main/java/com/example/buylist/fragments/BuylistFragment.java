@@ -124,37 +124,34 @@ public class BuylistFragment extends Fragment {
         dialog.show();
 
         //Adding elements selected to the buylist
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (purchases.isEmpty())
-                    //If there are no items on the playlist the items checked on the extra list on the adapter are added to it
-                    for (Purchase p : listAdapter.aux)
-                        purchases.add(p);
-                else {
-                    //If there are some items on the playlist, the previous action will be performed, and also quantities will be updated if there are repeated ones
-                    for (int i = 0; i < listAdapter.aux.size(); i++) {
-                        boolean found = false;
-                        for (int j = 0; j < purchases.size(); j++)
-                            if (purchases.get(j).getItemLocation().compareTo(listAdapter.aux.get(i).getItemLocation()) > 0) {
-                                //Every new added item is compared with the existent ones, if they exist it will update its quantities
-                                purchases.get(j).setQuantity(purchases.get(j).getQuantity() + listAdapter.aux.get(i).getQuantity());
-                                found = true;
-                            }
-                        if (!found)
-                            //If there are no existent elements it will add a brand new one
-                            purchases.add(listAdapter.aux.get(i));
+        add.setOnClickListener(view -> {
+            if (purchases.isEmpty())
+                //If there are no items on the buylist the items checked on the extra list on the adapter are added to it
+                for (Purchase p : listAdapter.aux)
+                    purchases.add(p);
+            else {
+                //If there are some items on the buylist, the previous action will be performed, and also quantities will be updated if there are repeated ones
+                for (int i = 0; i < listAdapter.aux.size(); i++) {
+                    boolean found = false;
+                    for (int j = 0; j < purchases.size(); j++)
+                        if (purchases.get(j).getItemLocation().compareTo(listAdapter.aux.get(i).getItemLocation()) > 0) {
+                            //Every new added item is compared with the existent ones, if they exist it will update its quantities
+                            purchases.get(j).setQuantity(purchases.get(j).getQuantity() + listAdapter.aux.get(i).getQuantity());
+                            found = true;
+                        }
+                    if (!found)
+                        //If there are no existent elements it will add a brand new one
+                        purchases.add(listAdapter.aux.get(i));
 
-
-                    }
 
                 }
-                dataManager.setPurchases(purchases);
-                buyListAdapter.setBuylist(purchases);
-                buylist.setAdapter(buyListAdapter);
-                buylist.setLayoutManager(new LinearLayoutManager(getContext()));
-                dialog.dismiss();
+
             }
+            dataManager.setPurchases(purchases);
+            buyListAdapter.setBuylist(purchases);
+            buylist.setAdapter(buyListAdapter);
+            buylist.setLayoutManager(new LinearLayoutManager(getContext()));
+            dialog.dismiss();
         });
 
         //SearchView and usage of the filter query option
@@ -205,7 +202,7 @@ public class BuylistFragment extends Fragment {
 
     public void saveBuyListItems() {
         dataManager = new DataManager(getActivity());
-        Date date = new Date(Calendar.YEAR, Calendar.MONTH, Calendar.DATE);
+        Date date = new Date();
         dataManager.addBuyList(new BuyList("BuyList #" + dataManager.getBuyLists().size(), date, purchases));
             Toast.makeText(getContext(), "List Saved", Toast.LENGTH_SHORT).show();
 

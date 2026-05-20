@@ -6,15 +6,20 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import com.example.buylist.LoginActivity;
 import com.example.buylist.MainActivity;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 import io.paperdb.Paper;
 import okhttp3.ResponseBody;
@@ -329,8 +334,6 @@ public class DataManager {
         Item item = items.get(position);
         items.remove(position);
         Paper.book().write(ITEMS,items);
-        //editor.putString(ITEMS, gson.toJson(items));
-        //editor.commit();
         for (int i = 0; i < itemLocations.size(); i++)
             if (item.compareTo(itemLocations.get(i).getItem()) > 0)
                 deleteItemLocation(i);
@@ -419,8 +422,36 @@ public class DataManager {
     }
 
     public void addBuyList(BuyList buyList) {
-        buylists.add(buyList);
-        Paper.book().write(BUYLISTS, buylists);
+        //buylists.add(buyList);
+        //Paper.book().write(BUYLISTS, buylists);
+        JSONObject buylistObj = null;
+        try {
+            buylistObj = new JSONObject(new Gson().toJson(buyList));
+            buylistObj.put("user_id",preferences.getString("userId",""));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        api.addLista(buylistObj.toString()).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful() && response.body()!=null){
+
+                    try {
+                        String res = response.body().string();
+                        JSONObject jsonResponse = new JSONObject(res);
+                        System.out.println("Response: "+jsonResponse);
+                    } catch (JSONException | IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println("Error: "+t.getMessage());
+            }
+        });
+
     }
 
     public void editBuyList(int position, BuyList buyList) {
