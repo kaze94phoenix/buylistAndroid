@@ -10,7 +10,7 @@ import java.util.Date;
 public class BuyList {
 
     @SerializedName("id")
-    private long id;
+    private int id;
     @SerializedName("purchases")
     private ArrayList<Purchase> purchases;
     @SerializedName("date")
@@ -34,6 +34,10 @@ public class BuyList {
         this.purchases = purchases;
         this.date = date;
         this.name = name;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {

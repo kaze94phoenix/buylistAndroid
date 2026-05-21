@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
@@ -460,8 +461,29 @@ public class DataManager {
     }
 
     public void deleteBuyList(int position) {
-        buylists.remove(position);
-        Paper.book().write(BUYLISTS, buylists);
+        //buylists.remove(position);
+        //Paper.book().write(BUYLISTS, buylists);
+        api.deleteLista(buylists.get(position).getId()).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful() && response.body()!=null){
+                    String res = null;
+                    try {
+                        res = response.body().string();
+                        JSONObject jsonResponse = new JSONObject(res);
+                        System.out.println("Response: "+jsonResponse);
+                    } catch (IOException | JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println("Error: "+t.getMessage());
+            }
+        });
     }
 
     public Double avgPrice(int position) {

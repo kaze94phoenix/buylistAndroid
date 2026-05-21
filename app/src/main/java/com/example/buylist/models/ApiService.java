@@ -1,17 +1,15 @@
 package com.example.buylist.models;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
@@ -42,6 +40,10 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("api/listas")
     Call<ResponseBody> addLista(@Field("json_request") String buylist);
+
+    //DELETE REQUESTS
+    @DELETE("api/listas/{id}")
+    Call<ResponseBody> deleteLista(@Path("id") int listaId);
 
 
 }
