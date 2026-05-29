@@ -93,6 +93,7 @@ public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapte
             locationLabel = itemView.findViewById(R.id.locationItemLabel);
             editItemLoc = itemView.findViewById(R.id.editItemLocBtn);
             deleteItemLoc = itemView.findViewById(R.id.deleteItemLocBtn);
+            deleteItemLoc.setVisibility(View.GONE);
 
             editItemLoc.setOnClickListener(this);
             deleteItemLoc.setOnClickListener(this);
@@ -101,7 +102,7 @@ public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapte
 
         @Override
         public void onClick(View view) {
-            EditText priceTxt;
+            EditText quantityTxt;
             Spinner locationSpinner;
             ArrayList<String> locationsNames = new ArrayList<>();
             dataManager = new DataManager(activity);
@@ -112,16 +113,23 @@ public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapte
                     dialogBuilder = new AlertDialog.Builder(activity);
                     final View editItemLocView = activity.getLayoutInflater().inflate(R.layout.add_item_location_popup,null);
 
-                    priceTxt = editItemLocView.findViewById(R.id.itemPriceTxt);
-                    priceTxt.setText(String.valueOf(itemLocations.get(getAdapterPosition()).getPrice()));
+                    quantityTxt = editItemLocView.findViewById(R.id.itemPriceTxt);
+
+                    TextView quantityLb = editItemLocView.findViewById(R.id.itemPriceLabel);
+                    quantityLb.setText("Quantity");
+                    TextView locationLb = editItemLocView.findViewById(R.id.locationLabel);
+                    locationLb.setVisibility(View.GONE);
+                    Button addLocation = editItemLocView.findViewById(R.id.goAddLocation);
+                    addLocation.setVisibility(View.GONE);
 
                     editBtn = editItemLocView.findViewById(R.id.btnSaveItemLocation);
-                    editBtn.setText("Edit");
+                    editBtn.setText("Add");
 
                     cancelBtn = editItemLocView.findViewById(R.id.btnCancelItemLocation);
 
                     locationSpinner = editItemLocView.findViewById(R.id.locationSpinner);
-                    if (dataManager.getLocations() != null) {
+                    locationSpinner.setVisibility(View.GONE);
+                    /*if (dataManager.getLocations() != null) {
                         for (Location a : dataManager.getLocations()) {
                             locationsNames.add(a.getName());
                         }
@@ -134,39 +142,31 @@ public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapte
                                 locationSpinner.setSelection(i);
 
 
-                    }
+                    }*/
 
                     dialogBuilder.setView(editItemLocView);
                     dialog = dialogBuilder.create();
                     dialog.show();
 
 
-                    cancelBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            dialog.dismiss();
-                        }
-                    });
+                    cancelBtn.setOnClickListener(view1 -> dialog.dismiss());
 
 
-                    editBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            ItemLocation itemLocation = new ItemLocation();
-                            itemLocation.setItem(itemLocations.get(getAdapterPosition()).getItem());
-                            itemLocation.setLocation(dataManager.getLocations().get(locationSpinner.getSelectedItemPosition()));
-                            itemLocation.setPrice(Double.parseDouble(priceTxt.getText().toString()));
+                    editBtn.setOnClickListener(view2 -> {
+                        ItemLocation itemLocation = new ItemLocation();
+                        itemLocation.setItem(itemLocations.get(getAdapterPosition()).getItem());
+                        itemLocation.setLocation(dataManager.getLocations().get(locationSpinner.getSelectedItemPosition()));
+                        itemLocation.setPrice(Double.parseDouble(quantityTxt.getText().toString()));
 
-                            for (int i = 0; i < dataManager.getItemLocations().size(); i++)
-                                if (dataManager.getItemLocations().get(i).compareTo(itemLocations.get(getAdapterPosition())) > 0)
-                                {
-                                    dataManager.editItemLocation(i, itemLocation);
-                            itemLocations.set(getAdapterPosition(), itemLocation);
-                            notifyItemChanged(getAdapterPosition());
-                        }
-                            Toast.makeText(activity, "Item Location Edited", Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                        }
+                        for (int i = 0; i < dataManager.getItemLocations().size(); i++)
+                            if (dataManager.getItemLocations().get(i).compareTo(itemLocations.get(getAdapterPosition())) > 0)
+                            {
+                                dataManager.editItemLocation(i, itemLocation);
+                        itemLocations.set(getAdapterPosition(), itemLocation);
+                        notifyItemChanged(getAdapterPosition());
+                    }
+                        Toast.makeText(activity, "Item Location Edited", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
                     });
                     break;
 

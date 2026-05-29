@@ -101,6 +101,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         ArrayList<String> locationsNames = new ArrayList<>();
 
         Spinner locationsSpinner = addItemLocationView.findViewById(R.id.locationSpinner);
+        locationsSpinner.setVisibility(View.GONE);
         if (dataManager.getLocations() != null) {
             for (Location a : locations) {
                 locationsNames.add(a.getName());
@@ -110,10 +111,11 @@ public class ItemDetailsActivity extends AppCompatActivity {
             locationsSpinner.setAdapter(arrayAdapter);
         }
 
-            EditText price = addItemLocationView.findViewById(R.id.itemPriceTxt);
+            EditText priceTxt = addItemLocationView.findViewById(R.id.itemPriceTxt);
             Button cancelBtn = addItemLocationView.findViewById(R.id.btnCancelItemLocation);
             Button saveBtn = addItemLocationView.findViewById(R.id.btnSaveItemLocation);
             Button addLocation = addItemLocationView.findViewById(R.id.goAddLocation);
+
 
             dialogBuilder.setView(addItemLocationView);
             dialog = dialogBuilder.create();
@@ -134,7 +136,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
             saveBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    dataManager.addItemLocation(new ItemLocation(locations.get(locationsSpinner.getSelectedItemPosition()),items.get(itemId),Double.parseDouble(price.getText().toString())));
+                    dataManager.addItemLocation(new ItemLocation(locations.get(locationsSpinner.getSelectedItemPosition()),items.get(itemId),Double.parseDouble(priceTxt.getText().toString())));
                     ArrayList<ItemLocation> test = dataManager.getItemLocations(itemId);
                     itemLocationAdapter.setItemLocations(test);
                     itemLocationAdapter.notifyItemInserted(itemLocationAdapter.getItemCount()-1);
