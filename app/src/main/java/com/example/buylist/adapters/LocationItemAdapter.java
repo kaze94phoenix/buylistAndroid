@@ -21,6 +21,7 @@ import com.example.buylist.R;
 import com.example.buylist.models.DataManager;
 import com.example.buylist.models.ItemLocation;
 import com.example.buylist.models.Location;
+import com.example.buylist.models.Purchase;
 
 import java.util.ArrayList;
 
@@ -94,7 +95,6 @@ public class LocationItemAdapter extends RecyclerView.Adapter<LocationItemAdapte
             editItemLoc = itemView.findViewById(R.id.editItemLocBtn);
             deleteItemLoc = itemView.findViewById(R.id.deleteItemLocBtn);
 
-            editItemLoc.setVisibility(View.GONE);
             deleteItemLoc.setVisibility(View.GONE);
 
             editItemLoc.setOnClickListener(this);
@@ -107,72 +107,52 @@ public class LocationItemAdapter extends RecyclerView.Adapter<LocationItemAdapte
         @Override
         public void onClick(View view) {
             //TODO: Implement this after makind the update/delete cascade
-            EditText priceTxt;
+            EditText quantityTxt;
             Spinner locationSpinner;
             ArrayList<String> locationsNames = new ArrayList<>();
             dataManager = new DataManager(activity);
-            Button editBtn, cancelBtn;
+            Button addBtn, cancelBtn;
             switch (view.getId()){
 
                 case R.id.editItemLocBtn:
                     dialogBuilder = new AlertDialog.Builder(activity);
                     final View editItemLocView = activity.getLayoutInflater().inflate(R.layout.add_item_location_popup,null);
 
-                    priceTxt = editItemLocView.findViewById(R.id.itemPriceTxt);
-                    priceTxt.setText(String.valueOf(itemLocations.get(getAdapterPosition()).getPrice()));
+                    quantityTxt = editItemLocView.findViewById(R.id.itemPriceTxt);
 
-                    editBtn = editItemLocView.findViewById(R.id.btnSaveItemLocation);
-                    editBtn.setText("Edit");
+                    TextView quantityLb = editItemLocView.findViewById(R.id.itemPriceLabel);
+                    quantityLb.setText("Quantity");
+                    TextView locationLb = editItemLocView.findViewById(R.id.locationLabel);
+                    locationLb.setVisibility(View.GONE);
+                    Button addLocation = editItemLocView.findViewById(R.id.goAddLocation);
+                    addLocation.setVisibility(View.GONE);
+
+
+                    addBtn = editItemLocView.findViewById(R.id.btnSaveItemLocation);
+                    addBtn.setText("Add");
 
                     cancelBtn = editItemLocView.findViewById(R.id.btnCancelItemLocation);
 
                     locationSpinner = editItemLocView.findViewById(R.id.locationSpinner);
-                    if (dataManager.getLocations() != null) {
-                        for (Location a : dataManager.getLocations()) {
-                            locationsNames.add(a.getName());
-                        }
-
-                        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_spinner_dropdown_item, locationsNames);
-                        locationSpinner.setAdapter(arrayAdapter);
-
-                        for(int i=0; i<dataManager.getLocations().size(); i++)
-                            if(itemLocations.get(getAdapterPosition()).getLocation().compareTo(dataManager.getLocations().get(i))>0)
-                                locationSpinner.setSelection(i);
-
-
-                    }
+                    locationSpinner.setVisibility(View.GONE);
 
                     dialogBuilder.setView(editItemLocView);
                     dialog = dialogBuilder.create();
                     dialog.show();
 
 
-                    cancelBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            dialog.dismiss();
-                        }
-                    });
+                    cancelBtn.setOnClickListener(view1 -> dialog.dismiss());
 
 
-                    editBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            ItemLocation itemLocation = new ItemLocation();
-                            itemLocation.setItem(itemLocations.get(getAdapterPosition()).getItem());
-                            itemLocation.setLocation(dataManager.getLocations().get(locationSpinner.getSelectedItemPosition()));
-                            itemLocation.setPrice(Double.parseDouble(priceTxt.getText().toString()));
+                    addBtn.setOnClickListener(view2 -> {
+                        Purchase purchase = new Purchase();
+                        purchase.setQuantity(Integer.parseInt(quantityTxt.getText().toString()));
+                        purchase.setItemLocation(dataManager.getItemLocations().get(getBindingAdapterPosition()));
+                        purchase.setPurchased(false);
+                        dataManager.addPurchase(purchase);
 
-                            for (int i = 0; i < dataManager.getItemLocations().size(); i++)
-                                if (dataManager.getItemLocations().get(i).compareTo(itemLocations.get(getAdapterPosition())) > 0)
-                                {
-                                    dataManager.editItemLocation(i, itemLocation);
-                            itemLocations.set(getAdapterPosition(), itemLocation);
-                            notifyItemChanged(getAdapterPosition());
-                        }
-                            Toast.makeText(activity, "Item Location Edited", Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                        }
+                        Toast.makeText(activity, "Item Added to List", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
                     });
                     break;
 

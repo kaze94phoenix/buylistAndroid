@@ -21,6 +21,7 @@ import com.example.buylist.R;
 import com.example.buylist.models.DataManager;
 import com.example.buylist.models.ItemLocation;
 import com.example.buylist.models.Location;
+import com.example.buylist.models.Purchase;
 
 import java.util.ArrayList;
 
@@ -106,7 +107,7 @@ public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapte
             Spinner locationSpinner;
             ArrayList<String> locationsNames = new ArrayList<>();
             dataManager = new DataManager(activity);
-            Button editBtn, cancelBtn;
+            Button addBtn, cancelBtn;
             switch (view.getId()){
 
                 case R.id.editItemLocBtn:
@@ -122,27 +123,13 @@ public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapte
                     Button addLocation = editItemLocView.findViewById(R.id.goAddLocation);
                     addLocation.setVisibility(View.GONE);
 
-                    editBtn = editItemLocView.findViewById(R.id.btnSaveItemLocation);
-                    editBtn.setText("Add");
+                    addBtn = editItemLocView.findViewById(R.id.btnSaveItemLocation);
+                    addBtn.setText("Add");
 
                     cancelBtn = editItemLocView.findViewById(R.id.btnCancelItemLocation);
 
                     locationSpinner = editItemLocView.findViewById(R.id.locationSpinner);
                     locationSpinner.setVisibility(View.GONE);
-                    /*if (dataManager.getLocations() != null) {
-                        for (Location a : dataManager.getLocations()) {
-                            locationsNames.add(a.getName());
-                        }
-
-                        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_spinner_dropdown_item, locationsNames);
-                        locationSpinner.setAdapter(arrayAdapter);
-
-                        for(int i=0; i<dataManager.getLocations().size(); i++)
-                            if(itemLocations.get(getAdapterPosition()).getLocation().compareTo(dataManager.getLocations().get(i))>0)
-                                locationSpinner.setSelection(i);
-
-
-                    }*/
 
                     dialogBuilder.setView(editItemLocView);
                     dialog = dialogBuilder.create();
@@ -152,20 +139,14 @@ public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapte
                     cancelBtn.setOnClickListener(view1 -> dialog.dismiss());
 
 
-                    editBtn.setOnClickListener(view2 -> {
-                        ItemLocation itemLocation = new ItemLocation();
-                        itemLocation.setItem(itemLocations.get(getAdapterPosition()).getItem());
-                        itemLocation.setLocation(dataManager.getLocations().get(locationSpinner.getSelectedItemPosition()));
-                        itemLocation.setPrice(Double.parseDouble(quantityTxt.getText().toString()));
+                    addBtn.setOnClickListener(view2 -> {
+                        Purchase purchase = new Purchase();
+                        purchase.setQuantity(Integer.parseInt(quantityTxt.getText().toString()));
+                        purchase.setItemLocation(dataManager.getItemLocations().get(getBindingAdapterPosition()));
+                        purchase.setPurchased(false);
+                        dataManager.addPurchase(purchase);
 
-                        for (int i = 0; i < dataManager.getItemLocations().size(); i++)
-                            if (dataManager.getItemLocations().get(i).compareTo(itemLocations.get(getAdapterPosition())) > 0)
-                            {
-                                dataManager.editItemLocation(i, itemLocation);
-                        itemLocations.set(getAdapterPosition(), itemLocation);
-                        notifyItemChanged(getAdapterPosition());
-                    }
-                        Toast.makeText(activity, "Item Location Edited", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Item Added to List", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     });
                     break;

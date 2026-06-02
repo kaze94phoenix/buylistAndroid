@@ -499,7 +499,17 @@ public class DataManager {
         Paper.book().write(PURCHASES,purchases);
     }
 
-
+    public void addPurchase(Purchase purchase){
+        for (Purchase p: purchases){
+            if(p.getItemLocation().getId()==purchase.getItemLocation().getId()){
+                p.setQuantity(p.getQuantity()+purchase.getQuantity());
+                Paper.book().write(PURCHASES,purchases);
+            return;
+            }
+        }
+        purchases.add(purchase);
+        Paper.book().write(PURCHASES,purchases);
+    }
     public ArrayList<Purchase> getPurchases() {
         return purchases;
     }
