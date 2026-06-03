@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:elevation="20dp"
+    android:background="@drawable/round_outline">
 
     <TextView
         android:id="@+id/itemBuylistName"
@@ -12,44 +13,46 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp"
         android:layout_marginTop="39dp"
         android:text="Item" />
+
 
     <EditText
         android:id="@+id/qttyBuylistEdit"
         android:layout_width="55dp"
         android:layout_height="40dp"
-        android:layout_marginStart="16dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="184dp"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="80dp"
-        android:layout_toStartOf="@id/changeQttyBuylist"
         android:inputType="number"
         android:visibility="invisible" />
-
 
     <TextView
         android:id="@+id/qttyBuylistName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="39dp"
+        android:layout_marginStart="184dp"
+        android:layout_marginTop="38dp"
         android:layout_marginEnd="80dp"
-        android:layout_toStartOf="@id/changeQttyBuylist"
         android:layout_toEndOf="@id/itemBuylistName"
         android:text="Quantity"
         android:textAlignment="textEnd" />
 
     <Button
         android:id="@+id/changeQttyBuylist"
-        android:layout_width="43dp"
-        android:layout_height="41dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="25dp"
-        android:layout_marginEnd="50dp"
-        android:text="*" />
+        android:layout_marginEnd="30dp"
+        android:textSize="15dp"
+        app:icon="@drawable/ic_edit"
+        app:iconGravity="top"
+        />
 
     <TextView
         android:id="@+id/locationBuylistName"
@@ -58,35 +61,38 @@
         android:layout_below="@id/itemBuylistName"
         android:layout_alignParentStart="true"
         android:layout_marginStart="25dp"
-        android:layout_marginTop="34dp"
+        android:layout_marginTop="44dp"
         android:layout_marginEnd="25dp"
         android:layout_marginBottom="25dp"
-        android:text="Location" />
+        android:text="Location"
+        />
 
 
     <TextView
-        android:textAlignment="textEnd"
         android:id="@+id/priceBuylistName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/qttyBuylistName"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="34dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="184dp"
+        android:layout_marginTop="44dp"
         android:layout_marginEnd="80dp"
         android:layout_marginBottom="8dp"
-        android:layout_toStartOf="@id/removeBuylist"
         android:layout_toEndOf="@id/locationBuylistName"
-        android:text="Full Price" />
-
+        android:text="Full Price"
+        android:textAlignment="textEnd"
+    />
 
     <Button
         android:id="@+id/removeBuylist"
-        android:layout_width="43dp"
-        android:layout_height="41dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_below="@id/changeQttyBuylist"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginEnd="30dp"
         android:layout_marginBottom="25dp"
-        android:text="-" />
+        app:icon="@drawable/ic_delete"
+        app:iconGravity="top"
+        />
 </RelativeLayout>
