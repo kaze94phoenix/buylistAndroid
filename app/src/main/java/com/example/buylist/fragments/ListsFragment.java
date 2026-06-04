@@ -12,11 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.buylist.AddBuyListActivity;
 import com.example.buylist.R;
 import com.example.buylist.adapters.BuyListListAdapter;
 import com.example.buylist.models.DataManager;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /**
  * A simple {@link Fragment} subclass.

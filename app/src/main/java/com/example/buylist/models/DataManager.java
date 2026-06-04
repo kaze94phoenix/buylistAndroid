@@ -394,7 +394,7 @@ public class DataManager {
     public ArrayList<ItemLocation> getLocationItems(int locationId) {
         ArrayList<ItemLocation> another = new ArrayList<ItemLocation>();
         for (ItemLocation aux : itemLocations)
-            if (getLocations().get(locationId).compareTo(aux.getLocation()) > 0)
+            if (locations.get(locationId).getId()==aux.getLocation().getId())
                 another.add(aux);
         return another;
     }
@@ -402,9 +402,7 @@ public class DataManager {
     public void addItemLocation(ItemLocation itemLocation) {
         itemLocations.add(itemLocation);
         Paper.book().write(ITEM_LOCATIONS,itemLocations);
-        //editor.putString(ITEM_LOCATIONS, gson.toJson(itemLocations));
-        //editor.commit();
-    }
+        }
 
     public void editItemLocation(int position, ItemLocation itemLocation) {
         itemLocations.set(position, itemLocation);
@@ -423,8 +421,6 @@ public class DataManager {
     }
 
     public void addBuyList(BuyList buyList) {
-        //buylists.add(buyList);
-        //Paper.book().write(BUYLISTS, buylists);
         JSONObject buylistObj = null;
         try {
             buylistObj = new JSONObject(new Gson().toJson(buyList));
@@ -461,8 +457,6 @@ public class DataManager {
     }
 
     public void deleteBuyList(int position) {
-        //buylists.remove(position);
-        //Paper.book().write(BUYLISTS, buylists);
         api.deleteLista(buylists.get(position).getId()).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

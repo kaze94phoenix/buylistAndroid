@@ -34,6 +34,18 @@ public class Item implements Comparable<Item>{
         this.itemType = itemType;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setItemType(ItemType itemType) {
+        this.itemType = itemType;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

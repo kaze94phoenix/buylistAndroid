@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +18,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.buylist.AddBuyListActivity;
-import com.example.buylist.MainActivity;
 import com.example.buylist.R;
 import com.example.buylist.adapters.AddBuyListAdapter;
 import com.example.buylist.adapters.BuyListAdapter;
@@ -31,12 +28,12 @@ import com.example.buylist.models.Purchase;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
+ * Fragment for the [BUYLIST] on [Lists and Statistics]
  */
 public class BuylistFragment extends Fragment {
 
@@ -46,8 +43,7 @@ public class BuylistFragment extends Fragment {
     private DataManager dataManager;
     private BuyListAdapter buyListAdapter;
     private ArrayList<Purchase> purchases;
-    FloatingActionButton addToBuyList,saveBuylist;
-    Intent intent;
+    FloatingActionButton addToBuyList, saveBuylist;
 
     public BuylistFragment() {
         // Required empty public constructor
@@ -72,23 +68,11 @@ public class BuylistFragment extends Fragment {
         buylist.setLayoutManager(new LinearLayoutManager(getContext()));
 
         addToBuyList = view.findViewById(R.id.addItemBtn);
-        addToBuyList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addBuyListItems();
-            }
-        });
+        addToBuyList.setOnClickListener(view1 -> addBuyListItems());
 
 
         saveBuylist = view.findViewById(R.id.saveBuylistBtn);
-        saveBuylist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveBuyListItems();
-            }
-        });
-
-
+        saveBuylist.setOnClickListener(view2 -> saveBuyListItems());
 
 
         // Inflate the layout for this fragment
@@ -103,9 +87,9 @@ public class BuylistFragment extends Fragment {
         Spinner locationSpinner = addItemView.findViewById(R.id.locationFilter);
         ArrayList<String> locationNames = new ArrayList<>();
         locationNames.add("All");
-        for(Location loc: dataManager.getLocations())
+        for (Location loc : dataManager.getLocations())
             locationNames.add(loc.getName());
-        ArrayAdapter<String> locations = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_dropdown_item,locationNames);
+        ArrayAdapter<String> locations = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_dropdown_item, locationNames);
         locationSpinner.setAdapter(locations);
 
         Button add = addItemView.findViewById(R.id.addSelected);
@@ -131,17 +115,17 @@ public class BuylistFragment extends Fragment {
                     purchases.add(p);
             else {
                 //If there are some items on the buylist, the previous action will be performed, and also quantities will be updated if there are repeated ones
-                for (int i = 0; i < listAdapter.aux.size(); i++) {
+                for (Purchase p : listAdapter.aux) {
                     boolean found = false;
-                    for (int j = 0; j < purchases.size(); j++)
-                        if (purchases.get(j).getItemLocation().compareTo(listAdapter.aux.get(i).getItemLocation()) > 0) {
+                    for (Purchase pp : purchases)
+                        if (pp.getItemLocation().getId() == p.getItemLocation().getId()) {
                             //Every new added item is compared with the existent ones, if they exist it will update its quantities
-                            purchases.get(j).setQuantity(purchases.get(j).getQuantity() + listAdapter.aux.get(i).getQuantity());
+                            pp.setQuantity(pp.getQuantity() + p.getQuantity());
                             found = true;
                         }
                     if (!found)
                         //If there are no existent elements it will add a brand new one
-                        purchases.add(listAdapter.aux.get(i));
+                        purchases.add(p);
 
 
                 }
@@ -169,22 +153,16 @@ public class BuylistFragment extends Fragment {
             }
         });
 
-        dismiss.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+        dismiss.setOnClickListener(view -> dialog.dismiss());
 
         locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if(i==0){
+                if (i == 0) {
                     listAdapter.setItemLocations(dataManager.getItemLocations());
                     items.setAdapter(listAdapter);
                     items.setLayoutManager(new LinearLayoutManager(getContext()));
-                }else {
-
+                } else {
                     listAdapter.setItemLocations(dataManager.getLocationItems(i - 1));
                     items.setAdapter(listAdapter);
                     items.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -204,7 +182,7 @@ public class BuylistFragment extends Fragment {
         dataManager = new DataManager(getActivity());
         Date date = new Date();
         dataManager.addBuyList(new BuyList("BuyList #" + dataManager.getBuyLists().size(), date, purchases));
-            Toast.makeText(getContext(), "List Saved", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "List Saved", Toast.LENGTH_SHORT).show();
 
     }
 

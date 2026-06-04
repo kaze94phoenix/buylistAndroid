@@ -18,6 +18,9 @@ import com.example.buylist.models.Purchase;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Adapter for the list to filter the items to add on the main Buylist [BUYLIST Fragment]
+ */
 public class AddBuyListAdapter extends RecyclerView.Adapter<AddBuyListAdapter.ViewHolder> implements Filterable {
 
     ArrayList<ItemLocation> itemLocations;
@@ -31,7 +34,6 @@ public class AddBuyListAdapter extends RecyclerView.Adapter<AddBuyListAdapter.Vi
         this.itemLocations = itemLocations;
         itemsLocationsFiltered = new ArrayList<>(itemLocations);
         aux = new ArrayList<>();
-        //  notifyDataSetChanged();
     }
 
     @NonNull
@@ -45,22 +47,18 @@ public class AddBuyListAdapter extends RecyclerView.Adapter<AddBuyListAdapter.Vi
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.itemName.setText(itemsLocationsFiltered.get(position).getItem().getName());
         holder.locationName.setText(itemsLocationsFiltered.get(position).getLocation().getName());
-        holder.price.setText(String.valueOf(itemsLocationsFiltered.get(position).getPrice()));
+        holder.price.setText(itemsLocationsFiltered.get(position).getPrice() +"0 MTS");
         holder.quantity.setText("1");
         //Actions taken upon checking or unchecking the element of the list
-        holder.isSelected.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (holder.isSelected.isChecked())
-                    //If checked it adds the selected item and quantity(Purchase) to an extra list
-                    aux.add(new Purchase(itemsLocationsFiltered.get(holder.getAdapterPosition()), Integer.parseInt(holder.quantity.getText().toString())));
-                else
-                    //If unchecked removes Purchases added to the extra list based on the item.
-                    for (Purchase p : aux)
-                        if (p.getItemLocation().compareTo(itemsLocationsFiltered.get(holder.getAdapterPosition())) > 0)
-                            aux.remove(p);
-
-            }
+        holder.isSelected.setOnClickListener(view -> {
+            if (holder.isSelected.isChecked())
+                //If checked it adds the selected item and quantity(Purchase) to an extra list
+                aux.add(new Purchase(itemsLocationsFiltered.get(holder.getBindingAdapterPosition()), Integer.parseInt(holder.quantity.getText().toString())));
+            else
+                //If unchecked removes Purchases added to the extra list based on the item.
+                for (Purchase p : aux)
+                    if (p.getItemLocation().getId() == itemsLocationsFiltered.get(holder.getBindingAdapterPosition()).getId())
+                        aux.remove(p);
         });
 
     }
@@ -82,11 +80,11 @@ public class AddBuyListAdapter extends RecyclerView.Adapter<AddBuyListAdapter.Vi
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
             ArrayList<ItemLocation> filtered = new ArrayList<ItemLocation>();
-            //If its empty will show all items
+            //If the search field is empty will show all items
             if (charSequence.toString().isEmpty())
                 filtered.addAll(itemLocations);
             else
-                //If not empty will filter using lower case text, and it will store on a filtered results object
+                //If it's not empty will filter using lower case text, and it will store on a filtered results object
                 for (ItemLocation iL : itemLocations)
                     if (iL.getItem().getName().toLowerCase().contains(charSequence.toString().toLowerCase()))
                         filtered.add(iL);

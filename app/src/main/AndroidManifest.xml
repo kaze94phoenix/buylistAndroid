@@ -24,14 +24,8 @@
             android:name=".LocationDetailsActivity"
             android:exported="false" />
         <activity
-            android:name=".EditBuyListActivity"
+            android:name=".BuyListDetailsActivity"
             android:exported="false" />
-        <activity
-            android:name=".BuyListListActivity"
-            android:exported="true" />
-        <activity
-            android:name=".AddBuyListActivity"
-            android:exported="true" />
         <activity
             android:name=".ItemDetailsActivity"
             android:exported="false" />
