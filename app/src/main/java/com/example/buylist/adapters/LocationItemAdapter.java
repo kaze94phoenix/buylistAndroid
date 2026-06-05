@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -20,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.buylist.R;
 import com.example.buylist.models.DataManager;
 import com.example.buylist.models.ItemLocation;
-import com.example.buylist.models.Location;
 import com.example.buylist.models.Purchase;
 
 import java.util.ArrayList;
@@ -92,7 +90,7 @@ public class LocationItemAdapter extends RecyclerView.Adapter<LocationItemAdapte
             super(itemView);
             priceLabel = itemView.findViewById(R.id.priceLocationLabel);
             itemLabel = itemView.findViewById(R.id.locationItemLabel);
-            editItemLoc = itemView.findViewById(R.id.editItemLocBtn);
+            editItemLoc = itemView.findViewById(R.id.addItemLocBtn);
             deleteItemLoc = itemView.findViewById(R.id.deleteItemLocBtn);
 
             deleteItemLoc.setVisibility(View.GONE);
@@ -114,7 +112,7 @@ public class LocationItemAdapter extends RecyclerView.Adapter<LocationItemAdapte
             Button addBtn, cancelBtn;
             switch (view.getId()){
 
-                case R.id.editItemLocBtn:
+                case R.id.addItemLocBtn:
                     dialogBuilder = new AlertDialog.Builder(activity);
                     final View editItemLocView = activity.getLayoutInflater().inflate(R.layout.add_item_location_popup,null);
 

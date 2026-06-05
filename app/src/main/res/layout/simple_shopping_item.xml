@@ -1,61 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="horizontal"
     android:id="@+id/simpleShoppingItem"
+    android:background="@drawable/round_outline"
+    android:backgroundTint="@color/cute_yellow"
     >
 
-    <TextView
-        android:id="@+id/itemName"
+    <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_marginStart="25dp"
-        android:text="Item Name"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
+        android:layout_height="match_parent"
+        android:src="@mipmap/ic_launcher"
+        android:layout_marginStart="10dp"
         />
 
-    <TextView
-        android:id="@+id/itemAvgPrice"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/itemName"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="25dp"
-        android:text="Item AVG Price" />
+        android:orientation="vertical"
+        >
+        <TextView
+            android:id="@+id/itemName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:layout_marginStart="150dp"
+            android:text="Item Name"
+            />
 
-    <Button
-        android:id="@+id/btnEditItem"
-        android:layout_width="42dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/itemName"
-        android:layout_marginStart="108dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="25dp"
-        android:layout_toStartOf="@id/btnDeleteItem"
-        android:text="*"
-        app:layout_constraintStart_toEndOf="@+id/itemAvgPrice"
-        app:layout_constraintTop_toBottomOf="@+id/itemName" />
-
-    <Button
-        android:layout_marginBottom="25dp"
-        android:id="@+id/btnDeleteItem"
-        android:layout_width="41dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/itemName"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="25dp"
-        android:text="-"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.157"
-        app:layout_constraintStart_toEndOf="@+id/btnEditItem"
-        app:layout_constraintTop_toBottomOf="@+id/itemName" />
+        <TextView
+            android:id="@+id/itemAvgPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="150dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="25dp"
+            android:text="Item AVG Price" />
+    </LinearLayout>
 
 
-</RelativeLayout>
+
+
+
+
+
+</LinearLayout>

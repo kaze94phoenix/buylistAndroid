@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,6 +29,7 @@ public class ShoppingLocationAdapter extends RecyclerView.Adapter<ShoppingLocati
     private Activity activity;
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
+    private boolean options;
     Intent intent;
 
     public void setLocations(ArrayList<Location> locations){
@@ -38,6 +38,10 @@ public class ShoppingLocationAdapter extends RecyclerView.Adapter<ShoppingLocati
 
     public void setActivity(Activity activity){
         this.activity=activity;
+    }
+
+    public void hasOptions(boolean options){
+        this.options=options;
     }
 
 
@@ -72,6 +76,11 @@ public class ShoppingLocationAdapter extends RecyclerView.Adapter<ShoppingLocati
             deleteLocation = itemView.findViewById(R.id.btnDeleteLocation);
             relativeLayout = itemView.findViewById(R.id.simpleShoppingLocation);
 
+            if(!options){
+                editLocation.setVisibility(View.GONE);
+                deleteLocation.setVisibility(View.GONE);
+            }
+
             editLocation.setOnClickListener(this);
             deleteLocation.setOnClickListener(this);
             relativeLayout.setOnClickListener(this);
@@ -86,7 +95,7 @@ public class ShoppingLocationAdapter extends RecyclerView.Adapter<ShoppingLocati
 
                 case R.id.simpleShoppingLocation:
                     intent = new Intent(activity, LocationDetailsActivity.class);
-                    intent.putExtra(EXTRA_LOCATION_ID,getAdapterPosition());
+                    intent.putExtra(EXTRA_LOCATION_ID,getBindingAdapterPosition());
                     activity.startActivity(intent);
 
                 case R.id.btnEditLocation:
@@ -107,22 +116,14 @@ public class ShoppingLocationAdapter extends RecyclerView.Adapter<ShoppingLocati
                     dialog.show();
 
 
-                    noBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            dialog.dismiss();
-                        }
-                    });
+                    noBtn.setOnClickListener(view1 -> dialog.dismiss());
 
 
-                    yesBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            locations.remove(getAdapterPosition());
-                            dataManager.deleteLocation(getAdapterPosition());
-                            notifyItemRemoved(getAdapterPosition());
-                            dialog.dismiss();
-                        }
+                    yesBtn.setOnClickListener(view2 -> {
+                        locations.remove(getBindingAdapterPosition());
+                        dataManager.deleteLocation(getBindingAdapterPosition());
+                        notifyItemRemoved(getBindingAdapterPosition());
+                        dialog.dismiss();
                     });
 
 

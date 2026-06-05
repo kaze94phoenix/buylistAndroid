@@ -1,13 +1,10 @@
 package com.example.buylist.adapters;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -20,20 +17,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.buylist.R;
 import com.example.buylist.models.DataManager;
 import com.example.buylist.models.ItemLocation;
-import com.example.buylist.models.Location;
 import com.example.buylist.models.Purchase;
 
 import java.util.ArrayList;
 
 public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapter.ViewHolder> {
-    private ArrayList<ItemLocation> itemLocations, another;
-    //ID of each item used to navigate to or manipulate each item
-    public static final String EXTRA_ITEM_ID = "item_id";
+    private ArrayList<ItemLocation> itemLocations;
     //Context of the RecyclerView activity
     private Activity activity;
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
-    Intent intent;
     private DataManager dataManager;
 
     public ItemLocationAdapter() {
@@ -45,25 +38,20 @@ public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapte
         notifyDataSetChanged();
     }
 
-    public ArrayList<ItemLocation> getItemLocations(){
+    public ArrayList<ItemLocation> getItemLocations() {
         return itemLocations;
     }
 
     //Sets the context/Activity of the recyclerView
-    public void setActivity(Activity activity){
-        this.activity=activity;
+    public void setActivity(Activity activity) {
+        this.activity = activity;
     }
-
-
-
-
-
 
     @NonNull
     @Override
     public ItemLocationAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //sets and inflates the view with the viewholder
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.simple_item_location,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.simple_item_location, parent, false);
         ItemLocationAdapter.ViewHolder holder = new ItemLocationAdapter.ViewHolder(view);
         return holder;
     }
@@ -71,7 +59,7 @@ public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapte
     @Override
     public void onBindViewHolder(@NonNull ItemLocationAdapter.ViewHolder holder, int position) {
         //binds the attributes of the model to the viewHolder
-        holder.priceLabel.setText(String.valueOf(itemLocations.get(position).getPrice()));
+        holder.priceLabel.setText(itemLocations.get(position).getPrice() +"0 MTS");
         holder.locationLabel.setText(itemLocations.get(position).getLocation().getName());
     }
 
@@ -83,16 +71,15 @@ public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapte
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private TextView priceLabel,locationLabel;
+        private TextView priceLabel, locationLabel;
         private Button editItemLoc, deleteItemLoc;
-        private CheckBox itemCheck;
 
 
-        public ViewHolder(View itemView){
+        public ViewHolder(View itemView) {
             super(itemView);
             priceLabel = itemView.findViewById(R.id.priceLocationLabel);
             locationLabel = itemView.findViewById(R.id.locationItemLabel);
-            editItemLoc = itemView.findViewById(R.id.editItemLocBtn);
+            editItemLoc = itemView.findViewById(R.id.addItemLocBtn);
             deleteItemLoc = itemView.findViewById(R.id.deleteItemLocBtn);
             deleteItemLoc.setVisibility(View.GONE);
 
@@ -105,21 +92,22 @@ public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapte
         public void onClick(View view) {
             EditText quantityTxt;
             Spinner locationSpinner;
-            ArrayList<String> locationsNames = new ArrayList<>();
             dataManager = new DataManager(activity);
             Button addBtn, cancelBtn;
-            switch (view.getId()){
+            switch (view.getId()) {
 
-                case R.id.editItemLocBtn:
+                case R.id.addItemLocBtn:
                     dialogBuilder = new AlertDialog.Builder(activity);
-                    final View editItemLocView = activity.getLayoutInflater().inflate(R.layout.add_item_location_popup,null);
+                    final View editItemLocView = activity.getLayoutInflater().inflate(R.layout.add_item_location_popup, null);
 
                     quantityTxt = editItemLocView.findViewById(R.id.itemPriceTxt);
 
                     TextView quantityLb = editItemLocView.findViewById(R.id.itemPriceLabel);
                     quantityLb.setText("Quantity");
+
                     TextView locationLb = editItemLocView.findViewById(R.id.locationLabel);
                     locationLb.setVisibility(View.GONE);
+
                     Button addLocation = editItemLocView.findViewById(R.id.goAddLocation);
                     addLocation.setVisibility(View.GONE);
 
@@ -135,9 +123,7 @@ public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapte
                     dialog = dialogBuilder.create();
                     dialog.show();
 
-
                     cancelBtn.setOnClickListener(view1 -> dialog.dismiss());
-
 
                     addBtn.setOnClickListener(view2 -> {
                         Purchase purchase = new Purchase();
@@ -157,7 +143,7 @@ public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapte
                     TextView questionLabel;
 
                     dialogBuilder = new AlertDialog.Builder(activity);
-                    final View deleteItemLocView = activity.getLayoutInflater().inflate(R.layout.delete_item_popup,null);
+                    final View deleteItemLocView = activity.getLayoutInflater().inflate(R.layout.delete_item_popup, null);
 
                     questionLabel = deleteItemLocView.findViewById(R.id.deleteItemLabel);
                     questionLabel.setText("Do you want to delete Item Location?");
@@ -169,27 +155,18 @@ public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapte
                     dialog = dialogBuilder.create();
                     dialog.show();
 
-                    yesBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            for (int i = 0; i < dataManager.getItemLocations().size(); i++)
-                                if (dataManager.getItemLocations().get(i).compareTo(itemLocations.get(getAdapterPosition())) > 0) {
-                                    dataManager.deleteItemLocation(i);
-                                    itemLocations.remove(getAdapterPosition());
-                                    notifyItemRemoved(getAdapterPosition());
-                                }
-                            Toast.makeText(activity, "Item Location deleted", Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                        }
+                    yesBtn.setOnClickListener(view3 -> {
+                        for (int i = 0; i < dataManager.getItemLocations().size(); i++)
+                            if (dataManager.getItemLocations().get(i).compareTo(itemLocations.get(getBindingAdapterPosition())) > 0) {
+                                dataManager.deleteItemLocation(i);
+                                itemLocations.remove(getBindingAdapterPosition());
+                                notifyItemRemoved(getBindingAdapterPosition());
+                            }
+                        Toast.makeText(activity, "Item Location deleted", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
                     });
 
-
-                    noBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            dialog.dismiss();
-                        }
-                    });
+                    noBtn.setOnClickListener(view4 -> dialog.dismiss());
                     break;
 
             }

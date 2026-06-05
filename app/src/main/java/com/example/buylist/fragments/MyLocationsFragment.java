@@ -50,6 +50,7 @@ public class MyLocationsFragment extends Fragment implements View.OnClickListene
 
         dataManager = new DataManager(getContext());
         shoppingLocationAdapter = new ShoppingLocationAdapter();
+        shoppingLocationAdapter.hasOptions(true);
 
         shoppingLocationAdapter.setLocations(dataManager.getMyLocations());
         shoppingLocationAdapter.setActivity(getActivity());

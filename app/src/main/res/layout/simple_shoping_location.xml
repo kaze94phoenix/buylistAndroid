@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/simpleShoppingLocation"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/round_outline">
 
     <TextView
         android:id="@+id/locationName"
@@ -13,31 +14,33 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="25dp"
-        android:layout_marginTop="38dp"
-        android:layout_marginEnd="100dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="30dp"
+        android:layout_toStartOf="@+id/btnEditLocation"
         android:text="Location Name" />
 
     <Button
         android:id="@+id/btnEditLocation"
-        android:layout_width="42dp"
+        android:layout_width="55dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="25dp"
-        android:layout_toStartOf="@id/btnDeleteLocation"
-        android:text="*" />
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="15dp"
+        android:layout_toStartOf="@+id/btnDeleteLocation"
+        app:icon="@drawable/ic_edit" />
 
     <Button
         android:id="@+id/btnDeleteLocation"
-        android:layout_width="41dp"
+        android:layout_width="55dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginBottom="25dp"
-        android:text="-" />
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginBottom="15dp"
+        app:icon="@drawable/ic_delete" />
 
 </RelativeLayout>
