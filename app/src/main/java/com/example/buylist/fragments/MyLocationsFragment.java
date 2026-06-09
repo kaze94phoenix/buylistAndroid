@@ -49,21 +49,17 @@ public class MyLocationsFragment extends Fragment implements View.OnClickListene
         View view = inflater.inflate(R.layout.fragment_my_locations, container, false);
 
         dataManager = new DataManager(getContext());
+
         shoppingLocationAdapter = new ShoppingLocationAdapter();
         shoppingLocationAdapter.hasOptions(true);
-
         shoppingLocationAdapter.setLocations(dataManager.getMyLocations());
         shoppingLocationAdapter.setActivity(getActivity());
 
-
         recyclerView = view.findViewById(R.id.locationsListView);
-
         recyclerView.setAdapter(shoppingLocationAdapter);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         swipeRefreshLayout = view.findViewById(R.id.swipeRefresh);
-
         swipeRefreshLayout.setOnRefreshListener(() -> {
             shoppingLocationAdapter.setLocations(dataManager.getMyLocations());
             recyclerView.setAdapter(shoppingLocationAdapter);
@@ -73,9 +69,6 @@ public class MyLocationsFragment extends Fragment implements View.OnClickListene
 
         actionButton = view.findViewById(R.id.addLocationFloatBtn);
         actionButton.setOnClickListener(this);
-
-
-
 
         // Inflate the layout for this fragment
         return view;
@@ -90,36 +83,23 @@ public class MyLocationsFragment extends Fragment implements View.OnClickListene
         dialogBuilder = new AlertDialog.Builder(getContext());
         final View addLocationPopoutView = getLayoutInflater().inflate(R.layout.add_location_popup,null);
 
-
-
         EditText nameTxt = addLocationPopoutView.findViewById(R.id.locationNameTxt);
-        EditText descriptionTxt = addLocationPopoutView.findViewById(R.id.locationDescriptionTxt);
         EditText addressTxt = addLocationPopoutView.findViewById(R.id.locationAdressTxt);
+
         Button saveBtn = addLocationPopoutView.findViewById(R.id.saveLocation);
         Button cancelBtn = addLocationPopoutView.findViewById(R.id.cancelLocation);
-
-        ///////////////////////
 
         dialogBuilder.setView(addLocationPopoutView);
         dialog = dialogBuilder.create();
         dialog.show();
 
         saveBtn.setOnClickListener(view -> {
-
-            dataManager.addLocation(new Location(nameTxt.getText().toString(),descriptionTxt.getText().toString(), addressTxt.getText().toString()));
+            dataManager.addLocation(new Location());
             Toast.makeText(getContext(), "Location Added", Toast.LENGTH_SHORT).show();
             shoppingLocationAdapter.notifyItemInserted(shoppingLocationAdapter.getItemCount()-1);
             dialog.dismiss();
-
         });
 
-
         cancelBtn.setOnClickListener(view -> dialog.dismiss());
-
-
-
-
-
-
     }
 }

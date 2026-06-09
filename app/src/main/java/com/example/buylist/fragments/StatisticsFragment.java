@@ -23,11 +23,9 @@ public class StatisticsFragment extends Fragment {
     FragmentTransaction fragmentTransaction;
     RadioButton listsButton, balanceButton;
 
-
     public StatisticsFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,29 +40,18 @@ public class StatisticsFragment extends Fragment {
         listsButton = view.findViewById(R.id.listsButton);
         balanceButton = view.findViewById(R.id.balanceButton);
 
-
         replaceFragment(balanceFragment);
 
-
-        listsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(listsButton.isChecked())
-                    replaceFragment(listsFragment);
-            }
+        listsButton.setOnClickListener(view1 -> {
+            if(listsButton.isChecked())
+                replaceFragment(listsFragment);
         });
-
-        balanceButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(balanceButton.isChecked())
-                    replaceFragment(balanceFragment);
-            }
+        balanceButton.setOnClickListener(view2 -> {
+            if(balanceButton.isChecked())
+                replaceFragment(balanceFragment);
         });
-
 
         return view;
-
 
     }
 

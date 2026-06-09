@@ -77,13 +77,10 @@ public class LocationDetailsActivity extends AppCompatActivity {
 
         swipeRefreshLayout = findViewById(R.id.swipeRefresh);
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                locationItemAdapter.notifyDataSetChanged();
-                recyclerView.setAdapter(locationItemAdapter);
-                swipeRefreshLayout.setRefreshing(false);
-            }
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            locationItemAdapter.notifyDataSetChanged();
+            recyclerView.setAdapter(locationItemAdapter);
+            swipeRefreshLayout.setRefreshing(false);
         });
 
 

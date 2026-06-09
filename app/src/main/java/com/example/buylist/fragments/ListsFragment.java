@@ -41,35 +41,28 @@ public class ListsFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_lists, container, false);
+
         dataManager = new DataManager(getActivity());
+
         buyListListAdapter = new BuyListListAdapter();
-
-        buylistList = view.findViewById(R.id.buyListListTest);
-
         buyListListAdapter.setActivity(getActivity());
         buyListListAdapter.setBuyLists(dataManager.getBuyLists());
 
+        buylistList = view.findViewById(R.id.buyListListTest);
         buylistList.setAdapter(buyListListAdapter);
         buylistList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
 
         swipeRefreshLayout = view.findViewById(R.id.swipeRefresh);
-
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                dataManager = new DataManager(getContext());
-                buyListListAdapter.setBuyLists(dataManager.getBuyLists());
-                buylistList.setAdapter(buyListListAdapter);
-                buylistList.setLayoutManager(new LinearLayoutManager(getContext()));
-                swipeRefreshLayout.setRefreshing(false);
-            }
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            dataManager = new DataManager(getContext());
+            buyListListAdapter.setBuyLists(dataManager.getBuyLists());
+            buylistList.setAdapter(buyListListAdapter);
+            buylistList.setLayoutManager(new LinearLayoutManager(getContext()));
+            swipeRefreshLayout.setRefreshing(false);
         });
 
-
         return view;
-
-
     }
 
 

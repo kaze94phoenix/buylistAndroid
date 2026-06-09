@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -81,7 +82,13 @@ public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapte
             locationLabel = itemView.findViewById(R.id.locationItemLabel);
             editItemLoc = itemView.findViewById(R.id.addItemLocBtn);
             deleteItemLoc = itemView.findViewById(R.id.deleteItemLocBtn);
+
             deleteItemLoc.setVisibility(View.GONE);
+
+            //To align this button when the previous one is GONE
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) editItemLoc.getLayoutParams();
+            params.addRule(RelativeLayout.ALIGN_PARENT_END);
+            editItemLoc.setLayoutParams(params);
 
             editItemLoc.setOnClickListener(this);
             deleteItemLoc.setOnClickListener(this);
@@ -124,7 +131,6 @@ public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapte
                     dialog.show();
 
                     cancelBtn.setOnClickListener(view1 -> dialog.dismiss());
-
                     addBtn.setOnClickListener(view2 -> {
                         Purchase purchase = new Purchase();
                         purchase.setQuantity(Integer.parseInt(quantityTxt.getText().toString()));

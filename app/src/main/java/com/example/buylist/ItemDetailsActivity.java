@@ -60,29 +60,21 @@ public class ItemDetailsActivity extends AppCompatActivity {
         itemName.setText(items.get(itemId).getName());
         itemDescription.setText(items.get(itemId).getDescription());
         itemType.setText(items.get(itemId).getItemType().getName());
+        itemPrice.setText(dataManager.avgPrice(itemId)+"0 MTS");
 
         itemLocationAdapter = new ItemLocationAdapter();
-
         itemLocationAdapter.setActivity(this);
         itemLocationAdapter.setItemLocations(dataManager.getItemLocations(itemId));
 
-
-
         recyclerView = findViewById(R.id.locationPricesRV);
-
         recyclerView.setAdapter(itemLocationAdapter);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         swipeRefreshLayout = findViewById(R.id.swipeRefresh);
-
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                itemLocationAdapter.notifyDataSetChanged();
-                recyclerView.setAdapter(itemLocationAdapter);
-                swipeRefreshLayout.setRefreshing(false);
-            }
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            itemLocationAdapter.notifyDataSetChanged();
+            recyclerView.setAdapter(itemLocationAdapter);
+            swipeRefreshLayout.setRefreshing(false);
         });
 
 
@@ -123,35 +115,24 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
 
 
-            addLocation.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    intent = new Intent(ItemDetailsActivity.this, AddLocationActivity.class);
-                    intent.putExtra(EXTRA_ITEM_ID,itemId);
-                    startActivity(intent);
-                }
+            addLocation.setOnClickListener(view1 -> {
+                intent = new Intent(ItemDetailsActivity.this, AddLocationActivity.class);
+                intent.putExtra(EXTRA_ITEM_ID,itemId);
+                startActivity(intent);
             });
 
 
-            saveBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dataManager.addItemLocation(new ItemLocation(locations.get(locationsSpinner.getSelectedItemPosition()),items.get(itemId),Double.parseDouble(priceTxt.getText().toString())));
-                    ArrayList<ItemLocation> test = dataManager.getItemLocations(itemId);
-                    itemLocationAdapter.setItemLocations(test);
-                    itemLocationAdapter.notifyItemInserted(itemLocationAdapter.getItemCount()-1);
-                    Toast.makeText(ItemDetailsActivity.this, "Item Location Added", Toast.LENGTH_SHORT).show();
-                    dialog.dismiss();
-                }
+            saveBtn.setOnClickListener(view2 -> {
+                dataManager.addItemLocation(new ItemLocation(locations.get(locationsSpinner.getSelectedItemPosition()),items.get(itemId),Double.parseDouble(priceTxt.getText().toString())));
+                ArrayList<ItemLocation> test = dataManager.getItemLocations(itemId);
+                itemLocationAdapter.setItemLocations(test);
+                itemLocationAdapter.notifyItemInserted(itemLocationAdapter.getItemCount()-1);
+                Toast.makeText(ItemDetailsActivity.this, "Item Location Added", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
             });
 
 
-            cancelBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialog.dismiss();
-                }
-            });
+            cancelBtn.setOnClickListener(view3 -> dialog.dismiss());
 
 
     }

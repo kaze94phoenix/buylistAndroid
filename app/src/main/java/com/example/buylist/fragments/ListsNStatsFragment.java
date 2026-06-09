@@ -41,15 +41,11 @@ public class ListsNStatsFragment extends Fragment {
 
 
         viewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager(), 0);
-        viewPagerAdapter.addFragment(buylistFragment,"Buylist");
-        viewPagerAdapter.addFragment(statisticsFragment,"Statistics");
+        viewPagerAdapter.addFragment(buylistFragment, "Buylist");
+        viewPagerAdapter.addFragment(statisticsFragment, "Statistics");
         viewPager.setAdapter(viewPagerAdapter);
 
         tabLayout.setupWithViewPager(viewPager);
-
-
-
-
 
         // Inflate the layout for this fragment
         return view;

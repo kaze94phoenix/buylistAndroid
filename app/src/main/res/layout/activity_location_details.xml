@@ -12,9 +12,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_outline"
+            android:backgroundTint="@color/purple_500"
+            >
 
 
             <TextView
@@ -22,56 +25,49 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
+                android:layout_marginStart="25dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
                 android:text="Name"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.179"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textSize="20dp"
+                />
 
             <TextView
                 android:id="@+id/locationDAdress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:textAlignment="center"
+                android:layout_below="@+id/locationDName"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="29dp"
                 android:text="Adress"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.191"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/locationDName" />
+                android:layout_alignParentStart="true"
+                android:textSize="20dp"
+                android:textAlignment="center" />
 
             <TextView
                 android:id="@+id/locationDDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="48dp"
-                android:layout_marginBottom="24dp"
-                android:text="Description"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.197"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/locationDAdress" />
+                android:layout_below="@+id/locationDAdress"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="29dp"
+                android:layout_marginBottom="30dp"
+                android:textSize="20dp"
+                android:layout_alignParentStart="true"
+                android:text="Description" />
 
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/locationDDescription"
-            app:layout_constraintVertical_bias="1.0">
+            android:layout_height="wrap_content">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/locationProductsRV"
                 android:layout_width="match_parent"
-                android:layout_height="521dp"
-                android:layout_marginTop="32dp" />
+                android:layout_height="wrap_content"/>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

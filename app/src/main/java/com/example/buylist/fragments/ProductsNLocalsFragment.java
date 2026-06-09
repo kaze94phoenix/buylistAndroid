@@ -26,16 +26,13 @@ public class ProductsNLocalsFragment extends Fragment {
     ProductsFragment productsFragment;
     LocationsFragment locationsFragment;
 
-
     public ProductsNLocalsFragment() {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_products_n_locals, container, false);
 
         productsFragment = new ProductsFragment();
@@ -49,9 +46,6 @@ public class ProductsNLocalsFragment extends Fragment {
         viewPagerAdapter.addFragment(productsFragment,"Products");
         viewPagerAdapter.addFragment(locationsFragment,"Locations");
         viewPager.setAdapter(viewPagerAdapter);
-
-
-
 
         // Inflate the layout for this fragment
         return view;

@@ -57,9 +57,9 @@ public class DataManager {
 
     public DataManager(Context context) {
 
-        preferences = context.getSharedPreferences("UserPreferences",MODE_PRIVATE);
+        preferences = context.getSharedPreferences("UserPreferences", MODE_PRIVATE);
         editor = preferences.edit();
-        String userId = preferences.getString("userId","");
+        String userId = preferences.getString("userId", "");
 
         api = RetrofitInstance.getApiInterface();
 
@@ -71,7 +71,7 @@ public class DataManager {
             public void onResponse(Call<ArrayList<ItemType>> call, Response<ArrayList<ItemType>> response) {
                 ArrayList<ItemType> itemTypeApi = response.body();
                 ArrayList<ItemType> itemTypeHD = Paper.book().read(ITEMS_TYPE);
-                if(itemTypeApi==null || itemTypeApi.isEmpty())
+                if (itemTypeApi == null || itemTypeApi.isEmpty())
                     itemTypes = itemTypeHD;
                 else
                     itemTypes = itemTypeApi;
@@ -79,13 +79,13 @@ public class DataManager {
                 if (itemTypes == null || itemTypes.isEmpty())
                     itemTypes = new ArrayList<ItemType>();
 
-                Paper.book().write(ITEMS_TYPE,itemTypes);
+                Paper.book().write(ITEMS_TYPE, itemTypes);
             }
 
             @Override
             public void onFailure(Call<ArrayList<ItemType>> call, Throwable t) {
 
-                System.out.println("Error: "+t.getMessage());
+                System.out.println("Error: " + t.getMessage());
             }
         });
         itemTypes = Paper.book().read(ITEMS_TYPE);
@@ -96,7 +96,7 @@ public class DataManager {
             public void onResponse(Call<ArrayList<Item>> call, Response<ArrayList<Item>> response) {
                 ArrayList<Item> itemApi = response.body();
                 ArrayList<Item> itemHD = Paper.book().read(ITEMS);
-                if(itemApi==null || itemApi.isEmpty())
+                if (itemApi == null || itemApi.isEmpty())
                     items = itemHD;
                 else
                     items = itemApi;
@@ -104,12 +104,12 @@ public class DataManager {
                 if (items == null || items.isEmpty())
                     items = new ArrayList<Item>();
 
-                Paper.book().write(ITEMS,items);
+                Paper.book().write(ITEMS, items);
             }
 
             @Override
             public void onFailure(Call<ArrayList<Item>> call, Throwable t) {
-                System.out.println("Error: "+t.getMessage());
+                System.out.println("Error: " + t.getMessage());
             }
         });
         items = Paper.book().read(ITEMS);
@@ -121,7 +121,7 @@ public class DataManager {
             public void onResponse(Call<ArrayList<Location>> call, Response<ArrayList<Location>> response) {
                 ArrayList<Location> locationApi = response.body();
                 ArrayList<Location> locationHD = Paper.book().read(LOCATIONS);
-                if(locationApi==null || locationApi.isEmpty())
+                if (locationApi == null || locationApi.isEmpty())
                     locations = locationHD;
                 else
                     locations = locationApi;
@@ -129,24 +129,24 @@ public class DataManager {
                 if (locations == null || locations.isEmpty())
                     locations = new ArrayList<Location>();
 
-                Paper.book().write(LOCATIONS,locations);
+                Paper.book().write(LOCATIONS, locations);
             }
 
             @Override
             public void onFailure(Call<ArrayList<Location>> call, Throwable t) {
-                System.out.println("Error: "+t.getMessage());
+                System.out.println("Error: " + t.getMessage());
             }
         });
         locations = Paper.book().read(LOCATIONS);
 
         //MY LOCATIONS
-        if(!userId.equalsIgnoreCase("")){
+        if (!userId.equalsIgnoreCase("")) {
             api.myLocations(userId).enqueue(new Callback<ArrayList<Location>>() {
                 @Override
                 public void onResponse(Call<ArrayList<Location>> call, Response<ArrayList<Location>> response) {
                     ArrayList<Location> myLocationApi = response.body();
                     ArrayList<Location> myLocationHD = Paper.book().read(LOCATIONS);
-                    if(myLocationApi==null || myLocationApi.isEmpty())
+                    if (myLocationApi == null || myLocationApi.isEmpty())
                         myLocations = myLocationHD;
                     else
                         myLocations = myLocationApi;
@@ -154,16 +154,16 @@ public class DataManager {
                     if (myLocations == null || myLocations.isEmpty())
                         myLocations = new ArrayList<Location>();
 
-                    Paper.book().write(MY_LOCATIONS,myLocations);
+                    Paper.book().write(MY_LOCATIONS, myLocations);
                 }
 
                 @Override
                 public void onFailure(Call<ArrayList<Location>> call, Throwable t) {
-                    System.out.println("Error: "+t.getMessage());
+                    System.out.println("Error: " + t.getMessage());
                 }
             });
-        }else{
-            Paper.book().write(MY_LOCATIONS,new ArrayList<Location>());
+        } else {
+            Paper.book().write(MY_LOCATIONS, new ArrayList<Location>());
         }
         myLocations = Paper.book().read(MY_LOCATIONS);
 
@@ -174,7 +174,7 @@ public class DataManager {
             public void onResponse(Call<ArrayList<ItemLocation>> call, Response<ArrayList<ItemLocation>> response) {
                 ArrayList<ItemLocation> itemLocationApi = response.body();
                 ArrayList<ItemLocation> itemLocationHD = Paper.book().read(ITEM_LOCATIONS);
-                if(itemLocationApi==null || itemLocationApi.isEmpty())
+                if (itemLocationApi == null || itemLocationApi.isEmpty())
                     itemLocations = itemLocationHD;
                 else
                     itemLocations = itemLocationApi;
@@ -182,33 +182,33 @@ public class DataManager {
                 if (itemLocations == null || itemLocations.isEmpty())
                     itemLocations = new ArrayList<ItemLocation>();
 
-                Paper.book().write(ITEM_LOCATIONS,itemLocations);
+                Paper.book().write(ITEM_LOCATIONS, itemLocations);
             }
 
             @Override
             public void onFailure(Call<ArrayList<ItemLocation>> call, Throwable t) {
-                System.out.println("Error: "+t.getMessage());
+                System.out.println("Error: " + t.getMessage());
             }
         });
         itemLocations = Paper.book().read(ITEM_LOCATIONS);
 
 
         //BUYLIST
-        if(!userId.equalsIgnoreCase("")) {
+        if (!userId.equalsIgnoreCase("")) {
             api.getListas(userId).enqueue(new Callback<ArrayList<BuyList>>() {
                 @Override
                 public void onResponse(Call<ArrayList<BuyList>> call, Response<ArrayList<BuyList>> response) {
-                ArrayList<BuyList> buylistApi = response.body();
-                ArrayList<BuyList> buylistHD = Paper.book().read(BUYLISTS);
-                if(buylistApi==null || buylistApi.isEmpty())
-                    buylists = buylistHD;
-                else
-                    buylists = buylistApi;
+                    ArrayList<BuyList> buylistApi = response.body();
+                    ArrayList<BuyList> buylistHD = Paper.book().read(BUYLISTS);
+                    if (buylistApi == null || buylistApi.isEmpty())
+                        buylists = buylistHD;
+                    else
+                        buylists = buylistApi;
 
-                if (buylists == null || buylists.isEmpty())
-                    buylists = new ArrayList<BuyList>();
+                    if (buylists == null || buylists.isEmpty())
+                        buylists = new ArrayList<BuyList>();
 
-                Paper.book().write(BUYLISTS,buylists);
+                    Paper.book().write(BUYLISTS, buylists);
                 }
 
                 @Override
@@ -216,8 +216,8 @@ public class DataManager {
                     System.out.println("Error: " + t.getMessage());
                 }
             });
-        }else{
-            Paper.book().write(BUYLISTS,new ArrayList<BuyList>());
+        } else {
+            Paper.book().write(BUYLISTS, new ArrayList<BuyList>());
         }
         buylists = Paper.book().read(BUYLISTS);
 
@@ -228,7 +228,7 @@ public class DataManager {
             purchases = new ArrayList<Purchase>();
     }
 
-    public SharedPreferences getPreferences(){
+    public SharedPreferences getPreferences() {
         return this.preferences;
     }
 
@@ -237,11 +237,11 @@ public class DataManager {
     }
 
     //Authorization
-    public void login(User user, Activity activity){
+    public void login(User user, Activity activity) {
         api.login(user).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful() && response.body()!=null){
+                if (response.isSuccessful() && response.body() != null) {
                     try {
                         String res = response.body().string();
                         JSONObject jsonResponse = new JSONObject(res);
@@ -250,11 +250,11 @@ public class DataManager {
                         String userId = user.getString("id");
                         String userType = jsonResponse.getString("user_type");
                         String token = jsonResponse.getString("token");
-                        editor.putString("username",username);
-                        editor.putString("userId",userId);
-                        editor.putString("userType",userType);
-                        editor.putString("token",token);
-                        editor.putString("loginStatus","true");
+                        editor.putString("username", username);
+                        editor.putString("userId", userId);
+                        editor.putString("userType", userType);
+                        editor.putString("token", token);
+                        editor.putString("loginStatus", "true");
                         editor.apply();
                         activity.startActivity(new Intent(activity.getApplicationContext(), MainActivity.class));
                         activity.finish();
@@ -262,24 +262,24 @@ public class DataManager {
                         throw new RuntimeException(e);
                     }
 
-                }else{
+                } else {
                     System.out.println("Something went wrong!");
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                System.out.println("Error: "+t.getMessage());
+                System.out.println("Error: " + t.getMessage());
             }
         });
     }
 
-    public void logout(Activity activity){
-        editor.putString("username","Guest");
-        editor.putString("userId","");
-        editor.putString("userType","CONS");
-        editor.putString("token","");
-        editor.putString("loginStatus","false");
+    public void logout(Activity activity) {
+        editor.putString("username", "Guest");
+        editor.putString("userId", "");
+        editor.putString("userType", "CONS");
+        editor.putString("token", "");
+        editor.putString("loginStatus", "false");
         editor.apply();
         activity.startActivity(new Intent(activity.getApplicationContext(), LoginActivity.class));
         activity.finish();
@@ -294,13 +294,13 @@ public class DataManager {
 
     public void addItemType(ItemType itemType) {
         itemTypes.add(itemType);
-        Paper.book().write(ITEMS_TYPE,itemTypes);
+        Paper.book().write(ITEMS_TYPE, itemTypes);
     }
 
     public void deleteItemType(int position) {
         ItemType itemType = itemTypes.get(position);
         itemTypes.remove(position);
-        Paper.book().write(ITEMS_TYPE,itemTypes);
+        Paper.book().write(ITEMS_TYPE, itemTypes);
 
         for (int i = 0; i < items.size(); i++)
             if (items.get(i).getItemType().compareTo(itemType) > 0)
@@ -312,7 +312,7 @@ public class DataManager {
     public void editItem(int position, Item item) {
         Item itemA = items.get(position);
         items.set(position, item);
-        Paper.book().write(ITEMS,items);
+        Paper.book().write(ITEMS, items);
         for (int i = 0; i < itemLocations.size(); i++)
             if (itemLocations.get(i).getItem().compareTo(itemA) > 0) {
                 ItemLocation itemLocation = itemLocations.get(i);
@@ -328,13 +328,13 @@ public class DataManager {
 
     public void addItems(Item item) {
         items.add(item);
-        Paper.book().write(ITEMS,items);
+        Paper.book().write(ITEMS, items);
     }
 
     public void deleteItem(int position) {
         Item item = items.get(position);
         items.remove(position);
-        Paper.book().write(ITEMS,items);
+        Paper.book().write(ITEMS, items);
         for (int i = 0; i < itemLocations.size(); i++)
             if (item.compareTo(itemLocations.get(i).getItem()) > 0)
                 deleteItemLocation(i);
@@ -352,13 +352,13 @@ public class DataManager {
 
     public void addLocation(Location location) {
         locations.add(location);
-        Paper.book().write(LOCATIONS,locations);
+        Paper.book().write(LOCATIONS, locations);
     }
 
     public void editLocation(int position, Location location) {
         Location locationA = locations.get(position);
         locations.set(position, location);
-        Paper.book().write(LOCATIONS,locations);
+        Paper.book().write(LOCATIONS, locations);
         for (int i = 0; i < itemLocations.size(); i++)
             if (itemLocations.get(i).getLocation().compareTo(locationA) > 0) {
                 ItemLocation itemLocation = itemLocations.get(i);
@@ -371,7 +371,7 @@ public class DataManager {
     public void deleteLocation(int position) {
         Location location = locations.get(position);
         locations.remove(position);
-        Paper.book().write(LOCATIONS,locations);
+        Paper.book().write(LOCATIONS, locations);
         for (int i = 0; i < itemLocations.size(); i++)
             if (location.compareTo(itemLocations.get(i).getLocation()) > 0)
                 deleteItemLocation(i);
@@ -386,7 +386,7 @@ public class DataManager {
     public ArrayList<ItemLocation> getItemLocations(int itemId) {
         ArrayList<ItemLocation> another = new ArrayList<ItemLocation>();
         for (ItemLocation aux : itemLocations)
-            if (getItems().get(itemId).compareTo(aux.getItem()) > 0)
+            if (getItems().get(itemId).getId() == aux.getItem().getId())
                 another.add(aux);
         return another;
     }
@@ -394,24 +394,24 @@ public class DataManager {
     public ArrayList<ItemLocation> getLocationItems(int locationId) {
         ArrayList<ItemLocation> another = new ArrayList<ItemLocation>();
         for (ItemLocation aux : itemLocations)
-            if (locations.get(locationId).getId()==aux.getLocation().getId())
+            if (locations.get(locationId).getId() == aux.getLocation().getId())
                 another.add(aux);
         return another;
     }
 
     public void addItemLocation(ItemLocation itemLocation) {
         itemLocations.add(itemLocation);
-        Paper.book().write(ITEM_LOCATIONS,itemLocations);
-        }
+        Paper.book().write(ITEM_LOCATIONS, itemLocations);
+    }
 
     public void editItemLocation(int position, ItemLocation itemLocation) {
         itemLocations.set(position, itemLocation);
-        Paper.book().write(ITEM_LOCATIONS,itemLocations);
+        Paper.book().write(ITEM_LOCATIONS, itemLocations);
     }
 
     public void deleteItemLocation(int position) {
         itemLocations.remove(position);
-        Paper.book().write(ITEM_LOCATIONS,itemLocations);
+        Paper.book().write(ITEM_LOCATIONS, itemLocations);
     }
 
 
@@ -424,19 +424,19 @@ public class DataManager {
         JSONObject buylistObj = null;
         try {
             buylistObj = new JSONObject(new Gson().toJson(buyList));
-            buylistObj.put("user_id",preferences.getString("userId",""));
+            buylistObj.put("user_id", preferences.getString("userId", ""));
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
         api.addLista(buylistObj.toString()).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful() && response.body()!=null){
+                if (response.isSuccessful() && response.body() != null) {
 
                     try {
                         String res = response.body().string();
                         JSONObject jsonResponse = new JSONObject(res);
-                        System.out.println("Response: "+jsonResponse);
+                        System.out.println("Response: " + jsonResponse);
                     } catch (JSONException | IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -445,7 +445,7 @@ public class DataManager {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                System.out.println("Error: "+t.getMessage());
+                System.out.println("Error: " + t.getMessage());
             }
         });
 
@@ -460,12 +460,12 @@ public class DataManager {
         api.deleteLista(buylists.get(position).getId()).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful() && response.body()!=null){
+                if (response.isSuccessful() && response.body() != null) {
                     String res = null;
                     try {
                         res = response.body().string();
                         JSONObject jsonResponse = new JSONObject(res);
-                        System.out.println("Response: "+jsonResponse);
+                        System.out.println("Response: " + jsonResponse);
                     } catch (IOException | JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -475,13 +475,17 @@ public class DataManager {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                System.out.println("Error: "+t.getMessage());
+                System.out.println("Error: " + t.getMessage());
             }
         });
     }
 
     public Double avgPrice(int position) {
         Double SUM = 0.0;
+
+        if (getItemLocations(position).size() == 0)
+            return 0.0;
+
         for (ItemLocation iL : getItemLocations(position))
             SUM += iL.getPrice();
 
@@ -490,20 +494,21 @@ public class DataManager {
 
     //Purchase or Active Buylist Manipulation
     public void setPurchases(ArrayList<Purchase> purchases) {
-        Paper.book().write(PURCHASES,purchases);
+        Paper.book().write(PURCHASES, purchases);
     }
 
-    public void addPurchase(Purchase purchase){
-        for (Purchase p: purchases){
-            if(p.getItemLocation().getId()==purchase.getItemLocation().getId()){
-                p.setQuantity(p.getQuantity()+purchase.getQuantity());
-                Paper.book().write(PURCHASES,purchases);
-            return;
+    public void addPurchase(Purchase purchase) {
+        for (Purchase p : purchases) {
+            if (p.getItemLocation().getId() == purchase.getItemLocation().getId()) {
+                p.setQuantity(p.getQuantity() + purchase.getQuantity());
+                Paper.book().write(PURCHASES, purchases);
+                return;
             }
         }
         purchases.add(purchase);
-        Paper.book().write(PURCHASES,purchases);
+        Paper.book().write(PURCHASES, purchases);
     }
+
     public ArrayList<Purchase> getPurchases() {
         return purchases;
     }

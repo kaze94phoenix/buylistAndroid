@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,11 +53,6 @@ public class LocationItemAdapter extends RecyclerView.Adapter<LocationItemAdapte
         this.activity=activity;
     }
 
-
-
-
-
-
     @NonNull
     @Override
     public LocationItemAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -69,7 +65,7 @@ public class LocationItemAdapter extends RecyclerView.Adapter<LocationItemAdapte
     @Override
     public void onBindViewHolder(@NonNull LocationItemAdapter.ViewHolder holder, int position) {
         //binds the attributes of the model to the viewHolder
-        holder.priceLabel.setText(String.valueOf(itemLocations.get(position).getPrice()));
+        holder.priceLabel.setText(itemLocations.get(position).getPrice()+"0 MTS");
         holder.itemLabel.setText(itemLocations.get(position).getItem().getName());
     }
 
@@ -83,6 +79,7 @@ public class LocationItemAdapter extends RecyclerView.Adapter<LocationItemAdapte
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView priceLabel, itemLabel;
         private Button editItemLoc, deleteItemLoc;
+        RelativeLayout layout;
         private CheckBox itemCheck;
 
 
@@ -95,12 +92,14 @@ public class LocationItemAdapter extends RecyclerView.Adapter<LocationItemAdapte
 
             deleteItemLoc.setVisibility(View.GONE);
 
+            //To align this button when the previous one is GONE
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) editItemLoc.getLayoutParams();
+            params.addRule(RelativeLayout.ALIGN_PARENT_END);
+            editItemLoc.setLayoutParams(params);
+
             editItemLoc.setOnClickListener(this);
             deleteItemLoc.setOnClickListener(this);
-
-
         }
-
 
         @Override
         public void onClick(View view) {
@@ -172,27 +171,19 @@ public class LocationItemAdapter extends RecyclerView.Adapter<LocationItemAdapte
                     dialog = dialogBuilder.create();
                     dialog.show();
 
-                    yesBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            for (int i = 0; i < dataManager.getItemLocations().size(); i++)
-                                if (dataManager.getItemLocations().get(i).compareTo(itemLocations.get(getAdapterPosition())) > 0) {
-                                    dataManager.deleteItemLocation(i);
-                                    itemLocations.remove(getAdapterPosition());
-                                    notifyItemRemoved(getAdapterPosition());
-                                }
-                            Toast.makeText(activity, "Item Location deleted", Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                        }
+                    yesBtn.setOnClickListener(view4 -> {
+                        for (int i = 0; i < dataManager.getItemLocations().size(); i++)
+                            if (dataManager.getItemLocations().get(i).compareTo(itemLocations.get(getAdapterPosition())) > 0) {
+                                dataManager.deleteItemLocation(i);
+                                itemLocations.remove(getAdapterPosition());
+                                notifyItemRemoved(getAdapterPosition());
+                            }
+                        Toast.makeText(activity, "Item Location deleted", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
                     });
 
 
-                    noBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            dialog.dismiss();
-                        }
-                    });
+                    noBtn.setOnClickListener(view3 -> dialog.dismiss());
                     break;
 
             }
