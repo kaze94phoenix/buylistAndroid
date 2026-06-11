@@ -10,7 +10,7 @@
     android:background="@drawable/round_outline"
     android:backgroundTint="@color/cute_yellow"
     android:orientation="horizontal">
-
+/
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

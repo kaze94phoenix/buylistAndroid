@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:context=".AddItemActivity">
+    >
 
     <TextView
         android:id="@+id/itemPriceLabel"
@@ -14,11 +14,11 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="50dp"
         android:layout_marginTop="50dp"
-        android:text="Price" />
+        android:text="Quantity" />
 
 
     <EditText
-        android:id="@+id/itemPriceTxt"
+        android:id="@+id/itemQuantityTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/itemPriceLabel"
@@ -28,55 +28,24 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="50dp"
         android:ems="10"
-        android:inputType="numberDecimal" />
-
-    <TextView
-        android:id="@+id/locationLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/itemPriceTxt"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="32dp"
-        android:text="Location" />
-
-    <Spinner
-        android:id="@+id/locationSpinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/locationLabel"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="16dp"
-
-        />
-
-    <Button
-        android:id="@+id/goAddLocation"
-        android:layout_width="43dp"
-        android:layout_height="38dp"
-        android:layout_below="@id/locationSpinner"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="16dp"
-        android:onClick="goToAddItemType"
-        android:text="+" />
+        android:inputType="number" />
 
     <Button
         android:id="@+id/btnSaveItemLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/goAddLocation"
+        android:layout_below="@id/itemQuantityTxt"
         android:layout_marginStart="50dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="78dp"
         android:layout_alignParentStart="true"
-        android:text="Save" />
+        android:text="Add" />
 
     <Button
         android:id="@+id/btnCancelItemLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/goAddLocation"
+        android:layout_below="@id/itemQuantityTxt"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="50dp"

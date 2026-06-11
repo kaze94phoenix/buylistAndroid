@@ -48,7 +48,6 @@ public class ItemDetailsActivity extends AppCompatActivity {
         itemId = intent.getIntExtra(ShoppingItemAdapter.EXTRA_ITEM_ID, 0);
 
         items = dataManager.getItems();
-        locations = dataManager.getLocations();
 
         itemName = findViewById(R.id.itemDName);
         itemDescription = findViewById(R.id.itemDDescription);

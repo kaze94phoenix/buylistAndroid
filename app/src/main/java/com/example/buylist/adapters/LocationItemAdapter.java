@@ -6,10 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,73 +75,41 @@ public class LocationItemAdapter extends RecyclerView.Adapter<LocationItemAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView priceLabel, itemLabel;
-        private Button editItemLoc, deleteItemLoc;
-        RelativeLayout layout;
-        private CheckBox itemCheck;
-
+        private Button addItemLoc;
 
         public ViewHolder(View itemView){
             super(itemView);
             priceLabel = itemView.findViewById(R.id.priceLocationLabel);
             itemLabel = itemView.findViewById(R.id.locationItemLabel);
-            editItemLoc = itemView.findViewById(R.id.addItemLocBtn);
-            deleteItemLoc = itemView.findViewById(R.id.deleteItemLocBtn);
-
-            deleteItemLoc.setVisibility(View.GONE);
-
-            //To align this button when the previous one is GONE
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) editItemLoc.getLayoutParams();
-            params.addRule(RelativeLayout.ALIGN_PARENT_END);
-            editItemLoc.setLayoutParams(params);
-
-            editItemLoc.setOnClickListener(this);
-            deleteItemLoc.setOnClickListener(this);
+            addItemLoc = itemView.findViewById(R.id.addItemLocBtn);
+            addItemLoc.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
             //TODO: Implement this after makind the update/delete cascade
             EditText quantityTxt;
-            Spinner locationSpinner;
-            ArrayList<String> locationsNames = new ArrayList<>();
             dataManager = new DataManager(activity);
             Button addBtn, cancelBtn;
             switch (view.getId()){
 
                 case R.id.addItemLocBtn:
                     dialogBuilder = new AlertDialog.Builder(activity);
-                    final View editItemLocView = activity.getLayoutInflater().inflate(R.layout.add_item_location_popup,null);
+                    final View editItemLocView = activity.getLayoutInflater().inflate(R.layout.add_item_to_buylist_popup,null);
 
-                    quantityTxt = editItemLocView.findViewById(R.id.itemPriceTxt);
-
-                    TextView quantityLb = editItemLocView.findViewById(R.id.itemPriceLabel);
-                    quantityLb.setText("Quantity");
-                    TextView locationLb = editItemLocView.findViewById(R.id.locationLabel);
-                    locationLb.setVisibility(View.GONE);
-                    Button addLocation = editItemLocView.findViewById(R.id.goAddLocation);
-                    addLocation.setVisibility(View.GONE);
-
-
+                    quantityTxt = editItemLocView.findViewById(R.id.itemQuantityTxt);
                     addBtn = editItemLocView.findViewById(R.id.btnSaveItemLocation);
-                    addBtn.setText("Add");
-
                     cancelBtn = editItemLocView.findViewById(R.id.btnCancelItemLocation);
-
-                    locationSpinner = editItemLocView.findViewById(R.id.locationSpinner);
-                    locationSpinner.setVisibility(View.GONE);
 
                     dialogBuilder.setView(editItemLocView);
                     dialog = dialogBuilder.create();
                     dialog.show();
 
-
                     cancelBtn.setOnClickListener(view1 -> dialog.dismiss());
-
-
                     addBtn.setOnClickListener(view2 -> {
                         Purchase purchase = new Purchase();
                         purchase.setQuantity(Integer.parseInt(quantityTxt.getText().toString()));
-                        purchase.setItemLocation(dataManager.getItemLocations().get(getBindingAdapterPosition()));
+                        purchase.setItemLocation(getItemLocations().get(getBindingAdapterPosition()));
                         purchase.setPurchased(false);
                         dataManager.addPurchase(purchase);
 
@@ -152,8 +117,8 @@ public class LocationItemAdapter extends RecyclerView.Adapter<LocationItemAdapte
                         dialog.dismiss();
                     });
                     break;
-
-
+/*
+                SOME CODE TO BE REUSED
                 case R.id.deleteItemLocBtn:
                     Button yesBtn, noBtn;
                     TextView questionLabel;
@@ -173,10 +138,10 @@ public class LocationItemAdapter extends RecyclerView.Adapter<LocationItemAdapte
 
                     yesBtn.setOnClickListener(view4 -> {
                         for (int i = 0; i < dataManager.getItemLocations().size(); i++)
-                            if (dataManager.getItemLocations().get(i).compareTo(itemLocations.get(getAdapterPosition())) > 0) {
+                            if (dataManager.getItemLocations().get(i).compareTo(itemLocations.get(getBindingAdapterPosition())) > 0) {
                                 dataManager.deleteItemLocation(i);
-                                itemLocations.remove(getAdapterPosition());
-                                notifyItemRemoved(getAdapterPosition());
+                                itemLocations.remove(getBindingAdapterPosition());
+                                notifyItemRemoved(getBindingAdapterPosition());
                             }
                         Toast.makeText(activity, "Item Location deleted", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
@@ -185,7 +150,7 @@ public class LocationItemAdapter extends RecyclerView.Adapter<LocationItemAdapte
 
                     noBtn.setOnClickListener(view3 -> dialog.dismiss());
                     break;
-
+*/
             }
         }
     }

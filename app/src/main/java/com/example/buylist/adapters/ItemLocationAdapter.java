@@ -6,8 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,58 +71,33 @@ public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView priceLabel, locationLabel;
-        private Button editItemLoc, deleteItemLoc;
+        private Button addItemLoc;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
             priceLabel = itemView.findViewById(R.id.priceLocationLabel);
             locationLabel = itemView.findViewById(R.id.locationItemLabel);
-            editItemLoc = itemView.findViewById(R.id.addItemLocBtn);
-            deleteItemLoc = itemView.findViewById(R.id.deleteItemLocBtn);
+            addItemLoc = itemView.findViewById(R.id.addItemLocBtn);
 
-            deleteItemLoc.setVisibility(View.GONE);
-
-            //To align this button when the previous one is GONE
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) editItemLoc.getLayoutParams();
-            params.addRule(RelativeLayout.ALIGN_PARENT_END);
-            editItemLoc.setLayoutParams(params);
-
-            editItemLoc.setOnClickListener(this);
-            deleteItemLoc.setOnClickListener(this);
+            addItemLoc.setOnClickListener(this);
         }
 
 
         @Override
         public void onClick(View view) {
             EditText quantityTxt;
-            Spinner locationSpinner;
             dataManager = new DataManager(activity);
             Button addBtn, cancelBtn;
             switch (view.getId()) {
 
                 case R.id.addItemLocBtn:
                     dialogBuilder = new AlertDialog.Builder(activity);
-                    final View editItemLocView = activity.getLayoutInflater().inflate(R.layout.add_item_location_popup, null);
+                    final View editItemLocView = activity.getLayoutInflater().inflate(R.layout.add_item_to_buylist_popup, null);
 
-                    quantityTxt = editItemLocView.findViewById(R.id.itemPriceTxt);
-
-                    TextView quantityLb = editItemLocView.findViewById(R.id.itemPriceLabel);
-                    quantityLb.setText("Quantity");
-
-                    TextView locationLb = editItemLocView.findViewById(R.id.locationLabel);
-                    locationLb.setVisibility(View.GONE);
-
-                    Button addLocation = editItemLocView.findViewById(R.id.goAddLocation);
-                    addLocation.setVisibility(View.GONE);
-
+                    quantityTxt = editItemLocView.findViewById(R.id.itemQuantityTxt);
                     addBtn = editItemLocView.findViewById(R.id.btnSaveItemLocation);
-                    addBtn.setText("Add");
-
                     cancelBtn = editItemLocView.findViewById(R.id.btnCancelItemLocation);
-
-                    locationSpinner = editItemLocView.findViewById(R.id.locationSpinner);
-                    locationSpinner.setVisibility(View.GONE);
 
                     dialogBuilder.setView(editItemLocView);
                     dialog = dialogBuilder.create();
@@ -134,7 +107,7 @@ public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapte
                     addBtn.setOnClickListener(view2 -> {
                         Purchase purchase = new Purchase();
                         purchase.setQuantity(Integer.parseInt(quantityTxt.getText().toString()));
-                        purchase.setItemLocation(dataManager.getItemLocations().get(getBindingAdapterPosition()));
+                        purchase.setItemLocation(getItemLocations().get(getBindingAdapterPosition()));
                         purchase.setPurchased(false);
                         dataManager.addPurchase(purchase);
 
@@ -142,39 +115,6 @@ public class ItemLocationAdapter extends RecyclerView.Adapter<ItemLocationAdapte
                         dialog.dismiss();
                     });
                     break;
-
-
-                case R.id.deleteItemLocBtn:
-                    Button yesBtn, noBtn;
-                    TextView questionLabel;
-
-                    dialogBuilder = new AlertDialog.Builder(activity);
-                    final View deleteItemLocView = activity.getLayoutInflater().inflate(R.layout.delete_item_popup, null);
-
-                    questionLabel = deleteItemLocView.findViewById(R.id.deleteItemLabel);
-                    questionLabel.setText("Do you want to delete Item Location?");
-
-                    yesBtn = deleteItemLocView.findViewById(R.id.yesDelete);
-                    noBtn = deleteItemLocView.findViewById(R.id.noDelete);
-
-                    dialogBuilder.setView(deleteItemLocView);
-                    dialog = dialogBuilder.create();
-                    dialog.show();
-
-                    yesBtn.setOnClickListener(view3 -> {
-                        for (int i = 0; i < dataManager.getItemLocations().size(); i++)
-                            if (dataManager.getItemLocations().get(i).compareTo(itemLocations.get(getBindingAdapterPosition())) > 0) {
-                                dataManager.deleteItemLocation(i);
-                                itemLocations.remove(getBindingAdapterPosition());
-                                notifyItemRemoved(getBindingAdapterPosition());
-                            }
-                        Toast.makeText(activity, "Item Location deleted", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                    });
-
-                    noBtn.setOnClickListener(view4 -> dialog.dismiss());
-                    break;
-
             }
         }
     }
