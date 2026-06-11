@@ -2,31 +2,18 @@ package com.example.buylist.adapters;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.ActionMode;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.buylist.AddItemTypeActivity;
 import com.example.buylist.ItemDetailsActivity;
 import com.example.buylist.R;
 import com.example.buylist.models.DataManager;
 import com.example.buylist.models.Item;
-import com.example.buylist.models.ItemType;
 
 import java.util.ArrayList;
 

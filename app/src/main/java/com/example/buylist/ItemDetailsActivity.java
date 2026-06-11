@@ -31,13 +31,10 @@ public class ItemDetailsActivity extends AppCompatActivity {
     private ArrayList<Item> items;
     private ArrayList<Location> locations;
     private Intent intent;
-    private AlertDialog.Builder dialogBuilder;
-    private AlertDialog dialog;
     private int itemId;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ItemLocationAdapter itemLocationAdapter;
-    public static final String EXTRA_ITEM_ID = "item_id";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +43,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         dataManager = new DataManager(this);
+
         intent = getIntent();
         itemId = intent.getIntExtra(ShoppingItemAdapter.EXTRA_ITEM_ID, 0);
 
@@ -76,64 +74,10 @@ public class ItemDetailsActivity extends AppCompatActivity {
             recyclerView.setAdapter(itemLocationAdapter);
             swipeRefreshLayout.setRefreshing(false);
         });
-
-
-
     }
 
     public boolean onSupportNavigateUp(){
         finish();
         return true;
-    }
-
-    public void addItemLocation(View view) {
-
-        dialogBuilder = new AlertDialog.Builder(this);
-        final View addItemLocationView = getLayoutInflater().inflate(R.layout.add_item_location_popup, null);
-        ArrayList<String> locationsNames = new ArrayList<>();
-
-        Spinner locationsSpinner = addItemLocationView.findViewById(R.id.locationSpinner);
-        locationsSpinner.setVisibility(View.GONE);
-        if (dataManager.getLocations() != null) {
-            for (Location a : locations) {
-                locationsNames.add(a.getName());
-            }
-
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, locationsNames);
-            locationsSpinner.setAdapter(arrayAdapter);
-        }
-
-            EditText priceTxt = addItemLocationView.findViewById(R.id.itemPriceTxt);
-            Button cancelBtn = addItemLocationView.findViewById(R.id.btnCancelItemLocation);
-            Button saveBtn = addItemLocationView.findViewById(R.id.btnSaveItemLocation);
-            Button addLocation = addItemLocationView.findViewById(R.id.goAddLocation);
-
-
-            dialogBuilder.setView(addItemLocationView);
-            dialog = dialogBuilder.create();
-            dialog.show();
-
-
-
-            addLocation.setOnClickListener(view1 -> {
-                intent = new Intent(ItemDetailsActivity.this, AddLocationActivity.class);
-                intent.putExtra(EXTRA_ITEM_ID,itemId);
-                startActivity(intent);
-            });
-
-
-            saveBtn.setOnClickListener(view2 -> {
-                dataManager.addItemLocation(new ItemLocation(locations.get(locationsSpinner.getSelectedItemPosition()),items.get(itemId),Double.parseDouble(priceTxt.getText().toString())));
-                ArrayList<ItemLocation> test = dataManager.getItemLocations(itemId);
-                itemLocationAdapter.setItemLocations(test);
-                itemLocationAdapter.notifyItemInserted(itemLocationAdapter.getItemCount()-1);
-                Toast.makeText(ItemDetailsActivity.this, "Item Location Added", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            });
-
-
-            cancelBtn.setOnClickListener(view3 -> dialog.dismiss());
-
-
     }
 }

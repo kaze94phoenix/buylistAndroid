@@ -12,23 +12,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.Toast;
 
-import com.example.buylist.AddItemTypeActivity;
-import com.example.buylist.ItemsListActivity;
-import com.example.buylist.MainActivity;
 import com.example.buylist.R;
 import com.example.buylist.adapters.ShoppingItemAdapter;
 import com.example.buylist.models.DataManager;
-import com.example.buylist.models.Item;
-import com.example.buylist.models.ItemType;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.

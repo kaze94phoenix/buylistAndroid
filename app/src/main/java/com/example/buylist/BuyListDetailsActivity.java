@@ -1,6 +1,5 @@
 package com.example.buylist;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,8 +15,6 @@ import java.util.ArrayList;
 
 public class BuyListDetailsActivity extends AppCompatActivity {
     //Same as the AddBuyListActivity
-    private AlertDialog dialog;
-    private AlertDialog.Builder dialogBuilder;
     private RecyclerView buylist;
     private DataManager dataManager;
     private BuyListAdapter buyListAdapter;
@@ -29,11 +26,11 @@ public class BuyListDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_buy_list);
+        setContentView(R.layout.activity_buy_list_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         dataManager = new DataManager(this);
+
         buyListAdapter = new BuyListAdapter();
         buyListAdapter.hasOptions(false);
 
@@ -41,16 +38,14 @@ public class BuyListDetailsActivity extends AppCompatActivity {
 
         itemID = intent.getIntExtra(EXTRA_ITEM_ID, 0);
 
-
         purchases = dataManager.getBuyLists().get(itemID).getPurchases();
 
         buylist = findViewById(R.id.buylist);
         buyListAdapter.setBuylist(purchases);
         buylist.setAdapter(buyListAdapter);
         buylist.setLayoutManager(new LinearLayoutManager(BuyListDetailsActivity.this));
-
-
     }
+
     public boolean onSupportNavigateUp(){
         finish();
         return true;
