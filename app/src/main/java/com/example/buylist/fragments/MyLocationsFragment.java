@@ -12,15 +12,21 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.buylist.R;
 import com.example.buylist.adapters.ShoppingLocationAdapter;
 import com.example.buylist.models.DataManager;
 import com.example.buylist.models.Location;
+import com.example.buylist.models.LocationType;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,7 +34,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
  * create an instance of this fragment.
  */
 public class MyLocationsFragment extends Fragment implements View.OnClickListener {
-
 
 
     private RecyclerView recyclerView;
@@ -78,13 +83,26 @@ public class MyLocationsFragment extends Fragment implements View.OnClickListene
         goToAddLocation();
     }
 
-    public void goToAddLocation(){
+    public void goToAddLocation() {
 
         dialogBuilder = new AlertDialog.Builder(getContext());
-        final View addLocationPopoutView = getLayoutInflater().inflate(R.layout.add_location_popup,null);
+        final View addLocationPopoutView = getLayoutInflater().inflate(R.layout.add_location_popup, null);
+        Location locationX = new Location();
+
+        ArrayList<String> locTypeNames = dataManager.getLocationTypeNames();
+        ArrayAdapter<String> spinnerNames = new ArrayAdapter<>(
+                getContext(),
+                android.R.layout.simple_spinner_item,
+                locTypeNames
+        );
+        spinnerNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        Spinner locationTypeSp = addLocationPopoutView.findViewById(R.id.locationTypeSp);
+        locationTypeSp.setAdapter(spinnerNames);
 
         EditText nameTxt = addLocationPopoutView.findViewById(R.id.locationNameTxt);
         EditText addressTxt = addLocationPopoutView.findViewById(R.id.locationAdressTxt);
+        EditText geoLocTxt = addLocationPopoutView.findViewById(R.id.locationGeoTxt);
 
         Button saveBtn = addLocationPopoutView.findViewById(R.id.saveLocation);
         Button cancelBtn = addLocationPopoutView.findViewById(R.id.cancelLocation);
@@ -93,10 +111,16 @@ public class MyLocationsFragment extends Fragment implements View.OnClickListene
         dialog = dialogBuilder.create();
         dialog.show();
 
+        locationTypeSp.setOnItemClickListener((adapterView, view, i, l) ->
+                locationX.setLocationType(dataManager.getLocationTypes().get(i)));
+
         saveBtn.setOnClickListener(view -> {
-            dataManager.addLocation(new Location());
+            locationX.setAddress(addressTxt.toString());
+            locationX.setName(nameTxt.toString());
+            locationX.setGeolocation(geoLocTxt.toString());
+            //dataManager.addLocation(locationX);
             Toast.makeText(getContext(), "Location Added", Toast.LENGTH_SHORT).show();
-            shoppingLocationAdapter.notifyItemInserted(shoppingLocationAdapter.getItemCount()-1);
+            shoppingLocationAdapter.notifyItemInserted(shoppingLocationAdapter.getItemCount() - 1);
             dialog.dismiss();
         });
 

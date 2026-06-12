@@ -18,13 +18,13 @@ public interface ApiService {
     //GET REQUESTS
     @GET("api/product-types")
     Call<ArrayList<ItemType>> getProductTypes();
-
     @GET("api/products")
     Call<ArrayList<Item>> getProducts();
 
     @GET("api/stores")
     Call<ArrayList<Location>> getLocations();
-
+    @GET("api/store-types")
+    Call<ArrayList<LocationType>> getLocationTypes();
     @GET("api/products-stores")
     Call<ArrayList<ItemLocation>> getItemLocations();
 

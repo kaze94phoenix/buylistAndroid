@@ -1,6 +1,5 @@
 package com.example.buylist;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -8,27 +7,18 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.buylist.adapters.ItemLocationAdapter;
 import com.example.buylist.adapters.LocationItemAdapter;
 import com.example.buylist.adapters.ShoppingLocationAdapter;
 import com.example.buylist.models.DataManager;
-import com.example.buylist.models.Item;
-import com.example.buylist.models.ItemLocation;
 import com.example.buylist.models.Location;
 
 import java.util.ArrayList;
 
 public class LocationDetailsActivity extends AppCompatActivity {
 
-    private TextView locationName, locationDescription, locationAddress;
+    private TextView locationName, locationType, locationAddress;
     private DataManager dataManager;
     private ArrayList<Location> locations;
     private Intent intent;
@@ -50,11 +40,11 @@ public class LocationDetailsActivity extends AppCompatActivity {
         locations = dataManager.getLocations();
 
         locationName = findViewById(R.id.locationDName);
-        locationDescription = findViewById(R.id.locationDDescription);
+        locationType = findViewById(R.id.locationDType);
         locationAddress = findViewById(R.id.locationDAdress);
 
         locationName.setText(locations.get(locationId).getName());
-        locationDescription.setText(locations.get(locationId).getDescription());
+        locationType.setText(locations.get(locationId).getLocationType().getName());
         locationAddress.setText(locations.get(locationId).getAddress());
 
         locationItemAdapter = new LocationItemAdapter();

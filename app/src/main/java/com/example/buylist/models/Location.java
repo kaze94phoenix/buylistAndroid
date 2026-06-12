@@ -7,10 +7,12 @@ public class Location implements Comparable<Location> {
     private int id;
     @SerializedName("name")
     private String name;
-    @SerializedName("description")
-    private String description;
+    @SerializedName("location_type")
+    private LocationType locationType;
     @SerializedName("address")
     private String address;
+    @SerializedName("geolocation")
+    private String geolocation;
 
     public Location() {
     }
@@ -24,18 +26,34 @@ public class Location implements Comparable<Location> {
         this.address = address;
     }
 
-    public Location(String name, String description, String address) {
+    public Location(String name, LocationType locationType, String address) {
         this.name = name;
-        this.description = description;
+        this.locationType = locationType;
         this.address = address;
+    }
+
+    public Location(int id, String name, LocationType locationType, String address, String geolocation) {
+        this.id = id;
+        this.name = name;
+        this.locationType = locationType;
+        this.address = address;
+        this.geolocation = geolocation;
+    }
+
+    public String getGeolocation() {
+        return geolocation;
+    }
+
+    public void setGeolocation(String geolocation) {
+        this.geolocation = geolocation;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setLocationType(LocationType locationType) {
+        this.locationType = locationType;
     }
 
     public int getId() {
@@ -54,8 +72,8 @@ public class Location implements Comparable<Location> {
         return name;
     }
 
-    public String getDescription() {
-        return description;
+    public LocationType getLocationType() {
+        return locationType;
     }
 
     public String getAddress() {
@@ -65,9 +83,11 @@ public class Location implements Comparable<Location> {
     @Override
     public String toString() {
         return "Location{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", locationType=" + locationType +
                 ", address='" + address + '\'' +
+                ", geolocation='" + geolocation + '\'' +
                 '}';
     }
 

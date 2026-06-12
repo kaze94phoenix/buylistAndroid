@@ -39,7 +39,7 @@ public class DataManager {
     private static final String ITEM_LOCATIONS = "item_locations";
     private static final String BUYLISTS = "buylists";
     private static final String PURCHASES = "purchases";
-
+    private static final String LOCATIONS_TYPE = "locations type";
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
     private Paper paper;
@@ -48,6 +48,7 @@ public class DataManager {
     private ArrayList<ItemType> itemTypes;
     private ArrayList<Item> items;
     private ArrayList<Location> locations;
+    private ArrayList<LocationType> locationTypes;
     private ArrayList<Location> myLocations;
     private ArrayList<ItemLocation> itemLocations;
     private ArrayList<BuyList> buylists;
@@ -138,6 +139,30 @@ public class DataManager {
             }
         });
         locations = Paper.book().read(LOCATIONS);
+
+        //LOCATION TYPE
+        api.getLocationTypes().enqueue(new Callback<ArrayList<LocationType>>() {
+            @Override
+            public void onResponse(Call<ArrayList<LocationType>> call, Response<ArrayList<LocationType>> response) {
+                ArrayList<LocationType> locationTypeApi = response.body();
+                ArrayList<LocationType> locationTypeHD = Paper.book().read(LOCATIONS_TYPE);
+                if (locationTypeApi == null || locationTypeApi.isEmpty())
+                    locationTypes = locationTypeHD;
+                else
+                    locationTypes = locationTypeApi;
+
+                if (locationTypes == null || locations.isEmpty())
+                    locationTypes = new ArrayList<LocationType>();
+
+                Paper.book().write(LOCATIONS_TYPE, locationTypes);
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<LocationType>> call, Throwable t) {
+                System.out.println("Error: " + t.getMessage());
+            }
+        });
+        locationTypes = Paper.book().read(LOCATIONS_TYPE);
 
         //MY LOCATIONS
         if (!userId.equalsIgnoreCase("")) {
@@ -377,6 +402,17 @@ public class DataManager {
                 deleteItemLocation(i);
     }
 
+//Location Type Manipulation
+public ArrayList<LocationType> getLocationTypes() {
+    return locationTypes;
+}
+
+    public ArrayList<String> getLocationTypeNames() {
+        ArrayList<String> names = new ArrayList<>();
+        for(LocationType lT: locationTypes)
+            names.add(lT.getName());
+        return names;
+    }
 
     //Item Location Manipulation
     public ArrayList<ItemLocation> getItemLocations() {
