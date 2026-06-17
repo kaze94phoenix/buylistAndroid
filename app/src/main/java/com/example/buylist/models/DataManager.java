@@ -53,6 +53,7 @@ public class DataManager {
     private ArrayList<ItemLocation> itemLocations;
     private ArrayList<BuyList> buylists;
     private ArrayList<Purchase> purchases;
+    private String userId;
 
     private ApiService api;
 
@@ -60,197 +61,35 @@ public class DataManager {
 
         preferences = context.getSharedPreferences("UserPreferences", MODE_PRIVATE);
         editor = preferences.edit();
-        String userId = preferences.getString("userId", "");
+        userId = preferences.getString("userId", "");
 
         api = RetrofitInstance.getApiInterface();
 
         Paper.init(context);
 
         //ITEM TYPE
-        api.getProductTypes().enqueue(new Callback<ArrayList<ItemType>>() {
-            @Override
-            public void onResponse(Call<ArrayList<ItemType>> call, Response<ArrayList<ItemType>> response) {
-                ArrayList<ItemType> itemTypeApi = response.body();
-                ArrayList<ItemType> itemTypeHD = Paper.book().read(ITEMS_TYPE);
-                if (itemTypeApi == null || itemTypeApi.isEmpty())
-                    itemTypes = itemTypeHD;
-                else
-                    itemTypes = itemTypeApi;
-
-                if (itemTypes == null || itemTypes.isEmpty())
-                    itemTypes = new ArrayList<ItemType>();
-
-                Paper.book().write(ITEMS_TYPE, itemTypes);
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<ItemType>> call, Throwable t) {
-
-                System.out.println("Error: " + t.getMessage());
-            }
-        });
-        itemTypes = Paper.book().read(ITEMS_TYPE);
+        fetchItemTypes();
 
         //ITEM
-        api.getProducts().enqueue(new Callback<ArrayList<Item>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Item>> call, Response<ArrayList<Item>> response) {
-                ArrayList<Item> itemApi = response.body();
-                ArrayList<Item> itemHD = Paper.book().read(ITEMS);
-                if (itemApi == null || itemApi.isEmpty())
-                    items = itemHD;
-                else
-                    items = itemApi;
-
-                if (items == null || items.isEmpty())
-                    items = new ArrayList<Item>();
-
-                Paper.book().write(ITEMS, items);
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<Item>> call, Throwable t) {
-                System.out.println("Error: " + t.getMessage());
-            }
-        });
-        items = Paper.book().read(ITEMS);
-
+        fetchItems();
 
         //LOCATION
-        api.getLocations().enqueue(new Callback<ArrayList<Location>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Location>> call, Response<ArrayList<Location>> response) {
-                ArrayList<Location> locationApi = response.body();
-                ArrayList<Location> locationHD = Paper.book().read(LOCATIONS);
-                if (locationApi == null || locationApi.isEmpty())
-                    locations = locationHD;
-                else
-                    locations = locationApi;
-
-                if (locations == null || locations.isEmpty())
-                    locations = new ArrayList<Location>();
-
-                Paper.book().write(LOCATIONS, locations);
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<Location>> call, Throwable t) {
-                System.out.println("Error: " + t.getMessage());
-            }
-        });
-        locations = Paper.book().read(LOCATIONS);
+        fetchLocations();
 
         //LOCATION TYPE
-        api.getLocationTypes().enqueue(new Callback<ArrayList<LocationType>>() {
-            @Override
-            public void onResponse(Call<ArrayList<LocationType>> call, Response<ArrayList<LocationType>> response) {
-                ArrayList<LocationType> locationTypeApi = response.body();
-                ArrayList<LocationType> locationTypeHD = Paper.book().read(LOCATIONS_TYPE);
-                if (locationTypeApi == null || locationTypeApi.isEmpty())
-                    locationTypes = locationTypeHD;
-                else
-                    locationTypes = locationTypeApi;
-
-                if (locationTypes == null || locations.isEmpty())
-                    locationTypes = new ArrayList<LocationType>();
-
-                Paper.book().write(LOCATIONS_TYPE, locationTypes);
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<LocationType>> call, Throwable t) {
-                System.out.println("Error: " + t.getMessage());
-            }
-        });
-        locationTypes = Paper.book().read(LOCATIONS_TYPE);
+        fetchLocationTypes();
 
         //MY LOCATIONS
-        if (!userId.equalsIgnoreCase("")) {
-            api.myLocations(userId).enqueue(new Callback<ArrayList<Location>>() {
-                @Override
-                public void onResponse(Call<ArrayList<Location>> call, Response<ArrayList<Location>> response) {
-                    ArrayList<Location> myLocationApi = response.body();
-                    ArrayList<Location> myLocationHD = Paper.book().read(LOCATIONS);
-                    if (myLocationApi == null || myLocationApi.isEmpty())
-                        myLocations = myLocationHD;
-                    else
-                        myLocations = myLocationApi;
-
-                    if (myLocations == null || myLocations.isEmpty())
-                        myLocations = new ArrayList<Location>();
-
-                    Paper.book().write(MY_LOCATIONS, myLocations);
-                }
-
-                @Override
-                public void onFailure(Call<ArrayList<Location>> call, Throwable t) {
-                    System.out.println("Error: " + t.getMessage());
-                }
-            });
-        } else {
-            Paper.book().write(MY_LOCATIONS, new ArrayList<Location>());
-        }
-        myLocations = Paper.book().read(MY_LOCATIONS);
-
+        fetchMyLocations();
 
         //ITEM LOCATION
-        api.getItemLocations().enqueue(new Callback<ArrayList<ItemLocation>>() {
-            @Override
-            public void onResponse(Call<ArrayList<ItemLocation>> call, Response<ArrayList<ItemLocation>> response) {
-                ArrayList<ItemLocation> itemLocationApi = response.body();
-                ArrayList<ItemLocation> itemLocationHD = Paper.book().read(ITEM_LOCATIONS);
-                if (itemLocationApi == null || itemLocationApi.isEmpty())
-                    itemLocations = itemLocationHD;
-                else
-                    itemLocations = itemLocationApi;
-
-                if (itemLocations == null || itemLocations.isEmpty())
-                    itemLocations = new ArrayList<ItemLocation>();
-
-                Paper.book().write(ITEM_LOCATIONS, itemLocations);
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<ItemLocation>> call, Throwable t) {
-                System.out.println("Error: " + t.getMessage());
-            }
-        });
-        itemLocations = Paper.book().read(ITEM_LOCATIONS);
-
+        fetchItemLocations();
 
         //BUYLIST
-        if (!userId.equalsIgnoreCase("")) {
-            api.getListas(userId).enqueue(new Callback<ArrayList<BuyList>>() {
-                @Override
-                public void onResponse(Call<ArrayList<BuyList>> call, Response<ArrayList<BuyList>> response) {
-                    ArrayList<BuyList> buylistApi = response.body();
-                    ArrayList<BuyList> buylistHD = Paper.book().read(BUYLISTS);
-                    if (buylistApi == null || buylistApi.isEmpty())
-                        buylists = buylistHD;
-                    else
-                        buylists = buylistApi;
-
-                    if (buylists == null || buylists.isEmpty())
-                        buylists = new ArrayList<BuyList>();
-
-                    Paper.book().write(BUYLISTS, buylists);
-                }
-
-                @Override
-                public void onFailure(Call<ArrayList<BuyList>> call, Throwable t) {
-                    System.out.println("Error: " + t.getMessage());
-                }
-            });
-        } else {
-            Paper.book().write(BUYLISTS, new ArrayList<BuyList>());
-        }
-        buylists = Paper.book().read(BUYLISTS);
-
+        fetchBuylists();
 
         //PURCHASES
-        purchases = Paper.book().read(PURCHASES);
-        if (purchases == null)
-            purchases = new ArrayList<Purchase>();
+        fetchPurchases();
     }
 
     public SharedPreferences getPreferences() {
@@ -312,6 +151,32 @@ public class DataManager {
 
 
     //Item Type Manipulation
+    public void fetchItemTypes() {
+        api.getProductTypes().enqueue(new Callback<ArrayList<ItemType>>() {
+            @Override
+            public void onResponse(Call<ArrayList<ItemType>> call, Response<ArrayList<ItemType>> response) {
+                ArrayList<ItemType> itemTypeApi = response.body();
+                ArrayList<ItemType> itemTypeHD = Paper.book().read(ITEMS_TYPE);
+                if (itemTypeApi == null || itemTypeApi.isEmpty())
+                    itemTypes = itemTypeHD;
+                else
+                    itemTypes = itemTypeApi;
+
+                if (itemTypes == null || itemTypes.isEmpty())
+                    itemTypes = new ArrayList<ItemType>();
+
+                Paper.book().write(ITEMS_TYPE, itemTypes);
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<ItemType>> call, Throwable t) {
+
+                System.out.println("Error: " + t.getMessage());
+            }
+        });
+        itemTypes = Paper.book().read(ITEMS_TYPE);
+    }
+
     public ArrayList<ItemType> getItemTypes() {
         return itemTypes;
     }
@@ -334,6 +199,31 @@ public class DataManager {
 
 
     //Item Manipulation
+    public void fetchItems() {
+        api.getProducts().enqueue(new Callback<ArrayList<Item>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Item>> call, Response<ArrayList<Item>> response) {
+                ArrayList<Item> itemApi = response.body();
+                ArrayList<Item> itemHD = Paper.book().read(ITEMS);
+                if (itemApi == null || itemApi.isEmpty())
+                    items = itemHD;
+                else
+                    items = itemApi;
+
+                if (items == null || items.isEmpty())
+                    items = new ArrayList<Item>();
+
+                Paper.book().write(ITEMS, items);
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Item>> call, Throwable t) {
+                System.out.println("Error: " + t.getMessage());
+            }
+        });
+        items = Paper.book().read(ITEMS);
+    }
+
     public void editItem(int position, Item item) {
         Item itemA = items.get(position);
         items.set(position, item);
@@ -366,6 +256,58 @@ public class DataManager {
     }
 
     //Location Manipulation
+    public void fetchLocations(){
+        api.getLocations().enqueue(new Callback<ArrayList<Location>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Location>> call, Response<ArrayList<Location>> response) {
+                ArrayList<Location> locationApi = response.body();
+                ArrayList<Location> locationHD = Paper.book().read(LOCATIONS);
+                if (locationApi == null || locationApi.isEmpty())
+                    locations = locationHD;
+                else
+                    locations = locationApi;
+
+                if (locations == null || locations.isEmpty())
+                    locations = new ArrayList<Location>();
+
+                Paper.book().write(LOCATIONS, locations);
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Location>> call, Throwable t) {
+                System.out.println("Error: " + t.getMessage());
+            }
+        });
+        locations = Paper.book().read(LOCATIONS);
+    }
+    public void fetchMyLocations(){
+        if (!userId.equalsIgnoreCase("")) {
+            api.myLocations(userId).enqueue(new Callback<ArrayList<Location>>() {
+                @Override
+                public void onResponse(Call<ArrayList<Location>> call, Response<ArrayList<Location>> response) {
+                    ArrayList<Location> myLocationApi = response.body();
+                    ArrayList<Location> myLocationHD = Paper.book().read(LOCATIONS);
+                    if (myLocationApi == null || myLocationApi.isEmpty())
+                        myLocations = myLocationHD;
+                    else
+                        myLocations = myLocationApi;
+
+                    if (myLocations == null || myLocations.isEmpty())
+                        myLocations = new ArrayList<Location>();
+
+                    Paper.book().write(MY_LOCATIONS, myLocations);
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<Location>> call, Throwable t) {
+                    System.out.println("Error: " + t.getMessage());
+                }
+            });
+        } else {
+            Paper.book().write(MY_LOCATIONS, new ArrayList<Location>());
+        }
+        myLocations = Paper.book().read(MY_LOCATIONS);
+    }
     public ArrayList<Location> getLocations() {
         return locations;
     }
@@ -376,8 +318,36 @@ public class DataManager {
 
 
     public void addLocation(Location location) {
-        locations.add(location);
-        Paper.book().write(LOCATIONS, locations);
+        JSONObject locationObj = null;
+        try {
+            locationObj = new JSONObject(new Gson().toJson(location));
+            locationObj.put("user_id", preferences.getString("userId", ""));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        api.addStore(locationObj.toString()).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+
+                    try {
+                        fetchMyLocations();
+                        fetchLocations();
+                        String res = response.body().string();
+                        JSONObject jsonResponse = new JSONObject(res);
+                        System.out.println("Response: " + jsonResponse);
+                    } catch (JSONException | IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println("Error: " + t.getMessage());
+            }
+        });
+
     }
 
     public void editLocation(int position, Location location) {
@@ -402,19 +372,67 @@ public class DataManager {
                 deleteItemLocation(i);
     }
 
-//Location Type Manipulation
-public ArrayList<LocationType> getLocationTypes() {
-    return locationTypes;
-}
+    //Location Type Manipulation
+    public void fetchLocationTypes(){
+        api.getLocationTypes().enqueue(new Callback<ArrayList<LocationType>>() {
+            @Override
+            public void onResponse(Call<ArrayList<LocationType>> call, Response<ArrayList<LocationType>> response) {
+                ArrayList<LocationType> locationTypeApi = response.body();
+                ArrayList<LocationType> locationTypeHD = Paper.book().read(LOCATIONS_TYPE);
+                if (locationTypeApi == null || locationTypeApi.isEmpty())
+                    locationTypes = locationTypeHD;
+                else
+                    locationTypes = locationTypeApi;
+
+                if (locationTypes == null || locations.isEmpty())
+                    locationTypes = new ArrayList<LocationType>();
+
+                Paper.book().write(LOCATIONS_TYPE, locationTypes);
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<LocationType>> call, Throwable t) {
+                System.out.println("Error: " + t.getMessage());
+            }
+        });
+        locationTypes = Paper.book().read(LOCATIONS_TYPE);
+    }
+    public ArrayList<LocationType> getLocationTypes() {
+        return locationTypes;
+    }
 
     public ArrayList<String> getLocationTypeNames() {
         ArrayList<String> names = new ArrayList<>();
-        for(LocationType lT: locationTypes)
+        for (LocationType lT : locationTypes)
             names.add(lT.getName());
         return names;
     }
 
     //Item Location Manipulation
+    public void fetchItemLocations(){
+        api.getItemLocations().enqueue(new Callback<ArrayList<ItemLocation>>() {
+            @Override
+            public void onResponse(Call<ArrayList<ItemLocation>> call, Response<ArrayList<ItemLocation>> response) {
+                ArrayList<ItemLocation> itemLocationApi = response.body();
+                ArrayList<ItemLocation> itemLocationHD = Paper.book().read(ITEM_LOCATIONS);
+                if (itemLocationApi == null || itemLocationApi.isEmpty())
+                    itemLocations = itemLocationHD;
+                else
+                    itemLocations = itemLocationApi;
+
+                if (itemLocations == null || itemLocations.isEmpty())
+                    itemLocations = new ArrayList<ItemLocation>();
+
+                Paper.book().write(ITEM_LOCATIONS, itemLocations);
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<ItemLocation>> call, Throwable t) {
+                System.out.println("Error: " + t.getMessage());
+            }
+        });
+        itemLocations = Paper.book().read(ITEM_LOCATIONS);
+    }
     public ArrayList<ItemLocation> getItemLocations() {
         return itemLocations;
     }
@@ -452,6 +470,34 @@ public ArrayList<LocationType> getLocationTypes() {
 
 
     // BuyList Manipulation
+    public void fetchBuylists(){
+        if (!userId.equalsIgnoreCase("")) {
+            api.getListas(userId).enqueue(new Callback<ArrayList<BuyList>>() {
+                @Override
+                public void onResponse(Call<ArrayList<BuyList>> call, Response<ArrayList<BuyList>> response) {
+                    ArrayList<BuyList> buylistApi = response.body();
+                    ArrayList<BuyList> buylistHD = Paper.book().read(BUYLISTS);
+                    if (buylistApi == null || buylistApi.isEmpty())
+                        buylists = buylistHD;
+                    else
+                        buylists = buylistApi;
+
+                    if (buylists == null || buylists.isEmpty())
+                        buylists = new ArrayList<BuyList>();
+
+                    Paper.book().write(BUYLISTS, buylists);
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<BuyList>> call, Throwable t) {
+                    System.out.println("Error: " + t.getMessage());
+                }
+            });
+        } else {
+            Paper.book().write(BUYLISTS, new ArrayList<BuyList>());
+        }
+        buylists = Paper.book().read(BUYLISTS);
+    }
     public ArrayList<BuyList> getBuyLists() {
         return buylists;
     }
@@ -499,6 +545,7 @@ public ArrayList<LocationType> getLocationTypes() {
                 if (response.isSuccessful() && response.body() != null) {
                     String res = null;
                     try {
+                        fetchBuylists();
                         res = response.body().string();
                         JSONObject jsonResponse = new JSONObject(res);
                         System.out.println("Response: " + jsonResponse);
@@ -529,6 +576,11 @@ public ArrayList<LocationType> getLocationTypes() {
     }
 
     //Purchase or Active Buylist Manipulation
+    public void fetchPurchases(){
+        purchases = Paper.book().read(PURCHASES);
+        if (purchases == null)
+            purchases = new ArrayList<Purchase>();
+    }
     public void setPurchases(ArrayList<Purchase> purchases) {
         Paper.book().write(PURCHASES, purchases);
     }

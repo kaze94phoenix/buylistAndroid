@@ -40,6 +40,9 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("api/listas")
     Call<ResponseBody> addLista(@Field("json_request") String buylist);
+    @FormUrlEncoded
+    @POST("api/stores")
+    Call<ResponseBody> addStore(@Field("json_request") String store);
 
     //DELETE REQUESTS
     @DELETE("api/listas/{id}")

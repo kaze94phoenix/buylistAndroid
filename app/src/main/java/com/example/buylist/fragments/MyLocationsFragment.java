@@ -110,20 +110,63 @@ public class MyLocationsFragment extends Fragment implements View.OnClickListene
         dialogBuilder.setView(addLocationPopoutView);
         dialog = dialogBuilder.create();
         dialog.show();
+        locationTypeSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                locationX.setLocationType(dataManager.getLocationTypes().get(i));
+            }
 
-        locationTypeSp.setOnItemClickListener((adapterView, view, i, l) ->
-                locationX.setLocationType(dataManager.getLocationTypes().get(i)));
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
 
         saveBtn.setOnClickListener(view -> {
-            locationX.setAddress(addressTxt.toString());
-            locationX.setName(nameTxt.toString());
-            locationX.setGeolocation(geoLocTxt.toString());
-            //dataManager.addLocation(locationX);
+            locationX.setAddress(addressTxt.getText().toString());
+            locationX.setName(nameTxt.getText().toString());
+            locationX.setGeolocation(geoLocTxt.getText().toString());
+            dataManager.addLocation(locationX);
+            shoppingLocationAdapter.setLocations(dataManager.getMyLocations());
+            recyclerView.setAdapter(shoppingLocationAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             Toast.makeText(getContext(), "Location Added", Toast.LENGTH_SHORT).show();
-            shoppingLocationAdapter.notifyItemInserted(shoppingLocationAdapter.getItemCount() - 1);
             dialog.dismiss();
         });
 
         cancelBtn.setOnClickListener(view -> dialog.dismiss());
     }
+
+    /**
+     * import java.util.concurrent.ExecutorService;
+     * import java.util.concurrent.Executors;
+     * import android.os.Handler;
+     * import android.os.Looper;
+     *
+     * public class MyActivity extends AppCompatActivity {
+     *     // Create a thread pool for background work
+     *     private final ExecutorService executor = Executors.newSingleThreadExecutor();
+     *     // Create a handler bound to the main (UI) thread
+     *     private final Handler mainHandler = new Handler(Looper.getMainLooper());
+     *
+     *     private void runBackgroundTask() {
+     *         executor.execute(() -> {
+     *             // 1. Heavy background work happens here (e.g., Network, Database)
+     *             String result = fetchDatalongRunning();
+     *
+     *             // 2. Switch back to the UI thread to update views
+     *             mainHandler.post(() -> {
+     *                 myTextView.setText(result);
+     *             });
+     *         });
+     *     }
+     *
+     *     private String fetchDatalongRunning() {
+     *         // Simulate network delay
+     *         try { Thread.sleep(2000); } catch (InterruptedException e) { e.printStackTrace(); }
+     *         return "Data Loaded";
+     *     }
+     * }
+     */
 }
