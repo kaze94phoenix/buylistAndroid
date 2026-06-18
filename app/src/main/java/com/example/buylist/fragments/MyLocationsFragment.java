@@ -139,34 +139,44 @@ public class MyLocationsFragment extends Fragment implements View.OnClickListene
     }
 
     /**
-     * import java.util.concurrent.ExecutorService;
-     * import java.util.concurrent.Executors;
-     * import android.os.Handler;
-     * import android.os.Looper;
-     *
-     * public class MyActivity extends AppCompatActivity {
-     *     // Create a thread pool for background work
-     *     private final ExecutorService executor = Executors.newSingleThreadExecutor();
-     *     // Create a handler bound to the main (UI) thread
-     *     private final Handler mainHandler = new Handler(Looper.getMainLooper());
-     *
-     *     private void runBackgroundTask() {
-     *         executor.execute(() -> {
-     *             // 1. Heavy background work happens here (e.g., Network, Database)
-     *             String result = fetchDatalongRunning();
-     *
-     *             // 2. Switch back to the UI thread to update views
-     *             mainHandler.post(() -> {
-     *                 myTextView.setText(result);
-     *             });
-     *         });
-     *     }
-     *
-     *     private String fetchDatalongRunning() {
-     *         // Simulate network delay
-     *         try { Thread.sleep(2000); } catch (InterruptedException e) { e.printStackTrace(); }
-     *         return "Data Loaded";
-     *     }
-     * }
+     // Source - https://stackoverflow.com/a/54051106
+     // Posted by Алексей Мальченко
+     // Retrieved 2026-06-18, License - CC BY-SA 4.0
+
+     class MyAsyncTask extends AsyncTask<Void, Void, List<String>> {
+     MyAdapter myAdapter;
+     ArrayList<String> values = new ArrayList<>();
+
+     public MyAsyncTask(MyAdapter adapter) {
+     this.myAdapter = myAdapter;
+     }
+
+     @Override
+     protected List<String> doInBackground(String... params) {
+     ArrayList<String> result = new ArrayList<>();
+     // long operation, for example: get results from url
+     return result;
+     }
+
+     @Override
+     protected void onPostExecute(List<String> list) {
+     myAdapter.setNewList(list);
+     }
+     }
+
+     class MyAdapter {
+
+     private List<String> list;
+
+     ............
+
+     void setNewList(List<String> list) {
+     this.list = list;
+     notifyDataSetChanged();
+     }
+
+     ............
+     }
+
      */
 }
