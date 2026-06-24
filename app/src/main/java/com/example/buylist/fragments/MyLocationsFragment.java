@@ -1,6 +1,7 @@
 package com.example.buylist.fragments;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -66,6 +67,7 @@ public class MyLocationsFragment extends Fragment implements View.OnClickListene
 
         swipeRefreshLayout = view.findViewById(R.id.swipeRefresh);
         swipeRefreshLayout.setOnRefreshListener(() -> {
+            dataManager.fetchMyLocations();
             shoppingLocationAdapter.setLocations(dataManager.getMyLocations());
             recyclerView.setAdapter(shoppingLocationAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -131,52 +133,11 @@ public class MyLocationsFragment extends Fragment implements View.OnClickListene
             shoppingLocationAdapter.setLocations(dataManager.getMyLocations());
             recyclerView.setAdapter(shoppingLocationAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            Toast.makeText(getContext(), "Location Added", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
 
         cancelBtn.setOnClickListener(view -> dialog.dismiss());
     }
 
-    /**
-     // Source - https://stackoverflow.com/a/54051106
-     // Posted by Алексей Мальченко
-     // Retrieved 2026-06-18, License - CC BY-SA 4.0
 
-     class MyAsyncTask extends AsyncTask<Void, Void, List<String>> {
-     MyAdapter myAdapter;
-     ArrayList<String> values = new ArrayList<>();
-
-     public MyAsyncTask(MyAdapter adapter) {
-     this.myAdapter = myAdapter;
-     }
-
-     @Override
-     protected List<String> doInBackground(String... params) {
-     ArrayList<String> result = new ArrayList<>();
-     // long operation, for example: get results from url
-     return result;
-     }
-
-     @Override
-     protected void onPostExecute(List<String> list) {
-     myAdapter.setNewList(list);
-     }
-     }
-
-     class MyAdapter {
-
-     private List<String> list;
-
-     ............
-
-     void setNewList(List<String> list) {
-     this.list = list;
-     notifyDataSetChanged();
-     }
-
-     ............
-     }
-
-     */
 }

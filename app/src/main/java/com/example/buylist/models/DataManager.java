@@ -67,6 +67,8 @@ public class DataManager {
 
         Paper.init(context);
 
+        this.context=context;
+
         //ITEM TYPE
         fetchItemTypes();
 
@@ -90,6 +92,7 @@ public class DataManager {
 
         //PURCHASES
         fetchPurchases();
+
     }
 
     public SharedPreferences getPreferences() {
@@ -99,6 +102,7 @@ public class DataManager {
     public SharedPreferences.Editor getEditor() {
         return editor;
     }
+
 
     //Authorization
     public void login(User user, Activity activity) {
@@ -331,11 +335,12 @@ public class DataManager {
                 if (response.isSuccessful() && response.body() != null) {
 
                     try {
-                        fetchMyLocations();
-                        fetchLocations();
                         String res = response.body().string();
                         JSONObject jsonResponse = new JSONObject(res);
                         System.out.println("Response: " + jsonResponse);
+                        fetchMyLocations();
+                        fetchLocations();
+                        Toast.makeText(context, "Location Added. Refresh the List!", Toast.LENGTH_SHORT).show();
                     } catch (JSONException | IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -364,12 +369,29 @@ public class DataManager {
     }
 
     public void deleteLocation(int position) {
-        Location location = locations.get(position);
-        locations.remove(position);
-        Paper.book().write(LOCATIONS, locations);
-        for (int i = 0; i < itemLocations.size(); i++)
-            if (location.compareTo(itemLocations.get(i).getLocation()) > 0)
-                deleteItemLocation(i);
+        api.deleteStore(myLocations.get(position).getId()).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String res = null;
+                    try {
+                        fetchBuylists();
+                        res = response.body().string();
+                        JSONObject jsonResponse = new JSONObject(res);
+                        System.out.println("Response: " + jsonResponse);
+                        Toast.makeText(context, "Location Deleted. Refresh the List!", Toast.LENGTH_SHORT).show();
+                    } catch (IOException | JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println("Error: " + t.getMessage());
+            }
+        });
     }
 
     //Location Type Manipulation
@@ -549,6 +571,7 @@ public class DataManager {
                         res = response.body().string();
                         JSONObject jsonResponse = new JSONObject(res);
                         System.out.println("Response: " + jsonResponse);
+                        Toast.makeText(context, "Buylist Deleted. Refresh the List!", Toast.LENGTH_SHORT).show();
                     } catch (IOException | JSONException e) {
                         throw new RuntimeException(e);
                     }

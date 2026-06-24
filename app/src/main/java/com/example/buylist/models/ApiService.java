@@ -47,6 +47,8 @@ public interface ApiService {
     //DELETE REQUESTS
     @DELETE("api/listas/{id}")
     Call<ResponseBody> deleteLista(@Path("id") int listaId);
+    @DELETE("api/stores/{id}")
+    Call<ResponseBody> deleteStore(@Path("id") int storeId);
 
 
 }
