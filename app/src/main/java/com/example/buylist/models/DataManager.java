@@ -329,6 +329,7 @@ public class DataManager {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+        Toast.makeText(context, "Location Being Added. Please Wait!", Toast.LENGTH_LONG).show();
         api.addStore(locationObj.toString()).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -341,6 +342,7 @@ public class DataManager {
                         fetchMyLocations();
                         fetchLocations();
                         Toast.makeText(context, "Location Added. Refresh the List!", Toast.LENGTH_SHORT).show();
+                        return;
                     } catch (JSONException | IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -349,7 +351,8 @@ public class DataManager {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                System.out.println("Error: " + t.getMessage());
+                Toast.makeText(context, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                return;
             }
         });
 
@@ -369,17 +372,20 @@ public class DataManager {
     }
 
     public void deleteLocation(int position) {
+        Toast.makeText(context, "Location Being Deleted. Please Wait!", Toast.LENGTH_LONG).show();
         api.deleteStore(myLocations.get(position).getId()).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     String res = null;
                     try {
-                        fetchBuylists();
                         res = response.body().string();
                         JSONObject jsonResponse = new JSONObject(res);
                         System.out.println("Response: " + jsonResponse);
+                        fetchMyLocations();
+                        fetchLocations();
                         Toast.makeText(context, "Location Deleted. Refresh the List!", Toast.LENGTH_SHORT).show();
+                        return;
                     } catch (IOException | JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -389,7 +395,8 @@ public class DataManager {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                System.out.println("Error: " + t.getMessage());
+                Toast.makeText(context, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                return;
             }
         });
     }
@@ -461,16 +468,24 @@ public class DataManager {
 
     public ArrayList<ItemLocation> getItemLocations(int itemId) {
         ArrayList<ItemLocation> another = new ArrayList<ItemLocation>();
+        Item itm = new Item();
+        for (Item i: items)
+            if(i.getId()==itemId)
+                itm = i;
         for (ItemLocation aux : itemLocations)
-            if (getItems().get(itemId).getId() == aux.getItem().getId())
+            if (itm.getId() == aux.getItem().getId())
                 another.add(aux);
         return another;
     }
 
     public ArrayList<ItemLocation> getLocationItems(int locationId) {
         ArrayList<ItemLocation> another = new ArrayList<ItemLocation>();
+        Location loc = new Location();
+        for (Location l: locations)
+            if(l.getId()==locationId)
+                loc = l;
         for (ItemLocation aux : itemLocations)
-            if (locations.get(locationId).getId() == aux.getLocation().getId())
+            if (loc.getId() == aux.getLocation().getId())
                 another.add(aux);
         return another;
     }
@@ -525,6 +540,7 @@ public class DataManager {
     }
 
     public void addBuyList(BuyList buyList) {
+        Toast.makeText(context, "Buylist being added. Please Wait!", Toast.LENGTH_LONG).show();
         JSONObject buylistObj = null;
         try {
             buylistObj = new JSONObject(new Gson().toJson(buyList));
@@ -541,6 +557,8 @@ public class DataManager {
                         String res = response.body().string();
                         JSONObject jsonResponse = new JSONObject(res);
                         System.out.println("Response: " + jsonResponse);
+                        fetchBuylists();
+                        Toast.makeText(context, "Buylist Added. Refresh the List!", Toast.LENGTH_SHORT).show();
                     } catch (JSONException | IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -561,6 +579,7 @@ public class DataManager {
     }
 
     public void deleteBuyList(int position) {
+        Toast.makeText(context, "Buylist being deleted. Please Wait!", Toast.LENGTH_LONG).show();
         api.deleteLista(buylists.get(position).getId()).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -571,6 +590,7 @@ public class DataManager {
                         res = response.body().string();
                         JSONObject jsonResponse = new JSONObject(res);
                         System.out.println("Response: " + jsonResponse);
+                        fetchBuylists();
                         Toast.makeText(context, "Buylist Deleted. Refresh the List!", Toast.LENGTH_SHORT).show();
                     } catch (IOException | JSONException e) {
                         throw new RuntimeException(e);

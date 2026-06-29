@@ -32,6 +32,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
     private ArrayList<Location> locations;
     private Intent intent;
     private int itemId;
+    Item item;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ItemLocationAdapter itemLocationAdapter;
@@ -48,15 +49,18 @@ public class ItemDetailsActivity extends AppCompatActivity {
         itemId = intent.getIntExtra(ShoppingItemAdapter.EXTRA_ITEM_ID, 0);
 
         items = dataManager.getItems();
+        for(Item i:items)
+            if(i.getId()==itemId)
+                item=i;
 
         itemName = findViewById(R.id.itemDName);
         itemDescription = findViewById(R.id.itemDDescription);
         itemPrice = findViewById(R.id.itemDPrice);
         itemType = findViewById(R.id.itemDType);
 
-        itemName.setText(items.get(itemId).getName());
-        itemDescription.setText(items.get(itemId).getDescription());
-        itemType.setText(items.get(itemId).getItemType().getName());
+        itemName.setText(item.getName());
+        itemDescription.setText(item.getDescription());
+        itemType.setText(item.getItemType().getName());
         itemPrice.setText(dataManager.avgPrice(itemId)+"0 MTS");
 
         itemLocationAdapter = new ItemLocationAdapter();

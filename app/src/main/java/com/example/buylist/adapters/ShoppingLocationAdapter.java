@@ -97,7 +97,7 @@ public class ShoppingLocationAdapter extends RecyclerView.Adapter<ShoppingLocati
 
                 case R.id.simpleShoppingLocation:
                     intent = new Intent(activity, LocationDetailsActivity.class);
-                    intent.putExtra(EXTRA_LOCATION_ID, getBindingAdapterPosition());
+                    intent.putExtra(EXTRA_LOCATION_ID, locations.get(getBindingAdapterPosition()).getId());
                     activity.startActivity(intent);
                     break;
 
@@ -142,7 +142,7 @@ public class ShoppingLocationAdapter extends RecyclerView.Adapter<ShoppingLocati
                     noBtn.setOnClickListener(view1 -> dialog.dismiss());
 
                     yesBtn.setOnClickListener(view2 -> {
-                        locations.remove(getBindingAdapterPosition());
+                        // locations.remove(getBindingAdapterPosition());
                         dataManager.deleteLocation(getBindingAdapterPosition());
                         notifyItemRemoved(getBindingAdapterPosition());
                         dialog.dismiss();

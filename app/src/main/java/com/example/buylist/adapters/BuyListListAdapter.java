@@ -103,8 +103,8 @@ public class BuyListListAdapter extends RecyclerView.Adapter<BuyListListAdapter.
 
                 yesBtn.setOnClickListener(view2 -> {
                     dataManager.deleteBuyList(getBindingAdapterPosition());
-                    buyLists.remove(getBindingAdapterPosition());
-                    notifyItemRemoved(getBindingAdapterPosition());
+                    //buyLists.remove(getBindingAdapterPosition());
+                    //notifyItemRemoved(getBindingAdapterPosition());
                     dialog.dismiss();
                 });
 

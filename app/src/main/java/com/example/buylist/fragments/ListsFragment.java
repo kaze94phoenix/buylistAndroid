@@ -42,7 +42,7 @@ public class ListsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_lists, container, false);
 
-        dataManager = new DataManager(getActivity());
+        dataManager = new DataManager(getContext());
 
         buyListListAdapter = new BuyListListAdapter();
         buyListListAdapter.setActivity(getActivity());
@@ -55,7 +55,7 @@ public class ListsFragment extends Fragment {
 
         swipeRefreshLayout = view.findViewById(R.id.swipeRefresh);
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            dataManager = new DataManager(getContext());
+            dataManager.fetchBuylists();
             buyListListAdapter.setBuyLists(dataManager.getBuyLists());
             buylistList.setAdapter(buyListListAdapter);
             buylistList.setLayoutManager(new LinearLayoutManager(getContext()));

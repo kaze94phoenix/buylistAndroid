@@ -55,7 +55,7 @@ public class BuylistFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_buylist, container, false);
 
-        dataManager = new DataManager(getActivity());
+        dataManager = new DataManager(getContext());
         buyListAdapter = new BuyListAdapter();
         purchases = dataManager.getPurchases();
 
@@ -179,11 +179,9 @@ public class BuylistFragment extends Fragment {
     }
 
     public void saveBuyListItems() {
-        dataManager = new DataManager(getActivity());
+        dataManager = new DataManager(getContext());
         Date date = new Date();
         dataManager.addBuyList(new BuyList("BuyList #" + dataManager.getBuyLists().size(), date, purchases));
-        Toast.makeText(getContext(), "List Saved", Toast.LENGTH_SHORT).show();
-
     }
 
 

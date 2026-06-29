@@ -23,6 +23,7 @@ public class LocationDetailsActivity extends AppCompatActivity {
     private ArrayList<Location> locations;
     private Intent intent;
     private int locationId;
+    private Location location;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private LocationItemAdapter locationItemAdapter;
@@ -38,14 +39,17 @@ public class LocationDetailsActivity extends AppCompatActivity {
         locationId = intent.getIntExtra(ShoppingLocationAdapter.EXTRA_LOCATION_ID, 0);
 
         locations = dataManager.getLocations();
+        for(Location l:locations)
+            if(l.getId()==locationId)
+                location=l;
 
         locationName = findViewById(R.id.locationDName);
         locationType = findViewById(R.id.locationDType);
         locationAddress = findViewById(R.id.locationDAdress);
 
-        locationName.setText(locations.get(locationId).getName());
-        locationType.setText(locations.get(locationId).getLocationType().getName());
-        locationAddress.setText(locations.get(locationId).getAddress());
+        locationName.setText(location.getName());
+        locationType.setText(location.getLocationType().getName());
+        locationAddress.setText(location.getAddress());
 
         locationItemAdapter = new LocationItemAdapter();
         locationItemAdapter.setActivity(this);

@@ -130,9 +130,6 @@ public class MyLocationsFragment extends Fragment implements View.OnClickListene
             locationX.setName(nameTxt.getText().toString());
             locationX.setGeolocation(geoLocTxt.getText().toString());
             dataManager.addLocation(locationX);
-            shoppingLocationAdapter.setLocations(dataManager.getMyLocations());
-            recyclerView.setAdapter(shoppingLocationAdapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             dialog.dismiss();
         });
 

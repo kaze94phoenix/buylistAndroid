@@ -4,12 +4,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.Strictness;
 
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitInstance {
 
-    /**Sample
+    /**
+     * Sample
      * private static final String BASE_URL = "http://127.0.0.1:8000";
      */
     private static final String BASE_URL = "http://127.0.0.1:8000";
@@ -18,10 +22,20 @@ public class RetrofitInstance {
     private final static Gson gson = new GsonBuilder()
             .setStrictness(Strictness.LENIENT)
             .create();
+
+
+    public static final OkHttpClient okHttpClient = new OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .callTimeout(10,TimeUnit.SECONDS)
+            .build();
+
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
+                    .client(okHttpClient)
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
         }

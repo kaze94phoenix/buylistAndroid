@@ -79,7 +79,7 @@ public class ShoppingItemAdapter extends RecyclerView.Adapter<ShoppingItemAdapte
 
             itemView.setOnClickListener(view -> {
                 intent = new Intent(activity, ItemDetailsActivity.class);
-                intent.putExtra(EXTRA_ITEM_ID, getBindingAdapterPosition());
+                intent.putExtra(EXTRA_ITEM_ID, items.get(getBindingAdapterPosition()).getId());
                 activity.startActivity(intent);
             });
         }
