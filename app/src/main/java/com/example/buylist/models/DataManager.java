@@ -342,7 +342,6 @@ public class DataManager {
                         fetchMyLocations();
                         fetchLocations();
                         Toast.makeText(context, "Location Added. Refresh the List!", Toast.LENGTH_SHORT).show();
-                        return;
                     } catch (JSONException | IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -352,7 +351,6 @@ public class DataManager {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Toast.makeText(context, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                return;
             }
         });
 
@@ -385,7 +383,6 @@ public class DataManager {
                         fetchMyLocations();
                         fetchLocations();
                         Toast.makeText(context, "Location Deleted. Refresh the List!", Toast.LENGTH_SHORT).show();
-                        return;
                     } catch (IOException | JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -396,7 +393,6 @@ public class DataManager {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Toast.makeText(context, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                return;
             }
         });
     }
