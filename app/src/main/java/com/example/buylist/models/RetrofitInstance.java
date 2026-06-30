@@ -7,6 +7,7 @@ import com.google.gson.Strictness;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -17,6 +18,10 @@ public class RetrofitInstance {
      * private static final String BASE_URL = "http://127.0.0.1:8000";
      */
     private static final String BASE_URL = "http://127.0.0.1:8000";
+
+    /**
+     * TO-DO: EDIT LOCATIONS AND ADDING TEMPORARY FAKE ADAPTERS WHEN DATA IS ALTERED
+     */
     private static Retrofit retrofit;
 
     private final static Gson gson = new GsonBuilder()
@@ -26,9 +31,18 @@ public class RetrofitInstance {
 
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
+
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .addInterceptor(interceptor)
+                    .build();
+
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create(gson))
+                    .client(client)
                     .build();
         }
         return retrofit;
