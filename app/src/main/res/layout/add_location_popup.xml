@@ -61,7 +61,7 @@
         android:text="Address" />
 
     <EditText
-        android:id="@+id/locationAdressTxt"
+        android:id="@+id/locationAddressTxt"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_below="@id/locationAddressLabel"
@@ -78,7 +78,7 @@
         android:id="@+id/locationGeoLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/locationAdressTxt"
+        android:layout_below="@id/locationAddressTxt"
         android:layout_alignParentStart="true"
         android:layout_marginStart="50dp"
         android:layout_marginTop="32dp"
@@ -108,7 +108,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="50dp"
         android:onClick="addLocation"
-        android:text="Save" />
+        android:text="Add" />
 
     <Button
         android:id="@+id/cancelLocation"
@@ -120,6 +120,6 @@
         android:layout_marginEnd="50dp"
         android:layout_marginBottom="24dp"
         android:onClick="cancelLocation"
-        android:text="Cancel" />
+        android:text="Dismiss" />
 
 </RelativeLayout>

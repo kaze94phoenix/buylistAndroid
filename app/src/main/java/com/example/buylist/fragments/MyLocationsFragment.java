@@ -1,7 +1,5 @@
 package com.example.buylist.fragments;
 
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -18,13 +16,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.example.buylist.R;
 import com.example.buylist.adapters.ShoppingLocationAdapter;
 import com.example.buylist.models.DataManager;
 import com.example.buylist.models.Location;
-import com.example.buylist.models.LocationType;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -103,7 +99,7 @@ public class MyLocationsFragment extends Fragment implements View.OnClickListene
         locationTypeSp.setAdapter(spinnerNames);
 
         EditText nameTxt = addLocationPopoutView.findViewById(R.id.locationNameTxt);
-        EditText addressTxt = addLocationPopoutView.findViewById(R.id.locationAdressTxt);
+        EditText addressTxt = addLocationPopoutView.findViewById(R.id.locationAddressTxt);
         EditText geoLocTxt = addLocationPopoutView.findViewById(R.id.locationGeoTxt);
 
         Button saveBtn = addLocationPopoutView.findViewById(R.id.saveLocation);
@@ -112,20 +108,9 @@ public class MyLocationsFragment extends Fragment implements View.OnClickListene
         dialogBuilder.setView(addLocationPopoutView);
         dialog = dialogBuilder.create();
         dialog.show();
-        locationTypeSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                locationX.setLocationType(dataManager.getLocationTypes().get(i));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
 
         saveBtn.setOnClickListener(view -> {
+            locationX.setLocationType(dataManager.getLocationTypes().get(locationTypeSp.getSelectedItemPosition()));
             locationX.setAddress(addressTxt.getText().toString());
             locationX.setName(nameTxt.getText().toString());
             locationX.setGeolocation(geoLocTxt.getText().toString());

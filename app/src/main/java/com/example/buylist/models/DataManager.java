@@ -329,7 +329,7 @@ public class DataManager {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        Toast.makeText(context, "Location Being Added. Please Wait!", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Adding Location. Please Wait!", Toast.LENGTH_LONG).show();
         api.addStore(locationObj.toString()).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -357,20 +357,41 @@ public class DataManager {
     }
 
     public void editLocation(int position, Location location) {
-        Location locationA = locations.get(position);
-        locations.set(position, location);
-        Paper.book().write(LOCATIONS, locations);
-        for (int i = 0; i < itemLocations.size(); i++)
-            if (itemLocations.get(i).getLocation().compareTo(locationA) > 0) {
-                ItemLocation itemLocation = itemLocations.get(i);
-                itemLocation.setItem(items.get(position));
-                editItemLocation(i, itemLocation);
+        JSONObject locationObj = null;
+        try {
+            locationObj = new JSONObject(new Gson().toJson(location));
+            locationObj.put("user_id", preferences.getString("userId", ""));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        Toast.makeText(context, "Updating Location. Please Wait!", Toast.LENGTH_LONG).show();
+        api.updateStore(position,location).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+
+                    try {
+                        String res = response.body().string();
+                        JSONObject jsonResponse = new JSONObject(res);
+                        System.out.println("Response: " + jsonResponse);
+                        fetchMyLocations();
+                        fetchLocations();
+                        Toast.makeText(context, "Location Updated. Refresh the List!", Toast.LENGTH_SHORT).show();
+                    } catch (JSONException | IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
 
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(context, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void deleteLocation(int position) {
-        Toast.makeText(context, "Location Being Deleted. Please Wait!", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Deleting Location. Please Wait!", Toast.LENGTH_LONG).show();
         api.deleteStore(myLocations.get(position).getId()).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

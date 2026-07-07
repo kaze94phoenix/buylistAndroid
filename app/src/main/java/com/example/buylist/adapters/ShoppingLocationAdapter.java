@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import com.example.buylist.LocationDetailsActivity;
 import com.example.buylist.R;
 import com.example.buylist.models.DataManager;
 import com.example.buylist.models.Location;
+import com.example.buylist.models.LocationType;
 
 import java.util.ArrayList;
 
@@ -105,19 +108,50 @@ public class ShoppingLocationAdapter extends RecyclerView.Adapter<ShoppingLocati
                     dialogBuilder = new AlertDialog.Builder(activity);
                     final View addLocationPopoutView = activity.getLayoutInflater().inflate(R.layout.add_location_popup, null);
 
+                    Location locationX = new Location();
+
+                    for (Location l : dataManager.getMyLocations())
+                        if (locations.get(getBindingAdapterPosition()).getId() == l.getId())
+                            locationX = l;
+
+                    ArrayList<String> locTypeNames = dataManager.getLocationTypeNames();
+                    ArrayAdapter<String> spinnerNames = new ArrayAdapter<>(
+                            activity,
+                            android.R.layout.simple_spinner_item,
+                            locTypeNames
+                    );
+                    spinnerNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                    Spinner locationTypeSp = addLocationPopoutView.findViewById(R.id.locationTypeSp);
+                    locationTypeSp.setAdapter(spinnerNames);
+
                     EditText nameTxt = addLocationPopoutView.findViewById(R.id.locationNameTxt);
-                    EditText addressTxt = addLocationPopoutView.findViewById(R.id.locationAdressTxt);
+                    EditText addressTxt = addLocationPopoutView.findViewById(R.id.locationAddressTxt);
+                    EditText geoLocTxt = addLocationPopoutView.findViewById(R.id.locationGeoTxt);
 
                     Button saveBtn = addLocationPopoutView.findViewById(R.id.saveLocation);
+                    saveBtn.setText("Update");
                     Button cancelBtn = addLocationPopoutView.findViewById(R.id.cancelLocation);
 
                     dialogBuilder.setView(addLocationPopoutView);
                     dialog = dialogBuilder.create();
                     dialog.show();
 
-                    saveBtn.setOnClickListener(view1 -> {
-                        dataManager.addLocation(new Location());
-                        Toast.makeText(activity, "Location Updated", Toast.LENGTH_SHORT).show();
+                    for(int i=0; i<dataManager.getLocationTypes().size(); i++)
+                        if(dataManager.getLocationTypes().get(i).getId()==locationX.getLocationType().getId())
+                            locationTypeSp.setSelection(i);
+
+                    nameTxt.setText(locationX.getName());
+                    addressTxt.setText(locationX.getAddress());
+                    geoLocTxt.setText(locationX.getGeolocation());
+
+                    Location finalLocationX = locationX;
+                    saveBtn.setOnClickListener(view3 -> {
+                        finalLocationX.setLocationType(dataManager.getLocationTypes().get(locationTypeSp.getSelectedItemPosition()));
+                        finalLocationX.setAddress(addressTxt.getText().toString());
+                        finalLocationX.setName(nameTxt.getText().toString());
+                        finalLocationX.setGeolocation(geoLocTxt.getText().toString());
+                        dataManager.editLocation(locations.get(getBindingAdapterPosition()).getId(),finalLocationX);
                         dialog.dismiss();
                     });
 
@@ -142,7 +176,6 @@ public class ShoppingLocationAdapter extends RecyclerView.Adapter<ShoppingLocati
                     noBtn.setOnClickListener(view1 -> dialog.dismiss());
 
                     yesBtn.setOnClickListener(view2 -> {
-                        // locations.remove(getBindingAdapterPosition());
                         dataManager.deleteLocation(getBindingAdapterPosition());
                         notifyItemRemoved(getBindingAdapterPosition());
                         dialog.dismiss();

@@ -11,6 +11,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 
@@ -43,6 +44,10 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("api/stores")
     Call<ResponseBody> addStore(@Field("json_request") String store);
+
+    //PUT REQUESTS
+    @PUT("api/stores/{id}")
+    Call<ResponseBody> updateStore(@Path("id") int storeId, @Body Location location);
 
     //DELETE REQUESTS
     @DELETE("api/listas/{id}")
