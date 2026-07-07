@@ -21,29 +21,24 @@ public interface ApiService {
     Call<ArrayList<ItemType>> getProductTypes();
     @GET("api/products")
     Call<ArrayList<Item>> getProducts();
-
     @GET("api/stores")
     Call<ArrayList<Location>> getLocations();
     @GET("api/store-types")
     Call<ArrayList<LocationType>> getLocationTypes();
     @GET("api/products-stores")
     Call<ArrayList<ItemLocation>> getItemLocations();
-
     @GET("api/listas/{id}")
     Call<ArrayList<BuyList>> getListas(@Path("id") String userId);
-
     @GET("api/my-stores/{id}")
     Call<ArrayList<Location>> myLocations(@Path("id") String userId);
 
     //POST REQUESTS
     @POST("api/login")
     Call<ResponseBody> login(@Body User user);
-    @FormUrlEncoded
-    @POST("api/listas")
-    Call<ResponseBody> addLista(@Field("json_request") String buylist);
-    @FormUrlEncoded
-    @POST("api/stores")
-    Call<ResponseBody> addStore(@Field("json_request") String store);
+    @POST("api/listas/{id}")
+    Call<ResponseBody> addLista(@Path("id") int userId, @Body BuyList buylist);
+    @POST("api/stores/{id}")
+    Call<ResponseBody> addStore(@Path("id") int userId, @Body Location location);
 
     //PUT REQUESTS
     @PUT("api/stores/{id}")

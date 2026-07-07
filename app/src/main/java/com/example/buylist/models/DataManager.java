@@ -322,15 +322,9 @@ public class DataManager {
 
 
     public void addLocation(Location location) {
-        JSONObject locationObj = null;
-        try {
-            locationObj = new JSONObject(new Gson().toJson(location));
-            locationObj.put("user_id", preferences.getString("userId", ""));
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        int userId = Integer.parseInt(preferences.getString("userId", ""));
         Toast.makeText(context, "Adding Location. Please Wait!", Toast.LENGTH_LONG).show();
-        api.addStore(locationObj.toString()).enqueue(new Callback<ResponseBody>() {
+        api.addStore(userId, location).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -357,13 +351,6 @@ public class DataManager {
     }
 
     public void editLocation(int position, Location location) {
-        JSONObject locationObj = null;
-        try {
-            locationObj = new JSONObject(new Gson().toJson(location));
-            locationObj.put("user_id", preferences.getString("userId", ""));
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
         Toast.makeText(context, "Updating Location. Please Wait!", Toast.LENGTH_LONG).show();
         api.updateStore(position,location).enqueue(new Callback<ResponseBody>() {
             @Override
@@ -557,15 +544,9 @@ public class DataManager {
     }
 
     public void addBuyList(BuyList buyList) {
-        Toast.makeText(context, "Buylist being added. Please Wait!", Toast.LENGTH_LONG).show();
-        JSONObject buylistObj = null;
-        try {
-            buylistObj = new JSONObject(new Gson().toJson(buyList));
-            buylistObj.put("user_id", preferences.getString("userId", ""));
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-        api.addLista(buylistObj.toString()).enqueue(new Callback<ResponseBody>() {
+        int userId = Integer.parseInt(preferences.getString("userId", ""));
+        Toast.makeText(context, "Adding Buylist. Please Wait!", Toast.LENGTH_LONG).show();
+        api.addLista(userId,buyList).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
