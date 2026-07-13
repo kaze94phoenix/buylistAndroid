@@ -8,6 +8,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,7 @@ import java.util.Date;
 public class BuylistFragment extends Fragment {
 
     private AlertDialog dialog;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private AlertDialog.Builder dialogBuilder;
     private RecyclerView buylist;
     private DataManager dataManager;
@@ -73,6 +75,15 @@ public class BuylistFragment extends Fragment {
 
         saveBuylist = view.findViewById(R.id.saveBuylistBtn);
         saveBuylist.setOnClickListener(view2 -> saveBuyListItems());
+
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefresh);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            dataManager.fetchMyLocations();
+            buyListAdapter.setBuylist(purchases);
+            buylist.setAdapter(buyListAdapter);
+            buylist.setLayoutManager(new LinearLayoutManager(getContext()));
+            swipeRefreshLayout.setRefreshing(false);
+        });
 
 
         // Inflate the layout for this fragment

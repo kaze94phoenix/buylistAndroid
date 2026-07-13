@@ -1,5 +1,6 @@
 package com.example.buylist.adapters;
 
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.buylist.R;
@@ -16,7 +18,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
-/**Adapter for the buylist on the main activity [BUYLIST Fragment]
+/**
+ * Adapter for the buylist on the main activity [BUYLIST Fragment]
  */
 public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHolder> {
 
@@ -24,19 +27,19 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
     DataManager dataManager;
     boolean options;
 
-    public BuyListAdapter(){
+    public BuyListAdapter() {
         buylist = new ArrayList<>();
         options = true;
     }
 
-    public void hasOptions(boolean options){
-        this.options=options;
+    public void hasOptions(boolean options) {
+        this.options = options;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.buylist_item,parent,false);
+        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.buylist_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -45,9 +48,13 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
         holder.item.setText(buylist.get(position).getItemLocation().getItem().getName());
         holder.location.setText(buylist.get(position).getItemLocation().getLocation().getName());
         holder.price.setText(buylist.get(position).getItemLocation().getPrice() * buylist.get(position).getQuantity() + "0 MTS");
-        holder.quantity.setText(buylist.get(position).getQuantity()+" Unit(s)");
-
-        if(!options){
+        holder.quantity.setText(buylist.get(position).getQuantity() + " Unit(s)");
+        try {
+            holder.distance.setText(dataManager.getDistanceItems().get(position));
+        } catch (IndexOutOfBoundsException e) {
+            holder.distance.setText("Loading...");
+        }
+        if (!options) {
             holder.edit.setVisibility(View.INVISIBLE);
             holder.delete.setVisibility(View.INVISIBLE);
         }
@@ -59,19 +66,34 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
         return buylist.size();
     }
 
-    public void setDataManager(DataManager dataManager){
+    public void setDataManager(DataManager dataManager) {
         this.dataManager = dataManager;
     }
+
     public void setBuylist(ArrayList<Purchase> buylist) {
         this.buylist = buylist;
     }
 
+    private void makeDestinationsString() {
+        ArrayList<String> destinationNames = new ArrayList<>();
+
+        for (Purchase p : buylist)
+            destinationNames.add(p.getItemLocation().getLocation().getGeolocation());
+
+        String dest = "";
+        if (destinationNames.isEmpty())
+            return;
+        dest = destinationNames.get(0);
+        for (int i = 1; i < destinationNames.size(); i++)
+            dest += "|" + destinationNames.get(i);
+        dataManager.fetchDistanceItems(dest);
+    }
 
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView item, location, price,quantity,quantityEdit;
-        Button edit,delete;
+        TextView item, location, price, quantity, quantityEdit, distance;
+        Button edit, delete;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -81,9 +103,10 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
             price = itemView.findViewById(R.id.priceBuylistName);
             quantity = itemView.findViewById(R.id.qttyBuylistName);
             quantityEdit = itemView.findViewById(R.id.qttyBuylistEdit);
+            distance = itemView.findViewById(R.id.distance);
             edit = itemView.findViewById(R.id.changeQttyBuylist);
             delete = itemView.findViewById(R.id.removeBuylist);
-
+            makeDestinationsString();
             edit.setOnClickListener(this);
             delete.setOnClickListener(this);
 
@@ -91,9 +114,9 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
 
         @Override
         public void onClick(View view) {
-            switch(view.getId()){
+            switch (view.getId()) {
                 case (R.id.changeQttyBuylist):
-                    if(quantity.getVisibility()==View.VISIBLE){
+                    if (quantity.getVisibility() == View.VISIBLE) {
                         quantity.setVisibility(View.INVISIBLE);
                         quantityEdit.setVisibility(View.VISIBLE);
                         quantityEdit.setText(String.valueOf(buylist.get(getBindingAdapterPosition()).getQuantity()));
@@ -106,14 +129,14 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
                     }
                     break;
 
-                case(R.id.removeBuylist):
+                case (R.id.removeBuylist):
                     int position = getBindingAdapterPosition();
                     Purchase temp = buylist.get(position);
                     buylist.remove(position);
                     dataManager.setPurchases(buylist);
                     notifyItemRemoved(position);
-                    Snackbar.make((View) itemView.getParent(),"Removing "+temp.getItemLocation().getItem().getName(),Snackbar.LENGTH_LONG).setAction("Undo", view1 -> {
-                        buylist.add(position,temp);
+                    Snackbar.make((View) itemView.getParent(), "Removing " + temp.getItemLocation().getItem().getName(), Snackbar.LENGTH_LONG).setAction("Undo", view1 -> {
+                        buylist.add(position, temp);
                         dataManager.setPurchases(buylist);
                         notifyItemInserted(position);
                     }).show();

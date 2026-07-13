@@ -99,4 +99,17 @@
         app:icon="@drawable/ic_delete"
         app:iconGravity="top"
         />
+
+    <TextView
+        android:id="@+id/distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="254dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toEndOf="@id/qttyBuylistName"
+        android:text="Distance"
+        android:textAlignment="textEnd" />
 </RelativeLayout>

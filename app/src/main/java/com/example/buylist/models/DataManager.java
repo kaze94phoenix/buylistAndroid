@@ -15,6 +15,7 @@ import com.example.buylist.LoginActivity;
 import com.example.buylist.MainActivity;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,6 +41,7 @@ public class DataManager {
     private static final String BUYLISTS = "buylists";
     private static final String PURCHASES = "purchases";
     private static final String LOCATIONS_TYPE = "locations type";
+    private static final String DISTANCES = "distances";
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
     private Paper paper;
@@ -53,6 +55,7 @@ public class DataManager {
     private ArrayList<ItemLocation> itemLocations;
     private ArrayList<BuyList> buylists;
     private ArrayList<Purchase> purchases;
+    private ArrayList<String> distanceItems;
     private String userId;
 
     private ApiService api;
@@ -67,7 +70,7 @@ public class DataManager {
 
         Paper.init(context);
 
-        this.context=context;
+        this.context = context;
 
         //ITEM TYPE
         fetchItemTypes();
@@ -116,12 +119,14 @@ public class DataManager {
                         JSONObject user = jsonResponse.getJSONObject("user");
                         String username = user.getString("name");
                         String userId = user.getString("id");
+                        String geoLocation = user.getString("geolocation");
                         String userType = jsonResponse.getString("user_type");
                         String token = jsonResponse.getString("token");
                         editor.putString("username", username);
                         editor.putString("userId", userId);
                         editor.putString("userType", userType);
                         editor.putString("token", token);
+                        editor.putString("geolocation", geoLocation);
                         editor.putString("loginStatus", "true");
                         editor.apply();
                         activity.startActivity(new Intent(activity.getApplicationContext(), MainActivity.class));
@@ -260,7 +265,7 @@ public class DataManager {
     }
 
     //Location Manipulation
-    public void fetchLocations(){
+    public void fetchLocations() {
         api.getLocations().enqueue(new Callback<ArrayList<Location>>() {
             @Override
             public void onResponse(Call<ArrayList<Location>> call, Response<ArrayList<Location>> response) {
@@ -284,7 +289,8 @@ public class DataManager {
         });
         locations = Paper.book().read(LOCATIONS);
     }
-    public void fetchMyLocations(){
+
+    public void fetchMyLocations() {
         if (!userId.equalsIgnoreCase("")) {
             api.myLocations(userId).enqueue(new Callback<ArrayList<Location>>() {
                 @Override
@@ -312,6 +318,7 @@ public class DataManager {
         }
         myLocations = Paper.book().read(MY_LOCATIONS);
     }
+
     public ArrayList<Location> getLocations() {
         return locations;
     }
@@ -352,7 +359,7 @@ public class DataManager {
 
     public void editLocation(int position, Location location) {
         Toast.makeText(context, "Updating Location. Please Wait!", Toast.LENGTH_LONG).show();
-        api.updateStore(position,location).enqueue(new Callback<ResponseBody>() {
+        api.updateStore(position, location).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -406,7 +413,7 @@ public class DataManager {
     }
 
     //Location Type Manipulation
-    public void fetchLocationTypes(){
+    public void fetchLocationTypes() {
         api.getLocationTypes().enqueue(new Callback<ArrayList<LocationType>>() {
             @Override
             public void onResponse(Call<ArrayList<LocationType>> call, Response<ArrayList<LocationType>> response) {
@@ -430,6 +437,7 @@ public class DataManager {
         });
         locationTypes = Paper.book().read(LOCATIONS_TYPE);
     }
+
     public ArrayList<LocationType> getLocationTypes() {
         return locationTypes;
     }
@@ -442,7 +450,7 @@ public class DataManager {
     }
 
     //Item Location Manipulation
-    public void fetchItemLocations(){
+    public void fetchItemLocations() {
         api.getItemLocations().enqueue(new Callback<ArrayList<ItemLocation>>() {
             @Override
             public void onResponse(Call<ArrayList<ItemLocation>> call, Response<ArrayList<ItemLocation>> response) {
@@ -466,6 +474,7 @@ public class DataManager {
         });
         itemLocations = Paper.book().read(ITEM_LOCATIONS);
     }
+
     public ArrayList<ItemLocation> getItemLocations() {
         return itemLocations;
     }
@@ -473,8 +482,8 @@ public class DataManager {
     public ArrayList<ItemLocation> getItemLocations(int itemId) {
         ArrayList<ItemLocation> another = new ArrayList<ItemLocation>();
         Item itm = new Item();
-        for (Item i: items)
-            if(i.getId()==itemId)
+        for (Item i : items)
+            if (i.getId() == itemId)
                 itm = i;
         for (ItemLocation aux : itemLocations)
             if (itm.getId() == aux.getItem().getId())
@@ -485,8 +494,8 @@ public class DataManager {
     public ArrayList<ItemLocation> getLocationItems(int locationId) {
         ArrayList<ItemLocation> another = new ArrayList<ItemLocation>();
         Location loc = new Location();
-        for (Location l: locations)
-            if(l.getId()==locationId)
+        for (Location l : locations)
+            if (l.getId() == locationId)
                 loc = l;
         for (ItemLocation aux : itemLocations)
             if (loc.getId() == aux.getLocation().getId())
@@ -510,8 +519,10 @@ public class DataManager {
     }
 
 
+
+
     // BuyList Manipulation
-    public void fetchBuylists(){
+    public void fetchBuylists() {
         if (!userId.equalsIgnoreCase("")) {
             api.getListas(userId).enqueue(new Callback<ArrayList<BuyList>>() {
                 @Override
@@ -539,6 +550,7 @@ public class DataManager {
         }
         buylists = Paper.book().read(BUYLISTS);
     }
+
     public ArrayList<BuyList> getBuyLists() {
         return buylists;
     }
@@ -546,7 +558,7 @@ public class DataManager {
     public void addBuyList(BuyList buyList) {
         int userId = Integer.parseInt(preferences.getString("userId", ""));
         Toast.makeText(context, "Adding Buylist. Please Wait!", Toast.LENGTH_LONG).show();
-        api.addLista(userId,buyList).enqueue(new Callback<ResponseBody>() {
+        api.addLista(userId, buyList).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -617,11 +629,14 @@ public class DataManager {
     }
 
     //Purchase or Active Buylist Manipulation
-    public void fetchPurchases(){
+    public void fetchPurchases() {
         purchases = Paper.book().read(PURCHASES);
         if (purchases == null)
             purchases = new ArrayList<Purchase>();
+
+        distanceItems = Paper.book().read(DISTANCES);
     }
+
     public void setPurchases(ArrayList<Purchase> purchases) {
         Paper.book().write(PURCHASES, purchases);
     }
@@ -640,6 +655,39 @@ public class DataManager {
 
     public ArrayList<Purchase> getPurchases() {
         return purchases;
+    }
+
+    public ArrayList<String> getDistanceItems(){
+        return distanceItems;
+    }
+    public void fetchDistanceItems(String destination) {
+        String origin = preferences.getString("geolocation", "");
+        ArrayList<String> distances = new ArrayList<>();
+        api.getDistanceItems(origin, destination).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        String res = response.body().string();
+                        JSONArray jsonArray = new JSONArray(res);
+                        for(int i=0; i<jsonArray.length(); i++){
+                            JSONObject object = jsonArray.getJSONObject(i);
+                            JSONObject distance = object.getJSONObject("distance");
+                            distances.add(distance.getString("text"));
+                        }
+                        distanceItems=distances;
+                        Paper.book().write(DISTANCES,distanceItems);
+                    } catch (JSONException | IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println("Error: " + t.getMessage());
+            }
+        });
     }
 
 

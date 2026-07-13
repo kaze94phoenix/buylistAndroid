@@ -31,6 +31,8 @@ public interface ApiService {
     Call<ArrayList<BuyList>> getListas(@Path("id") String userId);
     @GET("api/my-stores/{id}")
     Call<ArrayList<Location>> myLocations(@Path("id") String userId);
+    @GET("api/listas/{origin}/{destination}")
+    Call<ResponseBody> getDistanceItems(@Path("origin") String origin, @Path("destination") String destination);
 
     //POST REQUESTS
     @POST("api/login")
