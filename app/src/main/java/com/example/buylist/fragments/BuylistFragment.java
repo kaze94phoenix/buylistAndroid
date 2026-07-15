@@ -78,8 +78,8 @@ public class BuylistFragment extends Fragment {
 
         swipeRefreshLayout = view.findViewById(R.id.swipeRefresh);
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            dataManager.fetchMyLocations();
             buyListAdapter.setBuylist(purchases);
+            buyListAdapter.makeDestinationsString();
             buylist.setAdapter(buyListAdapter);
             buylist.setLayoutManager(new LinearLayoutManager(getContext()));
             swipeRefreshLayout.setRefreshing(false);

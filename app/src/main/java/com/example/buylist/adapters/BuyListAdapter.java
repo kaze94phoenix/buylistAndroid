@@ -45,15 +45,16 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
         holder.item.setText(buylist.get(position).getItemLocation().getItem().getName());
-        holder.location.setText(buylist.get(position).getItemLocation().getLocation().getName());
+        try {
+        holder.location.setText(buylist.get(position).getItemLocation().getLocation().getName()+" \n("+dataManager.getDistanceItems().get(position)+")");
+        } catch (IndexOutOfBoundsException e) {
+            holder.location.setText(buylist.get(position).getItemLocation().getLocation().getName()+" \n(Loading...)");
+        }
         holder.price.setText(buylist.get(position).getItemLocation().getPrice() * buylist.get(position).getQuantity() + "0 MTS");
         holder.quantity.setText(buylist.get(position).getQuantity() + " Unit(s)");
-        try {
-            holder.distance.setText(dataManager.getDistanceItems().get(position));
-        } catch (IndexOutOfBoundsException e) {
-            holder.distance.setText("Loading...");
-        }
+
         if (!options) {
             holder.edit.setVisibility(View.INVISIBLE);
             holder.delete.setVisibility(View.INVISIBLE);
@@ -74,7 +75,7 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
         this.buylist = buylist;
     }
 
-    private void makeDestinationsString() {
+    public void makeDestinationsString() {
         ArrayList<String> destinationNames = new ArrayList<>();
 
         for (Purchase p : buylist)
@@ -103,10 +104,8 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
             price = itemView.findViewById(R.id.priceBuylistName);
             quantity = itemView.findViewById(R.id.qttyBuylistName);
             quantityEdit = itemView.findViewById(R.id.qttyBuylistEdit);
-            distance = itemView.findViewById(R.id.distance);
             edit = itemView.findViewById(R.id.changeQttyBuylist);
             delete = itemView.findViewById(R.id.removeBuylist);
-            makeDestinationsString();
             edit.setOnClickListener(this);
             delete.setOnClickListener(this);
 
@@ -132,11 +131,14 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
                 case (R.id.removeBuylist):
                     int position = getBindingAdapterPosition();
                     Purchase temp = buylist.get(position);
+                    String tempDis = dataManager.getDistanceItems().get(position);
                     buylist.remove(position);
+                    dataManager.getDistanceItems().remove(position);
                     dataManager.setPurchases(buylist);
                     notifyItemRemoved(position);
                     Snackbar.make((View) itemView.getParent(), "Removing " + temp.getItemLocation().getItem().getName(), Snackbar.LENGTH_LONG).setAction("Undo", view1 -> {
                         buylist.add(position, temp);
+                        dataManager.getDistanceItems().add(position,tempDis);
                         dataManager.setPurchases(buylist);
                         notifyItemInserted(position);
                     }).show();
