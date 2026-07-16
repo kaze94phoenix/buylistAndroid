@@ -59,6 +59,7 @@ public class BuylistFragment extends Fragment {
 
         dataManager = new DataManager(getContext());
         buyListAdapter = new BuyListAdapter();
+        buyListAdapter.setContext(getContext());
         purchases = dataManager.getPurchases();
 
         buyListAdapter.setBuylist(purchases);

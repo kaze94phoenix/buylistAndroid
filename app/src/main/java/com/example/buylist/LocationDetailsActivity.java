@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.buylist.adapters.LocationItemAdapter;
@@ -16,9 +19,10 @@ import com.example.buylist.models.Location;
 
 import java.util.ArrayList;
 
-public class LocationDetailsActivity extends AppCompatActivity {
+public class LocationDetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView locationName, locationType, locationAddress;
+    private Button locationBt;
     private DataManager dataManager;
     private ArrayList<Location> locations;
     private Intent intent;
@@ -46,6 +50,7 @@ public class LocationDetailsActivity extends AppCompatActivity {
         locationName = findViewById(R.id.locationDName);
         locationType = findViewById(R.id.locationDType);
         locationAddress = findViewById(R.id.locationDAdress);
+        locationBt = findViewById(R.id.locationBt);
 
         locationName.setText(location.getName());
         locationType.setText(location.getLocationType().getName());
@@ -59,6 +64,8 @@ public class LocationDetailsActivity extends AppCompatActivity {
         recyclerView.setAdapter(locationItemAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        locationBt.setOnClickListener(this);
+
         swipeRefreshLayout = findViewById(R.id.swipeRefresh);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             locationItemAdapter.notifyDataSetChanged();
@@ -70,5 +77,20 @@ public class LocationDetailsActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    @Override
+    public void onClick(View view) {
+        String cords = location.getGeolocation();
+        // Create a Uri from an intent string. Use the result to create an Intent.
+        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + cords);
+// Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+// Make the Intent explicit by setting the Google Maps package
+        mapIntent.setPackage("com.google.android.apps.maps");
+// Attempt to start an activity that can handle the Intent
+        if (mapIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(mapIntent);
+        }
     }
 }

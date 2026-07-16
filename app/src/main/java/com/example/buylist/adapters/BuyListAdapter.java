@@ -1,10 +1,14 @@
 package com.example.buylist.adapters;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,6 +30,8 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
     ArrayList<Purchase> buylist;
     DataManager dataManager;
     boolean options;
+    Context context;
+
 
     public BuyListAdapter() {
         buylist = new ArrayList<>();
@@ -34,6 +40,10 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
 
     public void hasOptions(boolean options) {
         this.options = options;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     @NonNull
@@ -48,9 +58,9 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
 
         holder.item.setText(buylist.get(position).getItemLocation().getItem().getName());
         try {
-        holder.location.setText(buylist.get(position).getItemLocation().getLocation().getName()+" \n("+dataManager.getDistanceItems().get(position)+")");
+            holder.location.setText(buylist.get(position).getItemLocation().getLocation().getName() + " \n(" + dataManager.getDistanceItems().get(position) + ")");
         } catch (IndexOutOfBoundsException e) {
-            holder.location.setText(buylist.get(position).getItemLocation().getLocation().getName()+" \n(Loading...)");
+            holder.location.setText(buylist.get(position).getItemLocation().getLocation().getName() + " \n(Loading...)");
         }
         holder.price.setText(buylist.get(position).getItemLocation().getPrice() * buylist.get(position).getQuantity() + "0 MTS");
         holder.quantity.setText(buylist.get(position).getQuantity() + " Unit(s)");
@@ -93,12 +103,14 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView item, location, price, quantity, quantityEdit, distance;
+        TextView item, location, price, quantity, quantityEdit;
+        RelativeLayout buyListElement;
         Button edit, delete;
 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            buyListElement = itemView.findViewById(R.id.buylistElement);
             item = itemView.findViewById(R.id.itemBuylistName);
             location = itemView.findViewById(R.id.locationBuylistName);
             price = itemView.findViewById(R.id.priceBuylistName);
@@ -106,6 +118,8 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
             quantityEdit = itemView.findViewById(R.id.qttyBuylistEdit);
             edit = itemView.findViewById(R.id.changeQttyBuylist);
             delete = itemView.findViewById(R.id.removeBuylist);
+
+            buyListElement.setOnClickListener(this);
             edit.setOnClickListener(this);
             delete.setOnClickListener(this);
 
@@ -114,6 +128,20 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
+                case (R.id.buylistElement):
+                    String cords = buylist.get(getBindingAdapterPosition()).getItemLocation().getLocation().getGeolocation();
+                    // Create a Uri from an intent string. Use the result to create an Intent.
+                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + cords);
+// Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+// Make the Intent explicit by setting the Google Maps package
+                    mapIntent.setPackage("com.google.android.apps.maps");
+// Attempt to start an activity that can handle the Intent
+                    if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
+                        context.startActivity(mapIntent);
+                    }
+                    break;
+
                 case (R.id.changeQttyBuylist):
                     if (quantity.getVisibility() == View.VISIBLE) {
                         quantity.setVisibility(View.INVISIBLE);
@@ -138,7 +166,7 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
                     notifyItemRemoved(position);
                     Snackbar.make((View) itemView.getParent(), "Removing " + temp.getItemLocation().getItem().getName(), Snackbar.LENGTH_LONG).setAction("Undo", view1 -> {
                         buylist.add(position, temp);
-                        dataManager.getDistanceItems().add(position,tempDis);
+                        dataManager.getDistanceItems().add(position, tempDis);
                         dataManager.setPurchases(buylist);
                         notifyItemInserted(position);
                     }).show();
