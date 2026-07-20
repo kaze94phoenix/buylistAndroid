@@ -1,7 +1,10 @@
 package com.example.buylist.adapters;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -85,9 +88,8 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
         this.buylist = buylist;
     }
 
-    public void makeDestinationsString() {
+    public void makeDestinationsString(String origin) {
         ArrayList<String> destinationNames = new ArrayList<>();
-
         for (Purchase p : buylist)
             destinationNames.add(p.getItemLocation().getLocation().getGeolocation());
 
@@ -97,7 +99,7 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
         dest = destinationNames.get(0);
         for (int i = 1; i < destinationNames.size(); i++)
             dest += "|" + destinationNames.get(i);
-        dataManager.fetchDistanceItems(dest);
+        dataManager.fetchDistanceItems(origin,dest);
     }
 
 

@@ -519,8 +519,6 @@ public class DataManager {
     }
 
 
-
-
     // BuyList Manipulation
     public void fetchBuylists() {
         if (!userId.equalsIgnoreCase("")) {
@@ -657,11 +655,12 @@ public class DataManager {
         return purchases;
     }
 
-    public ArrayList<String> getDistanceItems(){
+    public ArrayList<String> getDistanceItems() {
         return distanceItems;
     }
-    public void fetchDistanceItems(String destination) {
-        String origin = preferences.getString("geolocation", "");
+
+    public void fetchDistanceItems(String origin, String destination) {
+
         ArrayList<String> distances = new ArrayList<>();
         api.getDistanceItems(origin, destination).enqueue(new Callback<ResponseBody>() {
             @Override
@@ -670,15 +669,18 @@ public class DataManager {
                     try {
                         String res = response.body().string();
                         JSONArray jsonArray = new JSONArray(res);
-                        for(int i=0; i<jsonArray.length(); i++){
+                        for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject object = jsonArray.getJSONObject(i);
                             JSONObject distance = object.getJSONObject("distance");
                             distances.add(distance.getString("text"));
                         }
-                        distanceItems=distances;
-                        Paper.book().write(DISTANCES,distanceItems);
+                        distanceItems = distances;
+                        Paper.book().write(DISTANCES, distanceItems);
                     } catch (JSONException | IOException e) {
-                        throw new RuntimeException(e);
+                        distanceItems.clear();
+                        for (int i = 0; i < purchases.size(); i++)
+                            distanceItems.add("No Home origin");
+                        Paper.book().write(DISTANCES, distanceItems);
                     }
                 }
             }

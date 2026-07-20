@@ -54,8 +54,20 @@
             android:layout_alignParentStart="true"
             android:layout_marginBottom="70dp"
             android:layout_marginStart="50dp"
-                  app:srcCompat="@android:drawable/ic_menu_save"
+            app:srcCompat="@android:drawable/ic_menu_save"
            />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/currentLocBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="70dp"
+            app:srcCompat="@android:drawable/ic_menu_mylocation"
+            android:tooltipText="Current Location"
+            />
+
     </RelativeLayout>
 
 </FrameLayout>

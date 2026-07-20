@@ -1,10 +1,17 @@
 package com.example.buylist.fragments;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +26,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.buylist.MainActivity;
 import com.example.buylist.R;
 import com.example.buylist.adapters.AddBuyListAdapter;
 import com.example.buylist.adapters.BuyListAdapter;
@@ -26,6 +34,11 @@ import com.example.buylist.models.BuyList;
 import com.example.buylist.models.DataManager;
 import com.example.buylist.models.Location;
 import com.example.buylist.models.Purchase;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -39,13 +52,16 @@ import java.util.Date;
 public class BuylistFragment extends Fragment {
 
     private AlertDialog dialog;
+    SharedPreferences preferences;
     private SwipeRefreshLayout swipeRefreshLayout;
     private AlertDialog.Builder dialogBuilder;
     private RecyclerView buylist;
     private DataManager dataManager;
     private BuyListAdapter buyListAdapter;
     private ArrayList<Purchase> purchases;
-    FloatingActionButton addToBuyList, saveBuylist;
+    FloatingActionButton addToBuyList, saveBuylist, currentLocation;
+    private FusedLocationProviderClient locationClient;
+    private static final int LOCATION_PERMISSION_REQUEST = 1001;
 
     public BuylistFragment() {
         // Required empty public constructor
@@ -56,6 +72,9 @@ public class BuylistFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_buylist, container, false);
+
+        preferences = getContext().getSharedPreferences("UserPreferences", MODE_PRIVATE);
+        String origin = preferences.getString("geolocation", "");
 
         dataManager = new DataManager(getContext());
         buyListAdapter = new BuyListAdapter();
@@ -73,14 +92,17 @@ public class BuylistFragment extends Fragment {
         addToBuyList = view.findViewById(R.id.addItemBtn);
         addToBuyList.setOnClickListener(view1 -> addBuyListItems());
 
-
         saveBuylist = view.findViewById(R.id.saveBuylistBtn);
         saveBuylist.setOnClickListener(view2 -> saveBuyListItems());
+
+        locationClient = LocationServices.getFusedLocationProviderClient(getContext());
+        currentLocation = view.findViewById(R.id.currentLocBtn);
+        currentLocation.setOnClickListener(view3 -> currentLocation());
 
         swipeRefreshLayout = view.findViewById(R.id.swipeRefresh);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             buyListAdapter.setBuylist(purchases);
-            buyListAdapter.makeDestinationsString();
+            buyListAdapter.makeDestinationsString(origin);
             buylist.setAdapter(buyListAdapter);
             buylist.setLayoutManager(new LinearLayoutManager(getContext()));
             swipeRefreshLayout.setRefreshing(false);
@@ -90,6 +112,35 @@ public class BuylistFragment extends Fragment {
         // Inflate the layout for this fragment
         return view;
     }
+
+    private void currentLocation() {
+
+//Check if location permission is granted
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Request permission if not granted
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST);
+            return;
+        }
+
+        // Fetch the last known location
+        locationClient.getLastLocation().addOnSuccessListener(location -> {
+            if (location != null) {
+                // Get latitude and longitude
+                double lat = location.getLatitude();
+                double lon = location.getLongitude();
+
+                buyListAdapter.setBuylist(purchases);
+                buyListAdapter.makeDestinationsString(lat+","+lon);
+                buylist.setAdapter(buyListAdapter);
+                buylist.setLayoutManager(new LinearLayoutManager(getContext()));
+            } else {
+                // Display error message if location is null
+                Toast.makeText(getContext(), "Unable to get location!", Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
 
     public void addBuyListItems() {
         //Building the popup to add items to the buylist
