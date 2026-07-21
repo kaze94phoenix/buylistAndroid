@@ -24,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.buylist.MainActivity;
@@ -52,6 +53,7 @@ import java.util.Date;
 public class BuylistFragment extends Fragment {
 
     private AlertDialog dialog;
+    private TextView totalTxt;
     SharedPreferences preferences;
     private SwipeRefreshLayout swipeRefreshLayout;
     private AlertDialog.Builder dialogBuilder;
@@ -80,6 +82,9 @@ public class BuylistFragment extends Fragment {
         buyListAdapter = new BuyListAdapter();
         buyListAdapter.setContext(getContext());
         purchases = dataManager.getPurchases();
+
+        totalTxt = view.findViewById(R.id.totalTxt);
+        totalTxt.setText(dataManager.getPurchasesTotal()+"0 MT(s)");
 
         buyListAdapter.setBuylist(purchases);
         buyListAdapter.setDataManager(dataManager);
@@ -197,6 +202,7 @@ public class BuylistFragment extends Fragment {
             dataManager.setPurchases(purchases);
             buyListAdapter.setBuylist(purchases);
             buylist.setAdapter(buyListAdapter);
+            totalTxt.setText(dataManager.getPurchasesTotal()+"0 MT(s)");
             buylist.setLayoutManager(new LinearLayoutManager(getContext()));
             dialog.dismiss();
         });

@@ -659,6 +659,13 @@ public class DataManager {
         return distanceItems;
     }
 
+    public double getPurchasesTotal(){
+        double total = 0.0;
+        for (Purchase p:purchases)
+            total+=p.getItemLocation().getPrice()*p.getQuantity();
+        return total;
+    }
+
     public void fetchDistanceItems(String origin, String destination) {
 
         ArrayList<String> distances = new ArrayList<>();
