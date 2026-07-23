@@ -481,24 +481,16 @@ public class DataManager {
 
     public ArrayList<ItemLocation> getItemLocations(int itemId) {
         ArrayList<ItemLocation> another = new ArrayList<ItemLocation>();
-        Item itm = new Item();
-        for (Item i : items)
-            if (i.getId() == itemId)
-                itm = i;
         for (ItemLocation aux : itemLocations)
-            if (itm.getId() == aux.getItem().getId())
+            if (itemId == aux.getItem().getId())
                 another.add(aux);
         return another;
     }
 
     public ArrayList<ItemLocation> getLocationItems(int locationId) {
         ArrayList<ItemLocation> another = new ArrayList<ItemLocation>();
-        Location loc = new Location();
-        for (Location l : locations)
-            if (l.getId() == locationId)
-                loc = l;
         for (ItemLocation aux : itemLocations)
-            if (loc.getId() == aux.getLocation().getId())
+            if (locationId == aux.getLocation().getId())
                 another.add(aux);
         return another;
     }

@@ -9,31 +9,45 @@
         android:orientation="vertical"
         android:gravity="center"
         >
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_shopping_dark" />
         <EditText
             android:id="@+id/editTextUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="50dp"
+            android:layout_marginStart="50dp"
             android:hint="Username"
             />
 
         <EditText
             android:hint="Password"
             android:padding="10dp"
+            android:layout_marginTop="10dp"
             android:id="@+id/editTextPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="50dp"
+            android:layout_marginStart="50dp"
             android:ems="10"
             android:inputType="textPassword" />
 
         <Button
             android:id="@+id/loginBtn"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:text="Login" />
         <Button
             android:id="@+id/guestBtn"
-            android:layout_width="match_parent"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/white"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:text="Enter as Guest" />
 
 

@@ -55,7 +55,7 @@ public class ShoppingItemAdapter extends RecyclerView.Adapter<ShoppingItemAdapte
         //binds the attributes of the model to the viewHolder
         holder.txtItemName.setText(items.get(position).getName());
         dataManager = new DataManager(activity);
-        holder.txtItemAvgPrice.setText(dataManager.avgPrice(position) + "0 MTS");
+        holder.txtItemAvgPrice.setText(dataManager.avgPrice(items.get(position).getId()) + "0 MTS");
     }
 
 
