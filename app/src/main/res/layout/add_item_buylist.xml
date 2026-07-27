@@ -9,11 +9,10 @@
         android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:layout_alignParentStart="true"
+        android:layout_toStartOf="@id/itemSearch"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_toStartOf="@id/itemSearch"
-        android:layout_marginEnd="16dp"
-        />
+        android:layout_marginBottom="16dp" />
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/itemSearch"
@@ -29,7 +28,7 @@
         android:id="@+id/itemsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="480dp"
-        android:layout_below="@id/itemSearch" />
+        android:layout_below="@id/locationFilter" />
 
     <Button
         android:id="@+id/addSelected"

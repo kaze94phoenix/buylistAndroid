@@ -8,27 +8,38 @@
 
     <TextView
         android:id="@+id/itemBuylist"
+        android:drawableStart="@drawable/ic_shopping_dark"
+        android:layout_toStartOf="@id/qttyAddBuylistText"
+        android:drawablePadding="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="5dp"
         android:layout_marginTop="20dp"
         android:text="Item" />
 
     <TextView
         android:id="@+id/priceBuylist"
+        android:drawableStart="@drawable/ic_money_fill_dark"
+        android:layout_toStartOf="@id/qttyAddBuylistText"
+        android:drawablePadding="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/itemBuylist"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="110dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="76dp"
+        android:layout_marginEnd="5dp"
         android:text="Price" />
 
     <TextView
         android:id="@+id/locationBuylist"
+        android:drawableStart="@drawable/ic_store_dark"
+        android:layout_toStartOf="@id/qttyAddBuylistText"
+        android:layout_marginEnd="5dp"
+        android:drawablePadding="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/priceBuylist"
@@ -42,22 +53,21 @@
     <EditText
         android:id="@+id/qttyAddBuylistText"
         android:layout_width="46dp"
+        android:layout_centerVertical="true"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="31dp"
         android:layout_marginEnd="17dp"
-        android:layout_marginBottom="25dp"
         android:layout_toStartOf="@id/checkBoxBuylist"
         android:ems="10"
+        android:drawableStart="@drawable/ic_boxes_dark"
+        android:drawablePadding="5dp"
         android:inputType="number" />
 
     <CheckBox
         android:id="@+id/checkBoxBuylist"
-        android:layout_width="20dp"
-        android:layout_height="28dp"
-        android:layout_alignParentTop="true"
+        android:layout_width="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="36dp"
         android:layout_marginEnd="16dp" />
 
 
