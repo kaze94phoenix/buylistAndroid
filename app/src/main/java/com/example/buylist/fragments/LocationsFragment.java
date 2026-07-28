@@ -27,8 +27,6 @@ public class LocationsFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     DataManager dataManager;
     ShoppingLocationAdapter shoppingLocationAdapter;
-    FloatingActionButton actionButton;
-
 
 
     public LocationsFragment() {
@@ -60,9 +58,6 @@ public class LocationsFragment extends Fragment {
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             swipeRefreshLayout.setRefreshing(false);
         });
-
-        actionButton = view.findViewById(R.id.addLocationFloatBtn);
-        actionButton.setVisibility(View.GONE);
 
         // Inflate the layout for this fragment
         return view;

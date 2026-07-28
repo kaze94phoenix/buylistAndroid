@@ -63,6 +63,7 @@ public class LocationItemAdapter extends RecyclerView.Adapter<LocationItemAdapte
     public void onBindViewHolder(@NonNull LocationItemAdapter.ViewHolder holder, int position) {
         //binds the attributes of the model to the viewHolder
         holder.priceLabel.setText(itemLocations.get(position).getPrice()+"0 MTS");
+        holder.itemLabel.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_shopping_dark,0);
         holder.itemLabel.setText(itemLocations.get(position).getItem().getName());
     }
 

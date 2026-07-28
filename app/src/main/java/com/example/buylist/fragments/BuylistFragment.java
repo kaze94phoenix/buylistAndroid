@@ -84,7 +84,7 @@ public class BuylistFragment extends Fragment {
         purchases = dataManager.getPurchases();
 
         totalTxt = view.findViewById(R.id.totalTxt);
-        totalTxt.setText(dataManager.getPurchasesTotal()+"0 MT(s)");
+        totalTxt.setText("Total: "+dataManager.getPurchasesTotal()+"0 MT(s)");
 
         buyListAdapter.setBuylist(purchases);
         buyListAdapter.setDataManager(dataManager);

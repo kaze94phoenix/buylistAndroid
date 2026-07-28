@@ -7,14 +7,17 @@
     <group android:checkableBehavior="single">
 
         <item android:title="Lists &amp; Statistics"
+            android:icon="@drawable/ic_shopping_dark"
             android:id="@+id/listsNStats"
             />
 
         <item android:title="Products &amp; Locations"
+            android:icon="@drawable/ic_store_dark"
             android:id="@+id/locationsNProducts"
             />
         <item
             android:title="My Locations"
+            android:icon="@drawable/ic_bar_chart_dark"
             android:id="@+id/myLocations"
             />
 

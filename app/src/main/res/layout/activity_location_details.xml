@@ -15,7 +15,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="25dp"
             android:background="@drawable/round_outline"
             android:backgroundTint="@color/purple_500">
 
@@ -24,12 +23,14 @@
                 android:id="@+id/locationDName"
                 android:drawableStart="@drawable/ic_store_dark"
                 android:drawablePadding="10dp"
+                android:layout_marginEnd="25dp"
+                android:layout_toStartOf="@+id/locationBt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="25dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="25dp"
                 android:text="Name"
                 android:textSize="20dp" />
 
@@ -40,11 +41,12 @@
                 android:layout_below="@+id/locationDName"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="25dp"
-                android:layout_marginTop="29dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="25dp"
+                android:layout_toStartOf="@+id/locationBt"
                 android:drawableStart="@drawable/ic_location_outlined_dark"
                 android:drawablePadding="10dp"
-                android:text="Adress"
-                android:textAlignment="center"
+                android:text="Address"
                 android:textSize="20dp" />
 
             <TextView
@@ -54,8 +56,9 @@
                 android:layout_below="@+id/locationDAdress"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="25dp"
-                android:layout_marginTop="29dp"
-                android:layout_marginEnd="123dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="25dp"
+                android:layout_marginEnd="25dp"
                 android:layout_toStartOf="@+id/locationBt"
                 android:drawableStart="@drawable/ic_assignment_dark"
                 android:drawablePadding="10dp"
@@ -66,9 +69,8 @@
                 android:id="@+id/locationBt"
                 android:layout_width="55dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/locationDType"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="-35dp"
+                android:layout_centerVertical="true"
                 android:layout_marginEnd="25dp"
                 app:icon="@drawable/ic_location">
 

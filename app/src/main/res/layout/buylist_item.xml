@@ -86,7 +86,7 @@
         android:layout_marginTop="39dp"
         android:layout_marginEnd="100dp"
         android:layout_marginBottom="8dp"
-        android:drawableStart="@drawable/ic_money_fill_dark"
+        android:drawableEnd="@drawable/ic_money_fill_dark"
         android:drawablePadding="5dp"
         android:text="Full Price"
         android:textAlignment="textEnd" />

@@ -20,7 +20,7 @@ public class RetrofitInstance {
     private static final String BASE_URL = "http://127.0.0.1:8000";
 
     /**
-     * TO-DO: ADDING PRODUCTS TO MY LOCATION
+     * TO-DO: IMPLEMENT THE STATISTICS FRAGMENT
      */
     private static Retrofit retrofit;
 

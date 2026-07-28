@@ -17,30 +17,33 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/balanceButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:checked="true"
-                android:text="Balance" />
 
-            <RadioButton
-                android:id="@+id/listsButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="160dp"
-                android:layout_marginEnd="16dp"
-                android:text="Lists" />
+                <RadioButton
+                    android:id="@+id/balanceButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:checked="true"
+                    android:drawableStart="@drawable/ic_bar_chart_dark"
+                    android:drawablePadding="5dp"
+                    android:text="Balance" />
+
+                <RadioButton
+                    android:id="@+id/listsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="16dp"
+                    android:drawableStart="@drawable/ic_bullet_list_dark"
+                    android:drawablePadding="5dp"
+                    android:text="Lists" />
         </RadioGroup>
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/statisticsLayout"
-        android:layout_below="@id/statisticsRadios"
-        >
-    </FrameLayout>
 
+        <FrameLayout
+            android:id="@+id/statisticsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/statisticsRadios"></FrameLayout>
 
 
     </RelativeLayout>
