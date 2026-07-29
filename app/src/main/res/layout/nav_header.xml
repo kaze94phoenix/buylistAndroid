@@ -22,6 +22,8 @@
         >
         <TextView
             android:id="@+id/userLabel"
+            android:drawableStart="@drawable/ic_person_dark"
+            android:drawablePadding="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Guest"

@@ -1,7 +1,10 @@
 package com.example.buylist.fragments;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -9,6 +12,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.buylist.R;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+
+import java.time.Month;
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,51 +32,113 @@ import com.example.buylist.R;
  * create an instance of this fragment.
  */
 public class BalanceFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    BarChart barChart;
+    BarDataSet barDataSet;
+    ArrayList<BarEntry> barEntries;
+    Month[] months;
 
     public BalanceFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BalanceFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static BalanceFragment newInstance(String param1, String param2) {
-        BalanceFragment fragment = new BalanceFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_balance, container, false);
+        View view = inflater.inflate(R.layout.fragment_balance, container, false);
+
+        // Working on DataSet
+        months = Month.values(); //Getting MONTHS names
+        barDataSet = new BarDataSet(getBarEntries(), "Data");
+
+        // Option 2: Set different colors for each bar
+        int[] colors = {Color.DKGRAY, Color.RED, Color.GREEN, Color.BLUE,
+                Color.YELLOW, Color.CYAN, Color.MAGENTA};
+
+        // Set the colors for the bars
+        barDataSet.setColors(colors);
+
+        barDataSet.setValueTextSize(11f);
+
+        // Working on BarChart
+        barChart = view.findViewById(R.id.idBarChart);
+        BarData data = new BarData(barDataSet);
+        barChart.setData(data);
+        barChart.animateY(2000);
+        barChart.getDescription().setEnabled(false);
+        barChart.setDragEnabled(true);
+        barChart.setVisibleXRangeMaximum(6);
+
+        // Set bar width
+        data.setBarWidth(0.5f);
+
+        // X-Axis Data
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setCenterAxisLabels(true);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setGranularity(1);
+        xAxis.setGranularityEnabled(true);
+
+        //Formatting the lables of the charts with months
+        xAxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                if (value >= 0) {
+                    if (months.length > (int) value) {
+                        String month = months[(int) value] + "";
+                        return month.substring(0,3);
+                    } else {
+                        return "";
+                    }
+                } else {
+                    return "";
+                }
+            }
+        });
+
+        // Enable grid lines for X-axis
+        xAxis.setDrawGridLines(true);
+
+        // Set grid line color
+        xAxis.setGridColor(Color.LTGRAY);
+
+        // Set grid line width
+        xAxis.setGridLineWidth(1f);
+
+        // Y-Axis Data
+        YAxis leftAxis = barChart.getAxisLeft();
+        leftAxis.setDrawGridLines(true);
+        leftAxis.setGridColor(Color.LTGRAY);
+        leftAxis.setGridLineWidth(1f);
+        leftAxis.setTextColor(Color.WHITE);
+
+        YAxis rightAxis = barChart.getAxisRight();
+
+        // Disable right Y-axis
+        rightAxis.setEnabled(false);
+
+        barChart.getXAxis().setAxisMinimum(0);
+        barChart.animate();
+
+        // Invalidate the chart to refresh
+        barChart.invalidate();
+        return view;
+    }
+
+    // ArrayList for the first set of bar entries
+    private ArrayList<BarEntry> getBarEntries() {
+        // Creating a new ArrayList
+        barEntries = new ArrayList<>();
+
+        Random random = new Random();
+        // Adding entries to the ArrayList for the first set
+        for (int i = 0; i < months.length; i++)
+            barEntries.add(new BarEntry(i, random.nextInt(20) + 1));
+        /*
+        --Sample--
+        barEntries.add(new BarEntry(1f, 3));
+        */
+        return barEntries;
     }
 }
