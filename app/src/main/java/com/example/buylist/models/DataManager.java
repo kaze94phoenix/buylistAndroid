@@ -20,7 +20,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.time.Month;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
 import io.paperdb.Paper;
@@ -651,10 +653,31 @@ public class DataManager {
         return distanceItems;
     }
 
-    public double getPurchasesTotal(){
+    public double getPurchasesTotal() {
         double total = 0.0;
-        for (Purchase p:purchases)
-            total+=p.getItemLocation().getPrice()*p.getQuantity();
+        for (Purchase p : purchases)
+            total += p.getItemLocation().getPrice() * p.getQuantity();
+        return total;
+    }
+
+    public double getPurchasesTotal(ArrayList<Purchase> purchases) {
+        double total = 0.0;
+        for (Purchase p : purchases)
+            total += p.getItemLocation().getPrice() * p.getQuantity();
+        return total;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public double[] monthlyTotal() {
+        double[] total = new double[12];
+        Month[] months = Month.values();
+        for (Month m : months)
+            for(BuyList b:buylists)
+                if(m.getValue()==b.getDate().getMonth()+1) {
+                    System.out.println("month: " + m.getValue() + "\nbuylist month: " + b.getDate().getMonth());
+                    total[b.getDate().getMonth()] += getPurchasesTotal(b.getPurchases());
+                }
+        System.out.println(total);
         return total;
     }
 

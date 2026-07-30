@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.example.buylist.adapters.BuyListAdapter;
 import com.example.buylist.models.DataManager;
@@ -18,6 +19,7 @@ public class BuyListDetailsActivity extends AppCompatActivity {
     private RecyclerView buylist;
     private DataManager dataManager;
     private BuyListAdapter buyListAdapter;
+    TextView totalTxt;
     private ArrayList<Purchase> purchases;
     Intent intent;
     public final String EXTRA_ITEM_ID = "item_id";
@@ -29,6 +31,8 @@ public class BuyListDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_buy_list_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        totalTxt = findViewById(R.id.totalTxt);
+
         dataManager = new DataManager(this);
 
         buyListAdapter = new BuyListAdapter();
@@ -39,6 +43,8 @@ public class BuyListDetailsActivity extends AppCompatActivity {
         itemID = intent.getIntExtra(EXTRA_ITEM_ID, 0);
 
         purchases = dataManager.getBuyLists().get(itemID).getPurchases();
+
+        totalTxt.setText("Total: "+dataManager.getPurchasesTotal(purchases)+"0 MT(s)");
 
         buylist = findViewById(R.id.buylist);
         buyListAdapter.setBuylist(purchases);

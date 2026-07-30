@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.buylist.R;
+import com.example.buylist.models.DataManager;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
@@ -31,23 +32,29 @@ import java.util.Random;
  * Use the {@link BalanceFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class BalanceFragment extends Fragment {
     BarChart barChart;
     BarDataSet barDataSet;
     ArrayList<BarEntry> barEntries;
     Month[] months;
+    DataManager dataManager;
 
     public BalanceFragment() {
         // Required empty public constructor
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_balance, container, false);
+dataManager = new DataManager(getContext());
+        return generateChart(view);
+    }
 
+    public View generateChart(View view){
         // Working on DataSet
         months = Month.values(); //Getting MONTHS names
         barDataSet = new BarDataSet(getBarEntries(), "Data");
@@ -123,6 +130,7 @@ public class BalanceFragment extends Fragment {
 
         // Invalidate the chart to refresh
         barChart.invalidate();
+
         return view;
     }
 
@@ -134,7 +142,7 @@ public class BalanceFragment extends Fragment {
         Random random = new Random();
         // Adding entries to the ArrayList for the first set
         for (int i = 0; i < months.length; i++)
-            barEntries.add(new BarEntry(i, random.nextInt(20) + 1));
+            barEntries.add(new BarEntry(i, (float) dataManager.monthlyTotal()[i]));
         /*
         --Sample--
         barEntries.add(new BarEntry(1f, 3));
