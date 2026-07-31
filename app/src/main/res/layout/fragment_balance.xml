@@ -13,10 +13,16 @@
         android:background="@color/white"
         tools:context=".MainActivity">
 
-
+<Spinner
+    android:id="@+id/yearsChart"
+    android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+    android:layout_marginStart="25dp"
+    />
 
         <!--Ui component for our bar chart-->
         <com.github.mikephil.charting.charts.BarChart
+            android:layout_below="@id/yearsChart"
             android:id="@+id/idBarChart"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

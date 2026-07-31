@@ -20,7 +20,7 @@ public class RetrofitInstance {
     private static final String BASE_URL = "http://127.0.0.1:8000";
 
     /**
-     * TO-DO: IMPLEMENT THE STATISTICS FRAGMENT - MONTHLY AND YEARLY
+     * TO-DO: GO TO THE WEBSERVER AND MAKE IT AS THE SAVED BUYLISTS GENERATE JSON FILE FOR FUTURE REPORTS
      */
     private static Retrofit retrofit;
 

@@ -22,6 +22,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
@@ -668,15 +669,18 @@ public class DataManager {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public double[] monthlyTotal() {
+    public double[] monthlyTotal(int year) {
         double[] total = new double[12];
         Month[] months = Month.values();
+        Calendar calendar = Calendar.getInstance();
         for (Month m : months)
-            for(BuyList b:buylists)
-                if(m.getValue()==b.getDate().getMonth()+1) {
-                    System.out.println("month: " + m.getValue() + "\nbuylist month: " + b.getDate().getMonth());
-                    total[b.getDate().getMonth()] += getPurchasesTotal(b.getPurchases());
+            for (BuyList b : buylists) {
+                calendar.setTime(b.getDate());
+                if (m.getValue() == calendar.get(Calendar.MONTH)+1 && calendar.get(Calendar.YEAR) == year) {
+                    System.out.println("month: " + m.getValue() + "\nbuylist month: " + calendar.get(Calendar.MONTH)+1 + "\nbuylist year:" + calendar.get(Calendar.YEAR));
+                    total[calendar.get(Calendar.MONTH)] += getPurchasesTotal(b.getPurchases());
                 }
+            }
         System.out.println(total);
         return total;
     }

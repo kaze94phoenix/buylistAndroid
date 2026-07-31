@@ -10,17 +10,18 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.example.buylist.R;
 import com.example.buylist.models.DataManager;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.time.Month;
@@ -36,9 +37,11 @@ import java.util.Random;
 public class BalanceFragment extends Fragment {
     BarChart barChart;
     BarDataSet barDataSet;
+    Spinner yearsSpinner;
     ArrayList<BarEntry> barEntries;
     Month[] months;
     DataManager dataManager;
+    View view1;
 
     public BalanceFragment() {
         // Required empty public constructor
@@ -50,14 +53,38 @@ public class BalanceFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_balance, container, false);
-dataManager = new DataManager(getContext());
-        return generateChart(view);
+        yearsSpinner = view.findViewById(R.id.yearsChart);
+        dataManager = new DataManager(getContext());
+
+        ArrayList<Integer> years = new ArrayList<>();
+
+        for (int i = 2026; i < 2057; i++)
+            years.add(i);
+
+        ArrayAdapter<Integer> yearsAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, years);
+        yearsSpinner.setAdapter(yearsAdapter);
+        yearsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view1, int i, long l) {
+                generateChart(view, (Integer) yearsSpinner.getSelectedItem());
+                System.out.println("Year: "+yearsSpinner.getSelectedItem());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        //generateChart(view);
+        return view;
+
     }
 
-    public View generateChart(View view){
+    public void generateChart(View view, int year) {
         // Working on DataSet
         months = Month.values(); //Getting MONTHS names
-        barDataSet = new BarDataSet(getBarEntries(), "Data");
+        barDataSet = new BarDataSet(getBarEntries(year), "Data");
 
         // Option 2: Set different colors for each bar
         int[] colors = {Color.DKGRAY, Color.RED, Color.GREEN, Color.BLUE,
@@ -94,7 +121,7 @@ dataManager = new DataManager(getContext());
                 if (value >= 0) {
                     if (months.length > (int) value) {
                         String month = months[(int) value] + "";
-                        return month.substring(0,3);
+                        return month.substring(0, 3);
                     } else {
                         return "";
                     }
@@ -131,18 +158,18 @@ dataManager = new DataManager(getContext());
         // Invalidate the chart to refresh
         barChart.invalidate();
 
-        return view;
+        // return view;
     }
 
     // ArrayList for the first set of bar entries
-    private ArrayList<BarEntry> getBarEntries() {
+    private ArrayList<BarEntry> getBarEntries(int year) {
         // Creating a new ArrayList
         barEntries = new ArrayList<>();
 
         Random random = new Random();
         // Adding entries to the ArrayList for the first set
         for (int i = 0; i < months.length; i++)
-            barEntries.add(new BarEntry(i, (float) dataManager.monthlyTotal()[i]));
+            barEntries.add(new BarEntry(i, (float) dataManager.monthlyTotal(year)[i]));
         /*
         --Sample--
         barEntries.add(new BarEntry(1f, 3));
