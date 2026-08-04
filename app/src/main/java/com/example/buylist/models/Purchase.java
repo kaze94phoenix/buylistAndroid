@@ -13,6 +13,14 @@ public class Purchase {
     private int quantity;
     @SerializedName("purchased")
     private boolean purchased;
+    @SerializedName("current_price")
+    private double currentPrice;
+
+    public Purchase(ItemLocation itemLocation, int quantity, double currentPrice) {
+        this.itemLocation = itemLocation;
+        this.quantity = quantity;
+        this.currentPrice = currentPrice;
+    }
 
     public Purchase(ItemLocation itemLocation, int quantity) {
         this.itemLocation = itemLocation;
@@ -22,6 +30,14 @@ public class Purchase {
 
     public Purchase(){
 
+    }
+
+    public double getCurrentPrice() {
+        return currentPrice;
+    }
+
+    public void setCurrentPrice(double currentPrice) {
+        this.currentPrice = currentPrice;
     }
 
     public boolean isPurchased() {

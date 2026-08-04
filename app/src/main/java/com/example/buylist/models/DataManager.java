@@ -664,7 +664,7 @@ public class DataManager {
     public double getPurchasesTotal(ArrayList<Purchase> purchases) {
         double total = 0.0;
         for (Purchase p : purchases)
-            total += p.getItemLocation().getPrice() * p.getQuantity();
+            total += p.getCurrentPrice() * p.getQuantity();
         return total;
     }
 

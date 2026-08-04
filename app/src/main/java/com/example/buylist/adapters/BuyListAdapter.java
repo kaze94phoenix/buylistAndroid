@@ -60,16 +60,20 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         holder.item.setText(buylist.get(position).getItemLocation().getItem().getName());
-        if(options) {
+        if (options) {
             try {
                 holder.location.setText(buylist.get(position).getItemLocation().getLocation().getName() + " \n(" + dataManager.getDistanceItems().get(position) + ")");
             } catch (IndexOutOfBoundsException e) {
                 holder.location.setText(buylist.get(position).getItemLocation().getLocation().getName() + " \n(Loading...)");
             }
-        }else{
+        } else {
             holder.location.setText(buylist.get(position).getItemLocation().getLocation().getName());
         }
-        holder.price.setText(buylist.get(position).getItemLocation().getPrice() * buylist.get(position).getQuantity() + "0 MTS");
+        if (!options)
+            holder.price.setText(buylist.get(position).getCurrentPrice() * buylist.get(position).getQuantity() + "0 MTS");
+         else
+            holder.price.setText(buylist.get(position).getItemLocation().getPrice() * buylist.get(position).getQuantity() + "0 MTS");
+
         holder.quantity.setText(buylist.get(position).getQuantity() + " Unit(s)");
 
         if (!options) {
@@ -103,7 +107,7 @@ public class BuyListAdapter extends RecyclerView.Adapter<BuyListAdapter.ViewHold
         dest = destinationNames.get(0);
         for (int i = 1; i < destinationNames.size(); i++)
             dest += "|" + destinationNames.get(i);
-        dataManager.fetchDistanceItems(origin,dest);
+        dataManager.fetchDistanceItems(origin, dest);
     }
 
 
