@@ -17,6 +17,8 @@ import retrofit2.http.Path;
 
 public interface ApiService {
     //GET REQUESTS
+    @GET("api/user-types")
+    Call<ArrayList<UserType>> getUserTypes();
     @GET("api/product-types")
     Call<ArrayList<ItemType>> getProductTypes();
     @GET("api/products")
@@ -35,6 +37,8 @@ public interface ApiService {
     Call<ResponseBody> getDistanceItems(@Path("origin") String origin, @Path("destination") String destination);
 
     //POST REQUESTS
+    @POST("api/register")
+    Call<ResponseBody> register(@Body User user);
     @POST("api/login")
     Call<ResponseBody> login(@Body User user);
     @POST("api/listas/{id}")

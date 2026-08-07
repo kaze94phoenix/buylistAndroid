@@ -1,12 +1,14 @@
 package com.example.buylist.models;
 
 import static android.content.Context.MODE_PRIVATE;
+import static android.view.View.INVISIBLE;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -23,8 +25,6 @@ import java.io.IOException;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
 
 import io.paperdb.Paper;
 import okhttp3.ResponseBody;
@@ -44,6 +44,7 @@ public class DataManager {
     private static final String BUYLISTS = "buylists";
     private static final String PURCHASES = "purchases";
     private static final String LOCATIONS_TYPE = "locations type";
+    private static final String USER_TYPES = "user types";
     private static final String DISTANCES = "distances";
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
@@ -51,6 +52,7 @@ public class DataManager {
 
 
     private ArrayList<ItemType> itemTypes;
+    private ArrayList<UserType> userTypes;
     private ArrayList<Item> items;
     private ArrayList<Location> locations;
     private ArrayList<LocationType> locationTypes;
@@ -74,6 +76,9 @@ public class DataManager {
         Paper.init(context);
 
         this.context = context;
+
+        //USER TYPE
+        fetchUserTypes();
 
         //ITEM TYPE
         fetchItemTypes();
@@ -110,7 +115,41 @@ public class DataManager {
     }
 
 
-    //Authorization
+    //Authentication
+
+    public void register(User user, Activity activity, ProgressBar progressBar){
+        api.register(user).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        String res = response.body().string();
+                        JSONObject jsonResponse = new JSONObject(res);
+                        login(user,activity);
+                    } catch (IOException | JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                } else {
+                    try {
+                        String res = response.errorBody().string();
+                        JSONObject jsonResponse = new JSONObject(res);
+                        String error = jsonResponse.getString("message");
+                        Toast.makeText(context, "Register Failed! "+error, Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(INVISIBLE);
+
+                    }catch(IOException | JSONException e){
+                        throw new RuntimeException(e);
+                    }
+                    }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println("Error: " + t.getMessage());
+            }
+        });
+    }
     public void login(User user, Activity activity) {
         api.login(user).enqueue(new Callback<ResponseBody>() {
             @Override
@@ -159,6 +198,35 @@ public class DataManager {
         editor.apply();
         activity.startActivity(new Intent(activity.getApplicationContext(), LoginActivity.class));
         activity.finish();
+    }
+
+    public void fetchUserTypes(){
+        api.getUserTypes().enqueue(new Callback<ArrayList<UserType>>() {
+            @Override
+            public void onResponse(Call<ArrayList<UserType>> call, Response<ArrayList<UserType>> response) {
+                ArrayList<UserType> userTypeApi = response.body();
+                ArrayList<UserType> userTypeHD = Paper.book().read(USER_TYPES);
+                if (userTypeApi == null || userTypeApi.isEmpty())
+                    userTypes = userTypeHD;
+                else
+                    userTypes = userTypeApi;
+
+                if (userTypes == null || userTypes.isEmpty())
+                    userTypes = new ArrayList<UserType>();
+
+                Paper.book().write(USER_TYPES, userTypes);
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<UserType>> call, Throwable t) {
+                System.out.println("Error: " + t.getMessage());
+            }
+        });
+        userTypes = Paper.book().read(USER_TYPES);
+    }
+
+    public ArrayList<UserType> getUserTypes(){
+        return userTypes;
     }
 
 

@@ -11,6 +11,13 @@ public class User {
     private String email;
     @SerializedName("password")
     private String password;
+    @SerializedName("address")
+    private String address;
+    @SerializedName("user_type_id")
+    private int userTypeId;
+    @SerializedName("geolocation")
+    private String geolocation;
+
 
     public User(){
 
@@ -21,6 +28,15 @@ public class User {
         this.name=name;
         this.email=email;
         this.password=password;
+    }
+
+    public User(String name, String email, String password, String address,String geolocation, int userTypeId) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.address = address;
+        this.geolocation=geolocation;
+        this.userTypeId = userTypeId;
     }
 
     public User(String name, String password){
@@ -58,6 +74,30 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public int getUserTypeId() {
+        return userTypeId;
+    }
+
+    public void setUserType(int userTypeId) {
+        this.userTypeId = userTypeId;
+    }
+
+    public String getGeolocation() {
+        return geolocation;
+    }
+
+    public void setGeolocation(String geolocation) {
+        this.geolocation = geolocation;
     }
 
     @Override

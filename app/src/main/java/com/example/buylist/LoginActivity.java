@@ -58,6 +58,7 @@ DataManager manager;
 
         registerLink.setOnClickListener(view -> {
             startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+            finish();
         });
     }
 }
