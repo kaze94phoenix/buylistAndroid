@@ -1,5 +1,7 @@
 package com.example.buylist.adapters;
 
+import static android.view.View.VISIBLE;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -8,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -32,6 +35,7 @@ public class ShoppingLocationAdapter extends RecyclerView.Adapter<ShoppingLocati
     public static final String EXTRA_LOCATION_ID = "location_id";
     //Context of the RecyclerView activity
     private Activity activity;
+    private ProgressBar progressBar;
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
     private boolean options;
@@ -43,6 +47,9 @@ public class ShoppingLocationAdapter extends RecyclerView.Adapter<ShoppingLocati
 
     public void setActivity(Activity activity) {
         this.activity = activity;
+    }
+    public void setProgressBar(ProgressBar progressBar){
+        this.progressBar=progressBar;
     }
 
     public void hasOptions(boolean options) {
@@ -147,11 +154,12 @@ public class ShoppingLocationAdapter extends RecyclerView.Adapter<ShoppingLocati
 
                     Location finalLocationX = locationX;
                     saveBtn.setOnClickListener(view3 -> {
+                        progressBar.setVisibility(VISIBLE);
                         finalLocationX.setLocationType(dataManager.getLocationTypes().get(locationTypeSp.getSelectedItemPosition()));
                         finalLocationX.setAddress(addressTxt.getText().toString());
                         finalLocationX.setName(nameTxt.getText().toString());
                         finalLocationX.setGeolocation(geoLocTxt.getText().toString());
-                        dataManager.editLocation(locations.get(getBindingAdapterPosition()).getId(),finalLocationX);
+                        dataManager.editLocation(locations.get(getBindingAdapterPosition()).getId(),finalLocationX,progressBar);
                         dialog.dismiss();
                     });
 
@@ -176,8 +184,8 @@ public class ShoppingLocationAdapter extends RecyclerView.Adapter<ShoppingLocati
                     noBtn.setOnClickListener(view1 -> dialog.dismiss());
 
                     yesBtn.setOnClickListener(view2 -> {
-                        dataManager.deleteLocation(getBindingAdapterPosition());
-                        notifyItemRemoved(getBindingAdapterPosition());
+                        progressBar.setVisibility(VISIBLE);
+                        dataManager.deleteLocation(getBindingAdapterPosition(),progressBar);
                         dialog.dismiss();
                     });
 

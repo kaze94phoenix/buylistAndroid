@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         DataManager manager = new DataManager(getApplicationContext());
+
         preferences = manager.getPreferences();
 
         if(preferences.getString("loginStatus","false").equalsIgnoreCase("false")){

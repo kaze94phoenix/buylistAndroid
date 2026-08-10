@@ -15,7 +15,6 @@ import androidx.annotation.RequiresApi;
 
 import com.example.buylist.LoginActivity;
 import com.example.buylist.MainActivity;
-import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -117,16 +116,16 @@ public class DataManager {
 
     //Authentication
 
-    public void register(User user, Activity activity, ProgressBar progressBar){
+    public void register(User user, Activity activity, ProgressBar progressBar) {
         api.register(user).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
                         String res = response.body().string();
-                        JSONObject jsonResponse = new JSONObject(res);
-                        login(user,activity);
-                    } catch (IOException | JSONException e) {
+                        System.out.println("Response: " + res);
+                        login(user, activity, progressBar);
+                    } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
 
@@ -135,13 +134,13 @@ public class DataManager {
                         String res = response.errorBody().string();
                         JSONObject jsonResponse = new JSONObject(res);
                         String error = jsonResponse.getString("message");
-                        Toast.makeText(context, "Register Failed! "+error, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Register Failed! " + error, Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(INVISIBLE);
 
-                    }catch(IOException | JSONException e){
+                    } catch (IOException | JSONException e) {
                         throw new RuntimeException(e);
                     }
-                    }
+                }
             }
 
             @Override
@@ -150,7 +149,8 @@ public class DataManager {
             }
         });
     }
-    public void login(User user, Activity activity) {
+
+    public void login(User user, Activity activity, ProgressBar progressBar) {
         api.login(user).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -174,17 +174,28 @@ public class DataManager {
                         activity.startActivity(new Intent(activity.getApplicationContext(), MainActivity.class));
                         activity.finish();
                     } catch (IOException | JSONException e) {
-                        throw new RuntimeException(e);
+                        progressBar.setVisibility(INVISIBLE);
+                        Toast.makeText(context, "Login Failed! " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
                 } else {
-                    System.out.println("Something went wrong!");
+                    try {
+                        String res = response.errorBody().string();
+                        JSONObject jsonResponse = new JSONObject(res);
+                        String error = jsonResponse.getString("message");
+                        progressBar.setVisibility(INVISIBLE);
+                        Toast.makeText(context, "Login Failed! " + error, Toast.LENGTH_SHORT).show();
+                    } catch (IOException | JSONException e) {
+                        progressBar.setVisibility(INVISIBLE);
+                        Toast.makeText(context, "Login Failed! " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                System.out.println("Error: " + t.getMessage());
+                progressBar.setVisibility(INVISIBLE);
+                Toast.makeText(context, "Login Failed! " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -200,58 +211,47 @@ public class DataManager {
         activity.finish();
     }
 
-    public void fetchUserTypes(){
+    public void fetchUserTypes() {
+        userTypes = new ArrayList<>();
         api.getUserTypes().enqueue(new Callback<ArrayList<UserType>>() {
             @Override
             public void onResponse(Call<ArrayList<UserType>> call, Response<ArrayList<UserType>> response) {
                 ArrayList<UserType> userTypeApi = response.body();
-                ArrayList<UserType> userTypeHD = Paper.book().read(USER_TYPES);
-                if (userTypeApi == null || userTypeApi.isEmpty())
-                    userTypes = userTypeHD;
-                else
+                if (userTypeApi != null)
                     userTypes = userTypeApi;
-
-                if (userTypes == null || userTypes.isEmpty())
-                    userTypes = new ArrayList<UserType>();
-
                 Paper.book().write(USER_TYPES, userTypes);
             }
 
             @Override
             public void onFailure(Call<ArrayList<UserType>> call, Throwable t) {
                 System.out.println("Error: " + t.getMessage());
+                userTypes = Paper.book().read(USER_TYPES);
             }
         });
         userTypes = Paper.book().read(USER_TYPES);
     }
 
-    public ArrayList<UserType> getUserTypes(){
+    public ArrayList<UserType> getUserTypes() {
         return userTypes;
     }
 
 
     //Item Type Manipulation
     public void fetchItemTypes() {
+        itemTypes = new ArrayList<>();
         api.getProductTypes().enqueue(new Callback<ArrayList<ItemType>>() {
             @Override
             public void onResponse(Call<ArrayList<ItemType>> call, Response<ArrayList<ItemType>> response) {
                 ArrayList<ItemType> itemTypeApi = response.body();
-                ArrayList<ItemType> itemTypeHD = Paper.book().read(ITEMS_TYPE);
-                if (itemTypeApi == null || itemTypeApi.isEmpty())
-                    itemTypes = itemTypeHD;
-                else
+                if (itemTypeApi != null)
                     itemTypes = itemTypeApi;
-
-                if (itemTypes == null || itemTypes.isEmpty())
-                    itemTypes = new ArrayList<ItemType>();
-
                 Paper.book().write(ITEMS_TYPE, itemTypes);
             }
 
             @Override
             public void onFailure(Call<ArrayList<ItemType>> call, Throwable t) {
-
                 System.out.println("Error: " + t.getMessage());
+                itemTypes = Paper.book().read(ITEMS_TYPE);
             }
         });
         itemTypes = Paper.book().read(ITEMS_TYPE);
@@ -280,25 +280,20 @@ public class DataManager {
 
     //Item Manipulation
     public void fetchItems() {
+        items = new ArrayList<>();
         api.getProducts().enqueue(new Callback<ArrayList<Item>>() {
             @Override
             public void onResponse(Call<ArrayList<Item>> call, Response<ArrayList<Item>> response) {
                 ArrayList<Item> itemApi = response.body();
-                ArrayList<Item> itemHD = Paper.book().read(ITEMS);
-                if (itemApi == null || itemApi.isEmpty())
-                    items = itemHD;
-                else
+                if (itemApi != null)
                     items = itemApi;
-
-                if (items == null || items.isEmpty())
-                    items = new ArrayList<Item>();
-
                 Paper.book().write(ITEMS, items);
             }
 
             @Override
             public void onFailure(Call<ArrayList<Item>> call, Throwable t) {
                 System.out.println("Error: " + t.getMessage());
+                items = Paper.book().read(ITEMS);
             }
         });
         items = Paper.book().read(ITEMS);
@@ -337,45 +332,34 @@ public class DataManager {
 
     //Location Manipulation
     public void fetchLocations() {
+        locations = new ArrayList<>();
         api.getLocations().enqueue(new Callback<ArrayList<Location>>() {
             @Override
             public void onResponse(Call<ArrayList<Location>> call, Response<ArrayList<Location>> response) {
                 ArrayList<Location> locationApi = response.body();
-                ArrayList<Location> locationHD = Paper.book().read(LOCATIONS);
-                if (locationApi == null || locationApi.isEmpty())
-                    locations = locationHD;
-                else
+                if (locationApi != null)
                     locations = locationApi;
-
-                if (locations == null || locations.isEmpty())
-                    locations = new ArrayList<Location>();
-
                 Paper.book().write(LOCATIONS, locations);
             }
 
             @Override
             public void onFailure(Call<ArrayList<Location>> call, Throwable t) {
                 System.out.println("Error: " + t.getMessage());
+                locations = Paper.book().read(LOCATIONS);
             }
         });
         locations = Paper.book().read(LOCATIONS);
     }
 
     public void fetchMyLocations() {
+        myLocations = new ArrayList<>();
         if (!userId.equalsIgnoreCase("")) {
             api.myLocations(userId).enqueue(new Callback<ArrayList<Location>>() {
                 @Override
                 public void onResponse(Call<ArrayList<Location>> call, Response<ArrayList<Location>> response) {
                     ArrayList<Location> myLocationApi = response.body();
-                    ArrayList<Location> myLocationHD = Paper.book().read(LOCATIONS);
-                    if (myLocationApi == null || myLocationApi.isEmpty())
-                        myLocations = myLocationHD;
-                    else
+                    if (myLocationApi != null)
                         myLocations = myLocationApi;
-
-                    if (myLocations == null || myLocations.isEmpty())
-                        myLocations = new ArrayList<Location>();
-
                     Paper.book().write(MY_LOCATIONS, myLocations);
                 }
 
@@ -399,7 +383,7 @@ public class DataManager {
     }
 
 
-    public void addLocation(Location location) {
+    public void addLocation(Location location, ProgressBar progressBar) {
         int userId = Integer.parseInt(preferences.getString("userId", ""));
         Toast.makeText(context, "Adding Location. Please Wait!", Toast.LENGTH_LONG).show();
         api.addStore(userId, location).enqueue(new Callback<ResponseBody>() {
@@ -413,49 +397,77 @@ public class DataManager {
                         System.out.println("Response: " + jsonResponse);
                         fetchMyLocations();
                         fetchLocations();
+                        progressBar.setVisibility(INVISIBLE);
                         Toast.makeText(context, "Location Added. Refresh the List!", Toast.LENGTH_SHORT).show();
                     } catch (JSONException | IOException e) {
-                        throw new RuntimeException(e);
+                        Toast.makeText(context, "Error!" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    try {
+                        String res = response.errorBody().string();
+                        JSONObject jsonResponse = new JSONObject(res);
+                        String error = jsonResponse.getString("message");
+                        progressBar.setVisibility(INVISIBLE);
+                        Toast.makeText(context, "Adding Location Failed! " + error, Toast.LENGTH_SHORT).show();
+
+                    } catch (IOException | JSONException e) {
+                        progressBar.setVisibility(INVISIBLE);
+                        Toast.makeText(context, "Adding Location Failed! \n" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressBar.setVisibility(INVISIBLE);
                 Toast.makeText(context, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
     }
 
-    public void editLocation(int position, Location location) {
+    public void editLocation(int position, Location location, ProgressBar progressBar) {
         Toast.makeText(context, "Updating Location. Please Wait!", Toast.LENGTH_LONG).show();
         api.updateStore(position, location).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
-
                     try {
                         String res = response.body().string();
                         JSONObject jsonResponse = new JSONObject(res);
                         System.out.println("Response: " + jsonResponse);
                         fetchMyLocations();
                         fetchLocations();
+                        progressBar.setVisibility(INVISIBLE);
                         Toast.makeText(context, "Location Updated. Refresh the List!", Toast.LENGTH_SHORT).show();
                     } catch (JSONException | IOException e) {
-                        throw new RuntimeException(e);
+                        progressBar.setVisibility(INVISIBLE);
+                        Toast.makeText(context, "Updating Location Failed! " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    try {
+                        String res = response.errorBody().string();
+                        JSONObject jsonResponse = new JSONObject(res);
+                        String error = jsonResponse.getString("message");
+                        progressBar.setVisibility(INVISIBLE);
+                        Toast.makeText(context, "Updating Location Failed! " + error, Toast.LENGTH_SHORT).show();
+
+                    } catch (IOException | JSONException e) {
+                        progressBar.setVisibility(INVISIBLE);
+                        Toast.makeText(context, "Updating Location Failed! \n" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(context, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(INVISIBLE);
+                Toast.makeText(context, "Updating Location Failed! " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    public void deleteLocation(int position) {
+    public void deleteLocation(int position, ProgressBar progressBar) {
         Toast.makeText(context, "Deleting Location. Please Wait!", Toast.LENGTH_LONG).show();
         api.deleteStore(myLocations.get(position).getId()).enqueue(new Callback<ResponseBody>() {
             @Override
@@ -468,16 +480,31 @@ public class DataManager {
                         System.out.println("Response: " + jsonResponse);
                         fetchMyLocations();
                         fetchLocations();
+                        progressBar.setVisibility(INVISIBLE);
                         Toast.makeText(context, "Location Deleted. Refresh the List!", Toast.LENGTH_SHORT).show();
                     } catch (IOException | JSONException e) {
-                        throw new RuntimeException(e);
+                        progressBar.setVisibility(INVISIBLE);
+                        Toast.makeText(context, "Deleting Location Failed! " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
+                } else {
+                    try {
+                        String res = response.errorBody().string();
+                        JSONObject jsonResponse = new JSONObject(res);
+                        String error = jsonResponse.getString("message");
+                        progressBar.setVisibility(INVISIBLE);
+                        Toast.makeText(context, "Deleting Location Failed! " + error, Toast.LENGTH_SHORT).show();
+
+                    } catch (IOException | JSONException e) {
+                        progressBar.setVisibility(INVISIBLE);
+                        Toast.makeText(context, "Deleting Location Failed! \n" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressBar.setVisibility(INVISIBLE);
                 Toast.makeText(context, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -485,25 +512,20 @@ public class DataManager {
 
     //Location Type Manipulation
     public void fetchLocationTypes() {
+        locationTypes = new ArrayList<>();
         api.getLocationTypes().enqueue(new Callback<ArrayList<LocationType>>() {
             @Override
             public void onResponse(Call<ArrayList<LocationType>> call, Response<ArrayList<LocationType>> response) {
                 ArrayList<LocationType> locationTypeApi = response.body();
-                ArrayList<LocationType> locationTypeHD = Paper.book().read(LOCATIONS_TYPE);
-                if (locationTypeApi == null || locationTypeApi.isEmpty())
-                    locationTypes = locationTypeHD;
-                else
+                if (locationTypeApi != null)
                     locationTypes = locationTypeApi;
-
-                if (locationTypes == null || locations.isEmpty())
-                    locationTypes = new ArrayList<LocationType>();
-
                 Paper.book().write(LOCATIONS_TYPE, locationTypes);
             }
 
             @Override
             public void onFailure(Call<ArrayList<LocationType>> call, Throwable t) {
                 System.out.println("Error: " + t.getMessage());
+                locationTypes = Paper.book().read(LOCATIONS_TYPE);
             }
         });
         locationTypes = Paper.book().read(LOCATIONS_TYPE);
@@ -522,25 +544,20 @@ public class DataManager {
 
     //Item Location Manipulation
     public void fetchItemLocations() {
+        itemLocations = new ArrayList<>();
         api.getItemLocations().enqueue(new Callback<ArrayList<ItemLocation>>() {
             @Override
             public void onResponse(Call<ArrayList<ItemLocation>> call, Response<ArrayList<ItemLocation>> response) {
                 ArrayList<ItemLocation> itemLocationApi = response.body();
-                ArrayList<ItemLocation> itemLocationHD = Paper.book().read(ITEM_LOCATIONS);
-                if (itemLocationApi == null || itemLocationApi.isEmpty())
-                    itemLocations = itemLocationHD;
-                else
+                if (itemLocationApi != null)
                     itemLocations = itemLocationApi;
-
-                if (itemLocations == null || itemLocations.isEmpty())
-                    itemLocations = new ArrayList<ItemLocation>();
-
                 Paper.book().write(ITEM_LOCATIONS, itemLocations);
             }
 
             @Override
             public void onFailure(Call<ArrayList<ItemLocation>> call, Throwable t) {
                 System.out.println("Error: " + t.getMessage());
+                itemLocations = Paper.book().read(ITEM_LOCATIONS);
             }
         });
         itemLocations = Paper.book().read(ITEM_LOCATIONS);
@@ -589,21 +606,17 @@ public class DataManager {
                 @Override
                 public void onResponse(Call<ArrayList<BuyList>> call, Response<ArrayList<BuyList>> response) {
                     ArrayList<BuyList> buylistApi = response.body();
-                    ArrayList<BuyList> buylistHD = Paper.book().read(BUYLISTS);
-                    if (buylistApi == null || buylistApi.isEmpty())
-                        buylists = buylistHD;
-                    else
+                    System.out.println("Response: "+buylistApi);
+                    if (buylistApi != null)
                         buylists = buylistApi;
-
-                    if (buylists == null || buylists.isEmpty())
-                        buylists = new ArrayList<BuyList>();
-
                     Paper.book().write(BUYLISTS, buylists);
                 }
 
                 @Override
                 public void onFailure(Call<ArrayList<BuyList>> call, Throwable t) {
                     System.out.println("Error: " + t.getMessage());
+                    buylists = new ArrayList<>();
+                    Paper.book().write(BUYLISTS, buylists);
                 }
             });
         } else {
@@ -744,8 +757,8 @@ public class DataManager {
         for (Month m : months)
             for (BuyList b : buylists) {
                 calendar.setTime(b.getDate());
-                if (m.getValue() == calendar.get(Calendar.MONTH)+1 && calendar.get(Calendar.YEAR) == year) {
-                    System.out.println("month: " + m.getValue() + "\nbuylist month: " + calendar.get(Calendar.MONTH)+1 + "\nbuylist year:" + calendar.get(Calendar.YEAR));
+                if (m.getValue() == calendar.get(Calendar.MONTH) + 1 && calendar.get(Calendar.YEAR) == year) {
+                    System.out.println("month: " + m.getValue() + "\nbuylist month: " + calendar.get(Calendar.MONTH) + 1 + "\nbuylist year:" + calendar.get(Calendar.YEAR));
                     total[calendar.get(Calendar.MONTH)] += getPurchasesTotal(b.getPurchases());
                 }
             }

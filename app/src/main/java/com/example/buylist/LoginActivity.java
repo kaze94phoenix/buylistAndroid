@@ -42,7 +42,7 @@ DataManager manager;
         loginBtn.setOnClickListener(view ->{
             progressBar.setVisibility(VISIBLE);
             User user = new User(usernameTxt.getText().toString(),passwordTxt.getText().toString());
-                manager.login(user,this);
+                manager.login(user,this, progressBar);
         });
 
         guestBtn.setOnClickListener(view ->{

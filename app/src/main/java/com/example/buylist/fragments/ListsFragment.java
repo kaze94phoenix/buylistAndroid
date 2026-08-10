@@ -55,7 +55,6 @@ public class ListsFragment extends Fragment {
 
         swipeRefreshLayout = view.findViewById(R.id.swipeRefresh);
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            dataManager.fetchBuylists();
             buyListListAdapter.setBuyLists(dataManager.getBuyLists());
             buylistList.setAdapter(buyListListAdapter);
             buylistList.setLayoutManager(new LinearLayoutManager(getContext()));

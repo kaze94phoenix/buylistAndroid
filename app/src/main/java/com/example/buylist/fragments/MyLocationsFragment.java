@@ -1,5 +1,7 @@
 package com.example.buylist.fragments;
 
+import static android.view.View.VISIBLE;
+
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -15,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 import com.example.buylist.R;
@@ -34,6 +37,7 @@ public class MyLocationsFragment extends Fragment implements View.OnClickListene
 
 
     private RecyclerView recyclerView;
+    private ProgressBar progressBar;
     private SwipeRefreshLayout swipeRefreshLayout;
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
@@ -51,11 +55,13 @@ public class MyLocationsFragment extends Fragment implements View.OnClickListene
         View view = inflater.inflate(R.layout.fragment_my_locations, container, false);
 
         dataManager = new DataManager(getContext());
+        progressBar = view.findViewById(R.id.progressBar);
 
         shoppingLocationAdapter = new ShoppingLocationAdapter();
         shoppingLocationAdapter.hasOptions(true);
         shoppingLocationAdapter.setLocations(dataManager.getMyLocations());
         shoppingLocationAdapter.setActivity(getActivity());
+        shoppingLocationAdapter.setProgressBar(progressBar);
 
         recyclerView = view.findViewById(R.id.locationsListView);
         recyclerView.setAdapter(shoppingLocationAdapter);
@@ -110,11 +116,12 @@ public class MyLocationsFragment extends Fragment implements View.OnClickListene
         dialog.show();
 
         saveBtn.setOnClickListener(view -> {
+            progressBar.setVisibility(VISIBLE);
             locationX.setLocationType(dataManager.getLocationTypes().get(locationTypeSp.getSelectedItemPosition()));
             locationX.setAddress(addressTxt.getText().toString());
             locationX.setName(nameTxt.getText().toString());
             locationX.setGeolocation(geoLocTxt.getText().toString());
-            dataManager.addLocation(locationX);
+            dataManager.addLocation(locationX, progressBar);
             dialog.dismiss();
         });
 
