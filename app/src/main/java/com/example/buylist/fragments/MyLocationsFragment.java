@@ -121,7 +121,7 @@ public class MyLocationsFragment extends Fragment implements View.OnClickListene
             locationX.setAddress(addressTxt.getText().toString());
             locationX.setName(nameTxt.getText().toString());
             locationX.setGeolocation(geoLocTxt.getText().toString());
-            dataManager.addLocation(locationX, progressBar);
+            dataManager.addLocation(locationX, progressBar, shoppingLocationAdapter);
             dialog.dismiss();
         });
 

@@ -159,7 +159,7 @@ public class ShoppingLocationAdapter extends RecyclerView.Adapter<ShoppingLocati
                         finalLocationX.setAddress(addressTxt.getText().toString());
                         finalLocationX.setName(nameTxt.getText().toString());
                         finalLocationX.setGeolocation(geoLocTxt.getText().toString());
-                        dataManager.editLocation(locations.get(getBindingAdapterPosition()).getId(),finalLocationX,progressBar);
+                        dataManager.editLocation(locations.get(getBindingAdapterPosition()).getId(),finalLocationX,progressBar,ShoppingLocationAdapter.this);
                         dialog.dismiss();
                     });
 
@@ -185,7 +185,7 @@ public class ShoppingLocationAdapter extends RecyclerView.Adapter<ShoppingLocati
 
                     yesBtn.setOnClickListener(view2 -> {
                         progressBar.setVisibility(VISIBLE);
-                        dataManager.deleteLocation(getBindingAdapterPosition(),progressBar);
+                        dataManager.deleteLocation(getBindingAdapterPosition(),progressBar, ShoppingLocationAdapter.this);
                         dialog.dismiss();
                     });
 

@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -15,6 +17,7 @@ import androidx.annotation.RequiresApi;
 
 import com.example.buylist.LoginActivity;
 import com.example.buylist.MainActivity;
+import com.example.buylist.adapters.ShoppingLocationAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -383,7 +386,7 @@ public class DataManager {
     }
 
 
-    public void addLocation(Location location, ProgressBar progressBar) {
+    public void addLocation(Location location, ProgressBar progressBar, ShoppingLocationAdapter adapter) {
         int userId = Integer.parseInt(preferences.getString("userId", ""));
         Toast.makeText(context, "Adding Location. Please Wait!", Toast.LENGTH_LONG).show();
         api.addStore(userId, location).enqueue(new Callback<ResponseBody>() {
@@ -397,8 +400,14 @@ public class DataManager {
                         System.out.println("Response: " + jsonResponse);
                         fetchMyLocations();
                         fetchLocations();
-                        progressBar.setVisibility(INVISIBLE);
-                        Toast.makeText(context, "Location Added. Refresh the List!", Toast.LENGTH_SHORT).show();
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                            // This code executes on the UI thread after 2 seconds
+                            progressBar.setVisibility(INVISIBLE);
+                            adapter.setLocations(getMyLocations());
+                            adapter.notifyDataSetChanged();
+                        }, 2000); // 2000 milliseconds
+
+                        Toast.makeText(context, "Location Added! Refresh the List if not updated", Toast.LENGTH_SHORT).show();
                     } catch (JSONException | IOException e) {
                         Toast.makeText(context, "Error!" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -426,7 +435,7 @@ public class DataManager {
 
     }
 
-    public void editLocation(int position, Location location, ProgressBar progressBar) {
+    public void editLocation(int position, Location location, ProgressBar progressBar, ShoppingLocationAdapter adapter) {
         Toast.makeText(context, "Updating Location. Please Wait!", Toast.LENGTH_LONG).show();
         api.updateStore(position, location).enqueue(new Callback<ResponseBody>() {
             @Override
@@ -438,8 +447,13 @@ public class DataManager {
                         System.out.println("Response: " + jsonResponse);
                         fetchMyLocations();
                         fetchLocations();
-                        progressBar.setVisibility(INVISIBLE);
-                        Toast.makeText(context, "Location Updated. Refresh the List!", Toast.LENGTH_SHORT).show();
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                            // This code executes on the UI thread after 2 seconds
+                            progressBar.setVisibility(INVISIBLE);
+                            adapter.setLocations(getMyLocations());
+                            adapter.notifyDataSetChanged();
+                        }, 2000); // 2000 milliseconds
+                        Toast.makeText(context, "Location Updated. Refresh the List if necessary!", Toast.LENGTH_SHORT).show();
                     } catch (JSONException | IOException e) {
                         progressBar.setVisibility(INVISIBLE);
                         Toast.makeText(context, "Updating Location Failed! " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -467,7 +481,7 @@ public class DataManager {
         });
     }
 
-    public void deleteLocation(int position, ProgressBar progressBar) {
+    public void deleteLocation(int position, ProgressBar progressBar, ShoppingLocationAdapter adapter) {
         Toast.makeText(context, "Deleting Location. Please Wait!", Toast.LENGTH_LONG).show();
         api.deleteStore(myLocations.get(position).getId()).enqueue(new Callback<ResponseBody>() {
             @Override
@@ -480,8 +494,13 @@ public class DataManager {
                         System.out.println("Response: " + jsonResponse);
                         fetchMyLocations();
                         fetchLocations();
-                        progressBar.setVisibility(INVISIBLE);
-                        Toast.makeText(context, "Location Deleted. Refresh the List!", Toast.LENGTH_SHORT).show();
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                            // This code executes on the UI thread after 2 seconds
+                            progressBar.setVisibility(INVISIBLE);
+                            adapter.setLocations(getMyLocations());
+                            adapter.notifyDataSetChanged();
+                        }, 2000); // 2000 milliseconds
+                        Toast.makeText(context, "Location Deleted. Refresh the List if necessary!", Toast.LENGTH_SHORT).show();
                     } catch (IOException | JSONException e) {
                         progressBar.setVisibility(INVISIBLE);
                         Toast.makeText(context, "Deleting Location Failed! " + e.getMessage(), Toast.LENGTH_SHORT).show();

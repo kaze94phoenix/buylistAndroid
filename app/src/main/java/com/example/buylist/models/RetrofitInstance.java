@@ -20,7 +20,7 @@ public class RetrofitInstance {
     private static final String BASE_URL = "http://127.0.0.1:8000";
 
     /**
-     * TO-DO: FIND A WAY TO REFRESH AUTOMATICALLY AFTER A API REQUEST SUCH AS MY LOCATIONS AND MAKE A USER PROFILE
+     * TO-DO: MAKE A USER PROFILE
      */
     private static Retrofit retrofit;
 
